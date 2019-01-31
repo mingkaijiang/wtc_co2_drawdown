@@ -12,8 +12,12 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF1$chamber[r.n:dim(tDF1)[1]])
     
     ### set up time points
-    tDF1[r.n:dim(tDF1)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF1[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF1)[1]) {
+        tDF1[i, "time_elapsed"] <- round(as.numeric(difftime(tDF1[i, "datetime"], tDF1[r.n, "datetime"], units="mins")),1)
+    }
+    
+    #tDF1[r.n:dim(tDF1)[1], "time_elapsed"] <- 0:(r.t-1)
+    #tDF1[1:r.n, "time_elapsed"] <- -(r.n-1):0
     
     
     ######## Chamber 1, Canopy 345
@@ -26,9 +30,9 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF2$chamber[r.n:dim(tDF2)[1]])
     
     ### set up time points
-    tDF2[r.n:dim(tDF2)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF2[1:r.n, "time_elapsed"] <- -(r.n-1):0
-    
+    for (i in 1:dim(tDF2)[1]) {
+        tDF2[i, "time_elapsed"] <- round(as.numeric(difftime(tDF2[i, "datetime"], tDF2[r.n, "datetime"], units="mins")),1)
+    }
     
     ######## Chamber 1, Canopy 45
     tDF3 <- subset(myDF, chamber == "1" & canopy == "45")
@@ -40,8 +44,9 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF3$chamber[r.n:dim(tDF3)[1]])
     
     ### set up time points
-    tDF3[r.n:dim(tDF3)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF3[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF3)[1]) {
+        tDF3[i, "time_elapsed"] <- round(as.numeric(difftime(tDF3[i, "datetime"], tDF3[r.n, "datetime"], units="mins")),1)
+    }
     
     
     ######## Chamber 2, Canopy 12345
@@ -54,8 +59,9 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF4$chamber[r.n:dim(tDF4)[1]])
     
     ### set up time points
-    tDF4[r.n:dim(tDF4)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF4[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF4)[1]) {
+        tDF4[i, "time_elapsed"] <- round(as.numeric(difftime(tDF4[i, "datetime"], tDF4[r.n, "datetime"], units="mins")),1)
+    }
     
     
     ######## Chamber 2, Canopy 345
@@ -68,11 +74,13 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF5$chamber[r.n:dim(tDF5)[1]])
     
     ### set up time points
-    tDF5[r.n:dim(tDF5)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF5[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF5)[1]) {
+        tDF5[i, "time_elapsed"] <- round(as.numeric(difftime(tDF5[i, "datetime"], tDF5[r.n, "datetime"], units="mins")),1)
+    }
     
     
     ######## Chamber 2, Canopy 45
+    ### Note: this chamber and canopy has a time gap of two days!
     tDF6 <- subset(myDF, chamber == "2" & canopy == "45")
     
     ### find row number with maximum CO2 concentration
@@ -82,8 +90,9 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF6$chamber[r.n:dim(tDF6)[1]])
     
     ### set up time points
-    tDF6[r.n:dim(tDF6)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF6[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF6)[1]) {
+        tDF6[i, "time_elapsed"] <- round(as.numeric(difftime(tDF6[i, "datetime"], tDF6[r.n, "datetime"], units="mins")),1)
+    }
     
     
     ######## Chamber 3, Canopy 12345
@@ -96,8 +105,9 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF7$chamber[r.n:dim(tDF7)[1]])
     
     ### set up time points
-    tDF7[r.n:dim(tDF7)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF7[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF7)[1]) {
+        tDF7[i, "time_elapsed"] <- round(as.numeric(difftime(tDF7[i, "datetime"], tDF7[r.n, "datetime"], units="mins")),1)
+    }
     
     
     ######## Chamber 3, Canopy 345
@@ -110,8 +120,9 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF8$chamber[r.n:dim(tDF8)[1]])
     
     ### set up time points
-    tDF8[r.n:dim(tDF8)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF8[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF8)[1]) {
+        tDF8[i, "time_elapsed"] <- round(as.numeric(difftime(tDF8[i, "datetime"], tDF8[r.n, "datetime"], units="mins")),1)
+    }
     
     
     ######## Chamber 3, Canopy 45
@@ -124,8 +135,9 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF9$chamber[r.n:dim(tDF9)[1]])
     
     ### set up time points
-    tDF9[r.n:dim(tDF9)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF9[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF9)[1]) {
+        tDF9[i, "time_elapsed"] <- round(as.numeric(difftime(tDF9[i, "datetime"], tDF9[r.n, "datetime"], units="mins")),1)
+    }
     
     
     ######## Chamber 4, Canopy 12345
@@ -138,8 +150,9 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF10$chamber[r.n:dim(tDF10)[1]])
     
     ### set up time points
-    tDF10[r.n:dim(tDF10)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF10[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF10)[1]) {
+        tDF10[i, "time_elapsed"] <- round(as.numeric(difftime(tDF10[i, "datetime"], tDF10[r.n, "datetime"], units="mins")),1)
+    }
     
     
     ######## Chamber 4, Canopy 345
@@ -152,8 +165,9 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF11$chamber[r.n:dim(tDF11)[1]])
     
     ### set up time points
-    tDF11[r.n:dim(tDF11)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF11[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF11)[1]) {
+        tDF11[i, "time_elapsed"] <- round(as.numeric(difftime(tDF11[i, "datetime"], tDF11[r.n, "datetime"], units="mins")),1)
+    }
     
     
     ######## Chamber 4, Canopy 45
@@ -166,8 +180,9 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF12$chamber[r.n:dim(tDF12)[1]])
     
     ### set up time points
-    tDF12[r.n:dim(tDF12)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF12[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF12)[1]) {
+        tDF12[i, "time_elapsed"] <- round(as.numeric(difftime(tDF12[i, "datetime"], tDF12[r.n, "datetime"], units="mins")),1)
+    }
     
     
     ######## Chamber 7, Canopy 12345
@@ -180,8 +195,9 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF13$chamber[r.n:dim(tDF13)[1]])
     
     ### set up time points
-    tDF13[r.n:dim(tDF13)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF13[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF13)[1]) {
+        tDF13[i, "time_elapsed"] <- round(as.numeric(difftime(tDF13[i, "datetime"], tDF13[r.n, "datetime"], units="mins")),1)
+    }
     
     
     ######## Chamber 7, Canopy 345
@@ -194,8 +210,9 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF14$chamber[r.n:dim(tDF14)[1]])
     
     ### set up time points
-    tDF14[r.n:dim(tDF14)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF14[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF14)[1]) {
+        tDF14[i, "time_elapsed"] <- round(as.numeric(difftime(tDF14[i, "datetime"], tDF14[r.n, "datetime"], units="mins")),1)
+    }
     
     
     ######## Chamber 7, Canopy 45
@@ -208,8 +225,9 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF15$chamber[r.n:dim(tDF15)[1]])
     
     ### set up time points
-    tDF15[r.n:dim(tDF15)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF15[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF15)[1]) {
+        tDF15[i, "time_elapsed"] <- round(as.numeric(difftime(tDF15[i, "datetime"], tDF15[r.n, "datetime"], units="mins")),1)
+    }
     
     
     ######## Chamber 8, Canopy 12345
@@ -222,8 +240,9 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF16$chamber[r.n:dim(tDF16)[1]])
     
     ### set up time points
-    tDF16[r.n:dim(tDF16)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF16[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF16)[1]) {
+        tDF16[i, "time_elapsed"] <- round(as.numeric(difftime(tDF16[i, "datetime"], tDF16[r.n, "datetime"], units="mins")),1)
+    }
     
     
     ######## Chamber 8, Canopy 345
@@ -236,8 +255,9 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF17$chamber[r.n:dim(tDF17)[1]])
     
     ### set up time points
-    tDF17[r.n:dim(tDF17)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF17[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF17)[1]) {
+        tDF17[i, "time_elapsed"] <- round(as.numeric(difftime(tDF17[i, "datetime"], tDF17[r.n, "datetime"], units="mins")),1)
+    }
     
     
     ######## Chamber 8, Canopy 45
@@ -250,8 +270,9 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF18$chamber[r.n:dim(tDF18)[1]])
     
     ### set up time points
-    tDF18[r.n:dim(tDF18)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF18[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF18)[1]) {
+        tDF18[i, "time_elapsed"] <- round(as.numeric(difftime(tDF18[i, "datetime"], tDF18[r.n, "datetime"], units="mins")),1)
+    }
     
     
     ######## Chamber 11, Canopy 12345
@@ -264,8 +285,9 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF19$chamber[r.n:dim(tDF19)[1]])
     
     ### set up time points
-    tDF19[r.n:dim(tDF19)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF19[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF19)[1]) {
+        tDF19[i, "time_elapsed"] <- round(as.numeric(difftime(tDF19[i, "datetime"], tDF19[r.n, "datetime"], units="mins")),1)
+    }
     
     
     ######## Chamber 11, Canopy 345
@@ -278,8 +300,9 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF20$chamber[r.n:dim(tDF20)[1]])
     
     ### set up time points
-    tDF20[r.n:dim(tDF20)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF20[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF20)[1]) {
+        tDF20[i, "time_elapsed"] <- round(as.numeric(difftime(tDF20[i, "datetime"], tDF20[r.n, "datetime"], units="mins")),1)
+    }
     
     
     ######## Chamber 11, Canopy 45
@@ -292,8 +315,9 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF21$chamber[r.n:dim(tDF21)[1]])
     
     ### set up time points
-    tDF21[r.n:dim(tDF21)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF21[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF21)[1]) {
+        tDF21[i, "time_elapsed"] <- round(as.numeric(difftime(tDF21[i, "datetime"], tDF21[r.n, "datetime"], units="mins")),1)
+    }
     
     
     ######## Chamber 12, Canopy 12345
@@ -306,8 +330,9 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF22$chamber[r.n:dim(tDF22)[1]])
     
     ### set up time points
-    tDF22[r.n:dim(tDF22)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF22[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF22)[1]) {
+        tDF22[i, "time_elapsed"] <- round(as.numeric(difftime(tDF22[i, "datetime"], tDF22[r.n, "datetime"], units="mins")),1)
+    }
     
     
     ######## Chamber 12, Canopy 345
@@ -320,8 +345,9 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF23$chamber[r.n:dim(tDF23)[1]])
     
     ### set up time points
-    tDF23[r.n:dim(tDF23)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF23[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF23)[1]) {
+        tDF23[i, "time_elapsed"] <- round(as.numeric(difftime(tDF23[i, "datetime"], tDF23[r.n, "datetime"], units="mins")),1)
+    }
     
     
     ######## Chamber 12, Canopy 45
@@ -334,8 +360,9 @@ calculate_co2_flux_per_second <- function(myDF) {
     r.t <- length(tDF24$chamber[r.n:dim(tDF24)[1]])
     
     ### set up time points
-    tDF24[r.n:dim(tDF24)[1], "time_elapsed"] <- 0:(r.t-1)
-    tDF24[1:r.n, "time_elapsed"] <- -(r.n-1):0
+    for (i in 1:dim(tDF24)[1]) {
+        tDF24[i, "time_elapsed"] <- round(as.numeric(difftime(tDF24[i, "datetime"], tDF24[r.n, "datetime"], units="mins")),1)
+    }
     
     
     ###### combine all data
@@ -347,6 +374,7 @@ calculate_co2_flux_per_second <- function(myDF) {
     
     ### remove negative times
     myDF <- subset(out, time_elapsed >= 0)
+    myDF <- out
     
     ### get the change in CO2 concentration over a minute interval, in unit of seconds
     for (i in unique(myDF$chamber)) {

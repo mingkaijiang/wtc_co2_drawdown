@@ -17,6 +17,7 @@ myDF$datetime <- as.POSIXct(as.character(myDF$datetime))
 ### extract time information
 myDF$time <- strftime(myDF$datetime, format="%H:%M:%S")
 myDF$time <- as.POSIXct(myDF$time, format="%H:%M:%S")
+myDF$date <- strftime(myDF$datetime, format="%Y-%m-%d")
 
 
 ### data explained
@@ -124,10 +125,6 @@ dev.off()
 myDF2 <- calculate_co2_flux_per_second(myDF)
 
 
-### next to plot the rate of change in CO2 concentration over time
-### question is, what function? linear? exponential?
-### check what Craig used.
-
 ### plot CO2 flux over CO2 concentration
 p1 <- ggplot(myDF2, aes(CO2Local))+
     geom_point(aes(y=co2_flux, shape=factor(canopy), color=factor(chamber)), size=2.0)+
@@ -150,9 +147,10 @@ p1 <- ggplot(myDF2, aes(CO2Local))+
                        labels=c("full", "top + middle", "top"))
 
 
+### plot CO2 flux over time elapsed
 p2 <- ggplot(myDF2, aes(time_elapsed))+
     geom_point(aes(y=co2_flux, shape=factor(canopy), color=factor(chamber)), size=2.0)+
-    labs(x="Time", y=expression(paste(CO[2], " concentration (ppm)")))+
+    labs(x="Time Elapsed (s)", y=expression(paste(CO[2], " flux (ppm ", CO[2], " ", s^-1, ")")))+
     theme_linedraw() +
     theme(panel.grid.minor=element_blank(),
           axis.title.x = element_text(size=14), 
@@ -185,11 +183,13 @@ p3 <- ggplot(myDF2[myDF2$chamber==1,], aes(x=time_elapsed, y=CO2Local, color=fac
           legend.title=element_text(size=14),
           panel.grid.major=element_blank(),
           legend.position="right")+
-    scale_colour_manual(name="Chamber", values = c("12345" = "red", "345" = "green",
-                                                    "45" = "blue"))
+    scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                    "45" = "blue"),
+                        labels=c("full", "top + middle", "top"))+
+    ggtitle("Chamber 1 example")
 
-### chamber 1 example
-p4 <- ggplot(myDF2[myDF2$chamber==1,], aes(x=time_elapsed, y=CO2Local))+
+### chamber 2 example
+p4 <- ggplot(myDF2[myDF2$chamber==2,], aes(x=time_elapsed, y=CO2Local, color=factor(canopy)))+
     geom_point(size=2.0)+
     geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
     labs(x="Time", y=expression(paste(CO[2], " concentration (ppm)")))+
@@ -202,7 +202,157 @@ p4 <- ggplot(myDF2[myDF2$chamber==1,], aes(x=time_elapsed, y=CO2Local))+
           legend.text=element_text(size=12),
           legend.title=element_text(size=14),
           panel.grid.major=element_blank(),
-          legend.position="right")
+          legend.position="right")+
+    scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                  "45" = "blue"),
+                        labels=c("full", "top + middle", "top"))+
+    ggtitle("Chamber 2 example")
+
+### chamber 3 example
+p5 <- ggplot(myDF2[myDF2$chamber==3,], aes(x=time_elapsed, y=CO2Local, color=factor(canopy)))+
+    geom_point(size=2.0)+
+    geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+    labs(x="Time", y=expression(paste(CO[2], " concentration (ppm)")))+
+    theme_linedraw() +
+    theme(panel.grid.minor=element_blank(),
+          axis.title.x = element_text(size=14), 
+          axis.text.x = element_text(size=12),
+          axis.text.y=element_text(size=12),
+          axis.title.y=element_text(size=14),
+          legend.text=element_text(size=12),
+          legend.title=element_text(size=14),
+          panel.grid.major=element_blank(),
+          legend.position="right")+
+    scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                  "45" = "blue"),
+                        labels=c("full", "top + middle", "top"))+
+    ggtitle("Chamber 3 example")
 
 
+### chamber 4 example
+p6 <- ggplot(myDF2[myDF2$chamber==4,], aes(x=time_elapsed, y=CO2Local, color=factor(canopy)))+
+    geom_point(size=2.0)+
+    geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+    labs(x="Time", y=expression(paste(CO[2], " concentration (ppm)")))+
+    theme_linedraw() +
+    theme(panel.grid.minor=element_blank(),
+          axis.title.x = element_text(size=14), 
+          axis.text.x = element_text(size=12),
+          axis.text.y=element_text(size=12),
+          axis.title.y=element_text(size=14),
+          legend.text=element_text(size=12),
+          legend.title=element_text(size=14),
+          panel.grid.major=element_blank(),
+          legend.position="right")+
+    scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                  "45" = "blue"),
+                        labels=c("full", "top + middle", "top"))+
+    ggtitle("Chamber 4 example")
+
+### chamber 7 example
+p7 <- ggplot(myDF2[myDF2$chamber==7,], aes(x=time_elapsed, y=CO2Local, color=factor(canopy)))+
+    geom_point(size=2.0)+
+    geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+    labs(x="Time", y=expression(paste(CO[2], " concentration (ppm)")))+
+    theme_linedraw() +
+    theme(panel.grid.minor=element_blank(),
+          axis.title.x = element_text(size=14), 
+          axis.text.x = element_text(size=12),
+          axis.text.y=element_text(size=12),
+          axis.title.y=element_text(size=14),
+          legend.text=element_text(size=12),
+          legend.title=element_text(size=14),
+          panel.grid.major=element_blank(),
+          legend.position="right")+
+    scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                  "45" = "blue"),
+                        labels=c("full", "top + middle", "top"))+
+    ggtitle("Chamber 7 example")
+
+### chamber 8 example
+p8 <- ggplot(myDF2[myDF2$chamber==8,], aes(x=time_elapsed, y=CO2Local, color=factor(canopy)))+
+    geom_point(size=2.0)+
+    geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+    labs(x="Time", y=expression(paste(CO[2], " concentration (ppm)")))+
+    theme_linedraw() +
+    theme(panel.grid.minor=element_blank(),
+          axis.title.x = element_text(size=14), 
+          axis.text.x = element_text(size=12),
+          axis.text.y=element_text(size=12),
+          axis.title.y=element_text(size=14),
+          legend.text=element_text(size=12),
+          legend.title=element_text(size=14),
+          panel.grid.major=element_blank(),
+          legend.position="right")+
+    scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                  "45" = "blue"),
+                        labels=c("full", "top + middle", "top"))+
+    ggtitle("Chamber 8 example")
+
+### chamber 11 example
+p9 <- ggplot(myDF2[myDF2$chamber==11,], aes(x=time_elapsed, y=CO2Local, color=factor(canopy)))+
+    geom_point(size=2.0)+
+    geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+    labs(x="Time", y=expression(paste(CO[2], " concentration (ppm)")))+
+    theme_linedraw() +
+    theme(panel.grid.minor=element_blank(),
+          axis.title.x = element_text(size=14), 
+          axis.text.x = element_text(size=12),
+          axis.text.y=element_text(size=12),
+          axis.title.y=element_text(size=14),
+          legend.text=element_text(size=12),
+          legend.title=element_text(size=14),
+          panel.grid.major=element_blank(),
+          legend.position="right")+
+    scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                  "45" = "blue"),
+                        labels=c("full", "top + middle", "top"))+
+    ggtitle("Chamber 11 example")
+
+### chamber 12 example
+p10 <- ggplot(myDF2[myDF2$chamber==12,], aes(x=time_elapsed, y=CO2Local, color=factor(canopy)))+
+    geom_point(size=2.0)+
+    geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+    labs(x="Time", y=expression(paste(CO[2], " concentration (ppm)")))+
+    theme_linedraw() +
+    theme(panel.grid.minor=element_blank(),
+          axis.title.x = element_text(size=14), 
+          axis.text.x = element_text(size=12),
+          axis.text.y=element_text(size=12),
+          axis.title.y=element_text(size=14),
+          legend.text=element_text(size=12),
+          legend.title=element_text(size=14),
+          panel.grid.major=element_blank(),
+          legend.position="right")+
+    scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                  "45" = "blue"),
+                        labels=c("full", "top + middle", "top"))+
+    ggtitle("Chamber 12 example")
+
+
+### output
+pdf("output/overall_data_fluxes.pdf", width=12, height=6)
+plot(p1)
+plot(p2)
+plot(p3)
 plot(p4)
+plot(p5)
+plot(p6)
+plot(p7)
+plot(p8)
+plot(p9)
+plot(p10)
+dev.off()
+
+
+### look at chambers where CO2 concentration is unstable
+test <- subset(myDF2, chamber==7)
+
+### plot time series data to confirm status of CO2 concentration over time
+with(test[test$canopy=="45",], plot(CO2Local~datetime))
+with(test[test$canopy=="45",], plot(CO2Local~time))
+with(test[test$canopy=="45",], plot(CO2Local~time_elapsed))
+
+### to do next
+### work on individual regression models to see if the slopes differ statistically
+### if not, then one equation can be used to represent CO2 drawdown and therefore can use it to contrast with leaf-scale measurements
