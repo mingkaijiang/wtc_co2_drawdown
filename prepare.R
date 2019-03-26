@@ -13,7 +13,8 @@ pacman::p_load(dplyr,
                viridis,
                sciplot,
                scales,
-               data.table)    
+               data.table,
+               plantecophys)    
 
 
 #### Sourcing all R files in the modules subdirectory
