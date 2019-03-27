@@ -4,7 +4,7 @@ canopy_data_per_second_check_and_plot <- function(myDF2){
     p1 <- ggplot(myDF2, aes(vCo2))+
         geom_point(aes(y=co2_flux, shape=factor(canopy), color=factor(chamber)), size=2.0)+
         labs(x=expression(paste(CO[2], " concentration (ppm)")),
-             y=expression(paste(CO[2], " flux (ppm ", CO[2], " ", s^-1, ")")))+
+             y=expression(paste(CO[2], " flux (ppm ", CO[2], " ", min^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -25,7 +25,7 @@ canopy_data_per_second_check_and_plot <- function(myDF2){
     ### plot CO2 flux over time elapsed
     p2 <- ggplot(myDF2, aes(time_elapsed))+
         geom_point(aes(y=co2_flux, shape=factor(canopy), color=factor(chamber)), size=2.0)+
-        labs(x="Time Elapsed (s)", y=expression(paste(CO[2], " flux (ppm ", CO[2], " ", s^-1, ")")))+
+        labs(x="Time Elapsed (s)", y=expression(paste(CO[2], " flux (ppm ", CO[2], " ", min^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -44,7 +44,7 @@ canopy_data_per_second_check_and_plot <- function(myDF2){
     
     
     ### chamber 1 example
-    p3 <- ggplot(myDF2[myDF2$chamber==1,], aes(x=time_elapsed, y=CO2Local, color=factor(canopy)))+
+    p3 <- ggplot(myDF2[myDF2$chamber==1,], aes(x=time_elapsed, y=vCo2, color=factor(canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
         labs(x="Time", y=expression(paste(CO[2], " concentration (ppm)")))+
@@ -64,7 +64,7 @@ canopy_data_per_second_check_and_plot <- function(myDF2){
         ggtitle("Chamber 1 example")
     
     ### chamber 2 example
-    p4 <- ggplot(myDF2[myDF2$chamber==2,], aes(x=time_elapsed, y=CO2Local, color=factor(canopy)))+
+    p4 <- ggplot(myDF2[myDF2$chamber==2,], aes(x=time_elapsed, y=vCo2, color=factor(canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
         labs(x="Time", y=expression(paste(CO[2], " concentration (ppm)")))+
@@ -84,7 +84,7 @@ canopy_data_per_second_check_and_plot <- function(myDF2){
         ggtitle("Chamber 2 example")
     
     ### chamber 3 example
-    p5 <- ggplot(myDF2[myDF2$chamber==3,], aes(x=time_elapsed, y=CO2Local, color=factor(canopy)))+
+    p5 <- ggplot(myDF2[myDF2$chamber==3,], aes(x=time_elapsed, y=vCo2, color=factor(canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
         labs(x="Time", y=expression(paste(CO[2], " concentration (ppm)")))+
@@ -105,7 +105,7 @@ canopy_data_per_second_check_and_plot <- function(myDF2){
     
     
     ### chamber 4 example
-    p6 <- ggplot(myDF2[myDF2$chamber==4,], aes(x=time_elapsed, y=CO2Local, color=factor(canopy)))+
+    p6 <- ggplot(myDF2[myDF2$chamber==4,], aes(x=time_elapsed, y=vCo2, color=factor(canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
         labs(x="Time", y=expression(paste(CO[2], " concentration (ppm)")))+
@@ -125,7 +125,7 @@ canopy_data_per_second_check_and_plot <- function(myDF2){
         ggtitle("Chamber 4 example")
     
     ### chamber 7 example
-    p7 <- ggplot(myDF2[myDF2$chamber==7,], aes(x=time_elapsed, y=CO2Local, color=factor(canopy)))+
+    p7 <- ggplot(myDF2[myDF2$chamber==7,], aes(x=time_elapsed, y=vCo2, color=factor(canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
         labs(x="Time", y=expression(paste(CO[2], " concentration (ppm)")))+
@@ -145,7 +145,7 @@ canopy_data_per_second_check_and_plot <- function(myDF2){
         ggtitle("Chamber 7 example")
     
     ### chamber 8 example
-    p8 <- ggplot(myDF2[myDF2$chamber==8,], aes(x=time_elapsed, y=CO2Local, color=factor(canopy)))+
+    p8 <- ggplot(myDF2[myDF2$chamber==8,], aes(x=time_elapsed, y=vCo2, color=factor(canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
         labs(x="Time", y=expression(paste(CO[2], " concentration (ppm)")))+
@@ -165,7 +165,7 @@ canopy_data_per_second_check_and_plot <- function(myDF2){
         ggtitle("Chamber 8 example")
     
     ### chamber 11 example
-    p9 <- ggplot(myDF2[myDF2$chamber==11,], aes(x=time_elapsed, y=CO2Local, color=factor(canopy)))+
+    p9 <- ggplot(myDF2[myDF2$chamber==11,], aes(x=time_elapsed, y=vCo2, color=factor(canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
         labs(x="Time", y=expression(paste(CO[2], " concentration (ppm)")))+
@@ -185,7 +185,7 @@ canopy_data_per_second_check_and_plot <- function(myDF2){
         ggtitle("Chamber 11 example")
     
     ### chamber 12 example
-    p10 <- ggplot(myDF2[myDF2$chamber==12,], aes(x=time_elapsed, y=CO2Local, color=factor(canopy)))+
+    p10 <- ggplot(myDF2[myDF2$chamber==12,], aes(x=time_elapsed, y=vCo2, color=factor(canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
         labs(x="Time", y=expression(paste(CO[2], " concentration (ppm)")))+
