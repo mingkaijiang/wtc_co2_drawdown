@@ -12,12 +12,16 @@ leaf_ACI_processing <- function() {
     #### Fitting ACI curve
     fits <- fitacis(myDF1, group="Chamber", fitmethod="bilinear")
     
+    #test <- subset(myDF1, Chamber=="11")
+    #fit <- fitaci(test, fitmethod="bilinear")
+    #plot(fit)
+    
     ### plot relationship between vcmax and jmax
     #with(coef(fits), plot(Vcmax, Jmax))
     #
     #### plot Ac and Aj
-    #plot(fits[[1]])
-    #plot(fits, how="oneplot")
+    plot(fits[[1]])
+    plot(fits, how="oneplot")
     #plot(fits, how="oneplot", what="data", colour_by_id=T)
     #plot(fits, how="oneplot", add=T, what="model", lwd=c(1,1))
     #

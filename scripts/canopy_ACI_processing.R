@@ -18,8 +18,8 @@ canopy_ACI_processing <- function(myDF2) {
     #with(coef(fits), plot(Vcmax, Jmax))
     #
     #### plot Ac and Aj
-    #plot(fits[[1]])
-    #plot(fits, how="oneplot")
+    plot(fits[[1]])
+    plot(fits, how="oneplot")
     #plot(fits, how="oneplot", add=T, what="model", lwd=c(1,1))
     #
     #### look at other elements

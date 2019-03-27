@@ -43,3 +43,4 @@ rsconnect/
 
 # ignore R project
 *.Rproj
+*.DS_Store
