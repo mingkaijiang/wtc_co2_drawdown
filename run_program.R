@@ -41,23 +41,32 @@ canopy_data_per_second_check_and_plot(myDF2)
 ### fit canopy ACI curve for each treatment and chamber
 fits.canopy <- canopy_ACI_processing(myDF2)
 
-### look at chambers where CO2 concentration is unstable
-test <- subset(myDF2, chamber==7)
-
-### plot time series data to confirm status of CO2 concentration over time
-with(test[test$canopy=="45",], plot(CO2Local~datetime))
-with(test[test$canopy=="45",], plot(CO2Local~time))
-with(test[test$canopy=="45",], plot(CO2Local~time_elapsed))
-
-### to do next
-### work on individual regression models to see if the slopes differ statistically
-### if not, then one equation can be used to represent CO2 drawdown and therefore can use it to contrast with leaf-scale measurements
-
-
-
 
 ############################# fit A-CI curve - leaf #################################
 fits.leaf <- leaf_ACI_processing()
+
+
+
+
+############################# to do list #################################
+#### 1. check data quality on canopy:
+####    because very small vcmax and jmax values,
+####    it seems that some data are jumping around, so need to smooth them,
+####    also, need to understand what slope really mean.
+####    and get PARi data
+#### 2. check leaf data:
+####    some Jmax/Vcmax ratio seems not correct
+####    splitt data into different canopy treatment?
+####    is there any more data available on HIEv?
+#### 3. make plots so that we can compare the canopy and leaf data together
+####    create plots for each chamber: one plot on leaf response, one plot on different canopy response.
+
+
+### look at chambers where CO2 concentration is unstable
+test <- subset(myDF, chamber==1)
+test2 <- subset(test, canopy=="345")
+
+
 
 
 

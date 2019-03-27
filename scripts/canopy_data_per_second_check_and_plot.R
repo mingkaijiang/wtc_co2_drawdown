@@ -1,7 +1,7 @@
 canopy_data_per_second_check_and_plot <- function(myDF2){
     
     ### plot CO2 flux over CO2 concentration
-    p1 <- ggplot(myDF2, aes(CO2Local))+
+    p1 <- ggplot(myDF2, aes(vCo2))+
         geom_point(aes(y=co2_flux, shape=factor(canopy), color=factor(chamber)), size=2.0)+
         labs(x=expression(paste(CO[2], " concentration (ppm)")),
              y=expression(paste(CO[2], " flux (ppm ", CO[2], " ", s^-1, ")")))+

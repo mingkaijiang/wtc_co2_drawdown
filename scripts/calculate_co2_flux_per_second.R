@@ -382,10 +382,10 @@ calculate_co2_flux_per_second <- function(myDF) {
             t.elapsed <- unique(myDF.out$time_elapsed[myDF.out$chamber==i & myDF.out$canopy==j])
             #t.elapsed <- t.elapsed[t.elapsed!=0]
             
-            for (k in 2:length(t.elapsed)) {
-                myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$chamber==i&myDF.out$canopy==j, "co2_flux"] <- (myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$chamber==i&myDF.out$canopy==j,"CO2Local"]-
-                                                               myDF.out[myDF.out$time_elapsed==t.elapsed[k-1]&myDF.out$chamber==i&myDF.out$canopy==j,"CO2Local"])/
-                    as.numeric(difftime(myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$chamber==i&myDF.out$canopy==j,"time"],myDF.out[myDF.out$time_elapsed==t.elapsed[k-1]&myDF.out$chamber==i&myDF.out$canopy==j,"time"],unit="secs"))
+            for (k in 5:length(t.elapsed)) {
+                myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$chamber==i&myDF.out$canopy==j, "co2_flux"] <- (myDF.out[myDF.out$time_elapsed==t.elapsed[k-4]&myDF.out$chamber==i&myDF.out$canopy==j,"vCo2"]-
+                                                               myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$chamber==i&myDF.out$canopy==j,"vCo2"])/
+                    as.numeric(difftime(myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$chamber==i&myDF.out$canopy==j,"time"],myDF.out[myDF.out$time_elapsed==t.elapsed[k-4]&myDF.out$chamber==i&myDF.out$canopy==j,"time"],unit="mins"))
             }
         }
     }

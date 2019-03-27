@@ -9,11 +9,8 @@ leaf_ACI_processing <- function() {
     #### read in datasets
     myDF1 <- read.csv("data/HFE_Esal_ACI-Mar2009.csv")
     
-    
     #### Fitting ACI curve
-    fitaci(acidata1)
-    
-    fits <- fitacis(myDF1, group="Chamber")
+    fits <- fitacis(myDF1, group="Chamber", fitmethod="bilinear")
     
     ### plot relationship between vcmax and jmax
     #with(coef(fits), plot(Vcmax, Jmax))
