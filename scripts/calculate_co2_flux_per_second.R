@@ -373,22 +373,23 @@ calculate_co2_flux_per_second <- function(myDF) {
                  tDF21, tDF22, tDF23, tDF24)
     
     ### remove negative times
-    myDF <- subset(out, time_elapsed >= 0)
-    myDF <- out
-    
+    myDF.out <- subset(out, time_elapsed >= 0)
+
     ### get the change in CO2 concentration over a minute interval, in unit of seconds
-    for (i in unique(myDF$chamber)) {
-        for (j in unique(myDF$canopy)) {
-            max.row <- max(myDF$time_elapsed[myDF$chamber==i & myDF$canopy==j])
+    for (i in unique(myDF.out$chamber)) {
+        for (j in unique(myDF.out$canopy)) {
+            #max.row <- max(myDF.out$time_elapsed[myDF.out$chamber==i & myDF.out$canopy==j])
+            t.elapsed <- unique(myDF.out$time_elapsed[myDF.out$chamber==i & myDF.out$canopy==j])
+            #t.elapsed <- t.elapsed[t.elapsed!=0]
             
-            for (k in 1:max.row) {
-                myDF[myDF$time_elapsed==k&myDF$chamber==i&myDF$canopy==j, "co2_flux"] <- (myDF[myDF$time_elapsed==k&myDF$chamber==i&myDF$canopy==j,"CO2Local"]-
-                                                               myDF[myDF$time_elapsed==(k-1)&myDF$chamber==i&myDF$canopy==j,"CO2Local"])/
-                    as.numeric(difftime(myDF[myDF$time_elapsed==k&myDF$chamber==i&myDF$canopy==j,"time"],myDF[myDF$time_elapsed==(k-1)&myDF$chamber==i&myDF$canopy==j,"time"],unit="secs"))
+            for (k in 2:length(t.elapsed)) {
+                myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$chamber==i&myDF.out$canopy==j, "co2_flux"] <- (myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$chamber==i&myDF.out$canopy==j,"CO2Local"]-
+                                                               myDF.out[myDF.out$time_elapsed==t.elapsed[k-1]&myDF.out$chamber==i&myDF.out$canopy==j,"CO2Local"])/
+                    as.numeric(difftime(myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$chamber==i&myDF.out$canopy==j,"time"],myDF.out[myDF.out$time_elapsed==t.elapsed[k-1]&myDF.out$chamber==i&myDF.out$canopy==j,"time"],unit="secs"))
             }
         }
     }
     
-    return(myDF)
+    return(myDF.out)
     
 }
