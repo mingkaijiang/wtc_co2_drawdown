@@ -8,6 +8,11 @@
 #### read in necessary stuffs
 source("prepare.R")
 
+
+############################# fit A-CI curve - leaf #################################
+fits.leaf <- leaf_ACI_processing()
+
+
 ############################# check basic data structure - canopy #################################
 #### data explained
 #### column canopy: 12345 - full canopy
@@ -44,11 +49,6 @@ canopy_data_per_second_check_and_plot(myDF2)
 
 ### fit canopy ACI curve for each treatment and chamber
 fits.canopy <- canopy_ACI_processing(myDF2)
-
-############################# fit A-CI curve - leaf #################################
-fits.leaf <- leaf_ACI_processing()
-
-
 
 
 ############################# to do list #################################
