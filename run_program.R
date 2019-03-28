@@ -13,8 +13,22 @@ source("prepare.R")
 
 
 ############################# fit A-CI curve - leaf #################################
-fits.leaf <- leaf_ACI_processing()
+leaf_ACI_processing()
 
+
+### to do list: 
+### 1. continue statistical tests on treatment effect on vcmax, jmax and j-v ratios
+### 2. draw a figure on this and make it a supplementary material
+### 3. subset recent dates and decided what values to use for modeling
+### 4. make a table summarizing the values for modeling
+### 5. send email to Martin and check on two-leaf modeling
+### end of 03/29
+
+### 6. prepare met data
+### 7. contact Craig for canopy data check
+### 8. run the two-leaf model, what's needed?
+### 9. work out canopy data plots at individual chamber and canopy level
+### 10. Write as things move forward 
 
 ############################# processing canopy data #################################
 #### data explained
