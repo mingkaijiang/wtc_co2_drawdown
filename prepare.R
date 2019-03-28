@@ -14,7 +14,9 @@ pacman::p_load(dplyr,
                sciplot,
                scales,
                data.table,
-               plantecophys)    
+               plantecophys,
+               stringr        # to subtract characters
+               )    
 
 
 #### Sourcing all R files in the modules subdirectory
