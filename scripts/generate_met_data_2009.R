@@ -183,25 +183,50 @@ generate_met_data_2009 <- function() {
     ch03.o$year <- "2009"
     ch04.o$year <- "2009"
     ch07.o$year <- "2009"
-    ch09.o$year <- "2009"
+    ch08.o$year <- "2009"
     ch11.o$year <- "2009"
     ch12.o$year <- "2009"
     
-    write.csv(ch01.o, "data/met/Chamber_fluxes_processed/met_drawdownperiod_ch01.csv",
+    ch01.o$pressure <- ch01.o$pressure * 1000.0
+    ch02.o$pressure <- ch02.o$pressure * 1000.0
+    ch03.o$pressure <- ch03.o$pressure * 1000.0
+    ch04.o$pressure <- ch04.o$pressure * 1000.0
+    ch07.o$pressure <- ch07.o$pressure * 1000.0
+    ch08.o$pressure <- ch08.o$pressure * 1000.0
+    ch11.o$pressure <- ch11.o$pressure * 1000.0
+    ch12.o$pressure <- ch12.o$pressure * 1000.0
+    
+    write.csv(ch01.o, "/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/met_data/met_drawdownperiod_ch01.csv",
               row.names=F)
-    write.csv(ch02.o, "data/met/Chamber_fluxes_processed/met_drawdownperiod_ch02.csv",
+    write.csv(ch02.o, "/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/met_data/met_drawdownperiod_ch02.csv",
               row.names=F)
-    write.csv(ch03.o, "data/met/Chamber_fluxes_processed/met_drawdownperiod_ch03.csv",
+    write.csv(ch03.o, "/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/met_data/met_drawdownperiod_ch03.csv",
               row.names=F)
-    write.csv(ch04.o, "data/met/Chamber_fluxes_processed/met_drawdownperiod_ch04.csv",
+    write.csv(ch04.o, "/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/met_data/met_drawdownperiod_ch04.csv",
               row.names=F)
-    write.csv(ch07.o, "data/met/Chamber_fluxes_processed/met_drawdownperiod_ch07.csv",
+    write.csv(ch07.o, "/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/met_data/met_drawdownperiod_ch07.csv",
               row.names=F)
-    write.csv(ch08.o, "data/met/Chamber_fluxes_processed/met_drawdownperiod_ch08.csv",
+    write.csv(ch08.o, "/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/met_data/met_drawdownperiod_ch08.csv",
               row.names=F)
-    write.csv(ch11.o, "data/met/Chamber_fluxes_processed/met_drawdownperiod_ch11.csv",
+    write.csv(ch11.o, "/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/met_data/met_drawdownperiod_ch11.csv",
               row.names=F)
-    write.csv(ch12.o, "data/met/Chamber_fluxes_processed/met_drawdownperiod_ch12.csv",
+    write.csv(ch12.o, "/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/met_data/met_drawdownperiod_ch12.csv",
               row.names=F)
+    
+    ### what's wrong with the met files
+    ##  1. year and doy in output file are all 0,
+    ##     need to check DateTime format.
+    ##  2. output unit are GPP in g m-2 d-1, should be h-1 at least.
+    ##  3. check whether it is correct to just run for several hours of drawdown period.
+    ##     we are comparing canopy drawdown photosynthesis rate, so should be,
+    ##     but then there is the problem if different leaf area,
+    ##     and even more important, the problem of reducing rate of photo as time goes,
+    ##     because Ca is dropping. This is not reflected in modelled result,
+    ##     mainly because Ca is fixed in the two-leaf model code.
+    ##  4. check which met files to use for the canopy drawdown period.
+    ##  5. what to do with the unfilled parameters.
+    ##  6. what about T-treatment and water-treatment. Do they have any effect in the code?
+    ##  
+    
     
 }

@@ -60,7 +60,5 @@ generate_met_data_2008_2009 <- function() {
         
     }
 
-
-
     
 }
