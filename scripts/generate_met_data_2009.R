@@ -212,21 +212,5 @@ generate_met_data_2009 <- function() {
               row.names=F)
     write.csv(ch12.o, "/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/met_data/met_drawdownperiod_ch12.csv",
               row.names=F)
-    
-    ### what's wrong with the met files
-    ##  1. year and doy in output file are all 0,
-    ##     need to check DateTime format.
-    ##  2. output unit are GPP in g m-2 d-1, should be h-1 at least.
-    ##  3. check whether it is correct to just run for several hours of drawdown period.
-    ##     we are comparing canopy drawdown photosynthesis rate, so should be,
-    ##     but then there is the problem if different leaf area,
-    ##     and even more important, the problem of reducing rate of photo as time goes,
-    ##     because Ca is dropping. This is not reflected in modelled result,
-    ##     mainly because Ca is fixed in the two-leaf model code.
-    ##  4. check which met files to use for the canopy drawdown period.
-    ##  5. what to do with the unfilled parameters.
-    ##  6. what about T-treatment and water-treatment. Do they have any effect in the code?
-    ##  
-    
-    
+   
 }
