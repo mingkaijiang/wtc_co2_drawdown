@@ -106,7 +106,7 @@ generate_met_data_2009 <- function() {
     ch07.m <- merge(ch07, subDF4, by.x=c("DateTime"), by.y=c("DateTime"))
     ch08.m <- merge(ch08, subDF4, by.x=c("DateTime"), by.y=c("DateTime"))
     ch11.m <- merge(ch11, subDF4, by.x=c("DateTime"), by.y=c("DateTime"))
-    ch12.m <- merge(ch11, subDF4, by.x=c("DateTime"), by.y=c("DateTime"))
+    ch12.m <- merge(ch12, subDF4, by.x=c("DateTime"), by.y=c("DateTime"))
     
     ## select output variable
     ch01.o <- ch01.m[,c("DateTime", "Chamber", "Canopy", "doy", "hod.y",
