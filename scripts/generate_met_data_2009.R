@@ -7,17 +7,24 @@ generate_met_data_2009 <- function() {
     
     
     #### need the following variables
+    ### DateTime
+    ### doy
+    ### hod
     ### tair
     ### par
     ### vpd
     ### wind
     ### pressure
     ### Ca
-    ### doy
-    ### hod
-    ### lai
+    ### leafArea
     ### Vcmax25
     ### Jmax25
+    ### FluxCO2
+    ### FluxH2O
+    ### chamber
+    ### T_treatment
+    ### Water_treatment
+    
     
     ########################  read in WTC met data ###########################
     metDF <- read.csv("data/met/WTC_met_2009/HFE 30min Metdata 2009.csv")
@@ -38,7 +45,8 @@ generate_met_data_2009 <- function() {
     subDF2$wind <- subDF2$winddem
     subDF2$pressure <- subDF2$AirPress
     
-    subDF3 <- subDF2[,c("doy", "hod", "tair", "par", "vpd", "wind", "pressure")]
+    subDF3 <- subDF2[,c("DateTime","doy", "hod", "tair", "par", "vpd", "wind", "pressure")]
+    subDF4 <- subDF2[,c("DateTime","doy", "hod", "vpd", "wind", "pressure")]
     
     
     ########################  using drawdownanalysis9Sepb.csv file ###########################
@@ -67,24 +75,133 @@ generate_met_data_2009 <- function() {
     myDF$time <- as.POSIXct(myDF$time, format="%H:%M:%S")
     
     myDF <- myDF[,!(colnames(myDF)%in% c("time1", "time2", "time3"))]
+    myDF <- myDF[myDF$Chamber%in%c(1,2,3,4,5,6,7,8,9,10,11,12),]  
+    
+    ### calculate hourly met data
+    myDF$time1 <- sub(".+? ", "", myDF$datetime)
+    myDF$hod <- as.numeric(sub(":.*", "", myDF$time1))
+    
+    hDF <- summaryBy(vCo2+vT+Tair+DPLicorCh+PARi+cmarea+corrflux+ncorrflux~Chamber+Canopy+date+hod,
+                     data=myDF, FUN=mean, na.rm=T, keep.names=T)
+    hDF <- hDF[complete.cases(hDF$cmarea),]
+    hDF$time <- paste0(hDF$hod, ":00:00")
+    hDF$DateTime <- as.POSIXct(paste(hDF$date, hDF$time), format="%Y-%m-%d %H:%M:%S")
     
     
-    ### only include the complete data where normalized flux is available
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
+    ########################  create chamber-specific met ###########################
+    ch01 <- subset(hDF, Chamber==1)
+    ch02 <- subset(hDF, Chamber==2)
+    ch03 <- subset(hDF, Chamber==3)
+    ch04 <- subset(hDF, Chamber==4)
+    ch07 <- subset(hDF, Chamber==7)
+    ch08 <- subset(hDF, Chamber==8)
+    ch11 <- subset(hDF, Chamber==11)
+    ch12 <- subset(hDF, Chamber==12)
 
-    ### check canopy data structure
-    canopy_data_check_and_plot2(myDF)
+    ## merge
+    ch01.m <- merge(ch01, subDF4, by.x=c("DateTime"), by.y=c("DateTime"))
+    ch02.m <- merge(ch02, subDF4, by.x=c("DateTime"), by.y=c("DateTime"))
+    ch03.m <- merge(ch03, subDF4, by.x=c("DateTime"), by.y=c("DateTime"))
+    ch04.m <- merge(ch04, subDF4, by.x=c("DateTime"), by.y=c("DateTime"))
+    ch07.m <- merge(ch07, subDF4, by.x=c("DateTime"), by.y=c("DateTime"))
+    ch08.m <- merge(ch08, subDF4, by.x=c("DateTime"), by.y=c("DateTime"))
+    ch11.m <- merge(ch11, subDF4, by.x=c("DateTime"), by.y=c("DateTime"))
+    ch12.m <- merge(ch11, subDF4, by.x=c("DateTime"), by.y=c("DateTime"))
     
-    ### time series data correct to control for breaks in the dataseries
-    myDF <- canopy_data_control2(myDF)
+    ## select output variable
+    ch01.o <- ch01.m[,c("DateTime", "Chamber", "Canopy", "doy", "hod.y",
+                        "vCo2", "vT", "PARi", "cmarea", "corrflux",
+                        "vpd", "wind", "pressure")]
+    ch02.o <- ch02.m[,c("DateTime", "Chamber", "Canopy", "doy", "hod.y",
+                        "vCo2", "vT", "PARi", "cmarea", "corrflux",
+                        "vpd", "wind", "pressure")]
+    ch03.o <- ch03.m[,c("DateTime", "Chamber", "Canopy", "doy", "hod.y",
+                        "vCo2", "vT", "PARi", "cmarea", "corrflux",
+                        "vpd", "wind", "pressure")]    
+    ch04.o <- ch04.m[,c("DateTime", "Chamber", "Canopy", "doy", "hod.y",
+                        "vCo2", "vT", "PARi", "cmarea", "corrflux",
+                        "vpd", "wind", "pressure")]
+    ch07.o <- ch07.m[,c("DateTime", "Chamber", "Canopy", "doy", "hod.y",
+                        "vCo2", "vT", "PARi", "cmarea", "corrflux",
+                        "vpd", "wind", "pressure")]
+    ch08.o <- ch08.m[,c("DateTime", "Chamber", "Canopy", "doy", "hod.y",
+                        "vCo2", "vT", "PARi", "cmarea", "corrflux",
+                        "vpd", "wind", "pressure")]
+    ch11.o <- ch11.m[,c("DateTime", "Chamber", "Canopy", "doy", "hod.y",
+                        "vCo2", "vT", "PARi", "cmarea", "corrflux",
+                        "vpd", "wind", "pressure")]
+    ch12.o <- ch12.m[,c("DateTime", "Chamber", "Canopy", "doy", "hod.y",
+                        "vCo2", "vT", "PARi", "cmarea", "corrflux",
+                        "vpd", "wind", "pressure")]
     
-    ### Calculate CO2 flux for each minute and output in the unit of ppm CO2 min-1
-    myDF <- calculate_co2_flux_per_second2(myDF)
+    ## reassign names
+    colnames(ch01.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod",
+                          "Ca", "tair", "par", "leafArea", "FluxCO2",
+                          "vpd", "wind", "pressure")
+    colnames(ch02.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod",
+                          "Ca", "tair", "par", "leafArea", "FluxCO2",
+                          "vpd", "wind", "pressure")
+    colnames(ch03.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod",
+                          "Ca", "tair", "par", "leafArea", "FluxCO2",
+                          "vpd", "wind", "pressure")
+    colnames(ch04.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod",
+                          "Ca", "tair", "par", "leafArea", "FluxCO2",
+                          "vpd", "wind", "pressure")
+    colnames(ch07.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod",
+                          "Ca", "tair", "par", "leafArea", "FluxCO2",
+                          "vpd", "wind", "pressure")
+    colnames(ch08.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod",
+                          "Ca", "tair", "par", "leafArea", "FluxCO2",
+                          "vpd", "wind", "pressure")
+    colnames(ch11.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod",
+                          "Ca", "tair", "par", "leafArea", "FluxCO2",
+                          "vpd", "wind", "pressure")
+    colnames(ch12.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod",
+                          "Ca", "tair", "par", "leafArea", "FluxCO2",
+                          "vpd", "wind", "pressure")
     
-    ### plotting co2 flux at per second rate for different treatments
-    canopy_data_per_second_check_and_plot2(myDF)
+    ch01.o$T_treatment <- "ambient"
+    ch02.o$T_treatment <- "ambient"
+    ch03.o$T_treatment <- "ambient"
+    ch04.o$T_treatment <- "ambient"
+    ch07.o$T_treatment <- "ambient"
+    ch08.o$T_treatment <- "ambient"
+    ch11.o$T_treatment <- "ambient"
+    ch12.o$T_treatment <- "ambient"
     
-    return(myDF)
-
+    ch01.o$Water_treatment <- "control"
+    ch02.o$Water_treatment <- "control"
+    ch03.o$Water_treatment <- "control"
+    ch04.o$Water_treatment <- "control"
+    ch07.o$Water_treatment <- "control"
+    ch08.o$Water_treatment <- "control"
+    ch11.o$Water_treatment <- "control"
+    ch12.o$Water_treatment <- "control"
+    
+    ch01.o$year <- "2009"
+    ch02.o$year <- "2009"
+    ch03.o$year <- "2009"
+    ch04.o$year <- "2009"
+    ch07.o$year <- "2009"
+    ch09.o$year <- "2009"
+    ch11.o$year <- "2009"
+    ch12.o$year <- "2009"
+    
+    write.csv(ch01.o, "data/met/Chamber_fluxes_processed/met_drawdownperiod_ch01.csv",
+              row.names=F)
+    write.csv(ch02.o, "data/met/Chamber_fluxes_processed/met_drawdownperiod_ch02.csv",
+              row.names=F)
+    write.csv(ch03.o, "data/met/Chamber_fluxes_processed/met_drawdownperiod_ch03.csv",
+              row.names=F)
+    write.csv(ch04.o, "data/met/Chamber_fluxes_processed/met_drawdownperiod_ch04.csv",
+              row.names=F)
+    write.csv(ch07.o, "data/met/Chamber_fluxes_processed/met_drawdownperiod_ch07.csv",
+              row.names=F)
+    write.csv(ch08.o, "data/met/Chamber_fluxes_processed/met_drawdownperiod_ch08.csv",
+              row.names=F)
+    write.csv(ch11.o, "data/met/Chamber_fluxes_processed/met_drawdownperiod_ch11.csv",
+              row.names=F)
+    write.csv(ch12.o, "data/met/Chamber_fluxes_processed/met_drawdownperiod_ch12.csv",
+              row.names=F)
     
 }
