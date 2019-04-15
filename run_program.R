@@ -15,6 +15,15 @@ source("prepare.R")
 ############################# fit A-CI curve - leaf #################################
 leaf_ACI_processing()
 
+############################# generate met data for two-leaf model ###################
+### this script generate met data based on 2009 met data collected at WTC
+### need to combine with canopy drawdown data from inside the chambers
+generate_met_data_2009()
+
+#### this script generate met data for period 2008.04.14 to 2009.03.06
+#### which is before the co2 drawdown experiment
+#### but with hourly gap-filled data for each chamber
+generate_met_data_2008_2009()
 
 ### to do list: 
 ### 1. continue statistical tests on treatment effect on vcmax, jmax and j-v ratios
