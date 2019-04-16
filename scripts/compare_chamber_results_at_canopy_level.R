@@ -249,9 +249,11 @@ compare_chamber_results_at_canopy_level <- function() {
         scale_color_manual(name="Method",
                            values=c("blue2", "red3"),
                            labels=c("Observed", "Modeled"))+
-        xlim(0,2000)+
+        xlim(0,1600)+
         ylim(-5,60)+
         ggtitle("Chamber 01")
+    
+    plot(p1)
     
     p2 <- ggplot(ch02) +
         geom_point(aes(Ca, An_can, col="red3"),
@@ -278,7 +280,7 @@ compare_chamber_results_at_canopy_level <- function() {
         scale_color_manual(name="Method",
                            values=c("blue2", "red3"),
                            labels=c("Observed", "Modeled"))+
-        xlim(0,2000)+
+        xlim(0,1600)+
         ylim(-5,60)+
         ggtitle("Chamber 02")
     
@@ -307,7 +309,7 @@ compare_chamber_results_at_canopy_level <- function() {
         scale_color_manual(name="Method",
                            values=c("blue2", "red3"),
                            labels=c("Observed", "Modeled"))+
-        xlim(0,2000)+
+        xlim(0,1600)+
         ylim(-5,60)+
         ggtitle("Chamber 03")
     
@@ -336,7 +338,7 @@ compare_chamber_results_at_canopy_level <- function() {
         scale_color_manual(name="Method",
                            values=c("blue2", "red3"),
                            labels=c("Observed", "Modeled"))+
-        xlim(0,2000)+
+        xlim(0,1600)+
         ylim(-5,60)+
         ggtitle("Chamber 04")
     
@@ -365,7 +367,7 @@ compare_chamber_results_at_canopy_level <- function() {
         scale_color_manual(name="Method",
                            values=c("blue2", "red3"),
                            labels=c("Observed", "Modeled"))+
-        xlim(0,2000)+
+        xlim(0,1600)+
         ylim(-5,60)+
         ggtitle("Chamber 07")
     
@@ -394,7 +396,7 @@ compare_chamber_results_at_canopy_level <- function() {
         scale_color_manual(name="Method",
                            values=c("blue2", "red3"),
                            labels=c("Observed", "Modeled"))+
-        xlim(0,2000)+
+        xlim(0,1600)+
         ylim(-5,60)+
         ggtitle("Chamber 08")
     
@@ -423,7 +425,7 @@ compare_chamber_results_at_canopy_level <- function() {
         scale_color_manual(name="Method",
                            values=c("blue2", "red3"),
                            labels=c("Observed", "Modeled"))+
-        xlim(0,2000)+
+        xlim(0,1600)+
         ylim(-5,60)+
         ggtitle("Chamber 11")
     
@@ -452,7 +454,7 @@ compare_chamber_results_at_canopy_level <- function() {
         scale_color_manual(name="Method",
                            values=c("blue2", "red3"),
                            labels=c("Observed", "Modeled"))+
-        xlim(0,2000)+
+        xlim(0,1600)+
         ylim(-5,60)+
         ggtitle("Chamber 12")
     
@@ -460,4 +462,88 @@ compare_chamber_results_at_canopy_level <- function() {
     plot_grid(p1, p2, p3, p4, p7, p8, p11, p12, 
               labels="AUTO", ncol=2, align="v", axis = "l")
     dev.off()    
+    
+    
+    ### convert data format
+    ch01.tf <- convert_modeled_data_format(inDF=ch01)
+    ch02.tf <- convert_modeled_data_format(inDF=ch02)
+    ch03.tf <- convert_modeled_data_format(inDF=ch03)
+    ch04.tf <- convert_modeled_data_format(inDF=ch04)
+    ch07.tf <- convert_modeled_data_format(inDF=ch07)
+    ch08.tf <- convert_modeled_data_format(inDF=ch08)
+    ch11.tf <- convert_modeled_data_format(inDF=ch11)
+    ch12.tf <- convert_modeled_data_format(inDF=ch12)
+    
+    ### fit data
+    ch01.fit <- fitacis(ch01.tf, group = "canopy", 
+                        varnames = list(ALEAF = "An", Tleaf="T_can",
+                                        Ci = "Ca", PPFD = "APAR_can"),
+                        id = "canopy", fitmethod="bilinear")
+    
+    ch02.fit <- fitacis(ch02.tf, group = "canopy", 
+                        varnames = list(ALEAF = "An", Tleaf="T_can",
+                                        Ci = "Ca", PPFD = "APAR_can"),
+                        id = "canopy", fitmethod="bilinear")
+    
+    ch03.fit <- fitacis(ch03.tf, group = "canopy", 
+                        varnames = list(ALEAF = "An", Tleaf="T_can",
+                                        Ci = "Ca", PPFD = "APAR_can"),
+                        id = "canopy", fitmethod="bilinear")
+    
+    ch04.fit <- fitacis(ch04.tf, group = "canopy", 
+                        varnames = list(ALEAF = "An", Tleaf="T_can",
+                                        Ci = "Ca", PPFD = "APAR_can"),
+                        id = "canopy", fitmethod="bilinear")
+    
+    ch07.fit <- fitacis(ch07.tf, group = "canopy", 
+                        varnames = list(ALEAF = "An", Tleaf="T_can",
+                                        Ci = "Ca", PPFD = "APAR_can"),
+                        id = "canopy", fitmethod="bilinear")
+    
+    ch08.fit <- fitacis(ch08.tf, group = "canopy", 
+                        varnames = list(ALEAF = "An", Tleaf="T_can",
+                                        Ci = "Ca", PPFD = "APAR_can"),
+                        id = "canopy", fitmethod="bilinear")
+    
+    ch11.fit <- fitacis(ch11.tf, group = "canopy", 
+                        varnames = list(ALEAF = "An", Tleaf="T_can",
+                                        Ci = "Ca", PPFD = "APAR_can"),
+                        id = "canopy", fitmethod="bilinear")
+
+    ch12.fit <- fitacis(ch12.tf, group = "canopy", 
+                        varnames = list(ALEAF = "An", Tleaf="T_can",
+                                        Ci = "Ca", PPFD = "APAR_can"),
+                        id = "canopy", fitmethod="bilinear")
+    
+    ## plot
+    palette(c("green", "blue", "black", "red"))
+    
+    pdf("output/chamber_result_comparison_A_vs_Ca_flux_at_individual_canopy_level.pdf.pdf", height=12, width=6)
+    par(mfrow=c(4,2))
+    
+    plot(ch01.fit, how="oneplot", 
+         id_legend=T, colour_by_id=T, main = "Chamber 01")
+    
+    plot(ch02.fit, how="oneplot", 
+         id_legend=T, colour_by_id=T, main = "Chamber 02")
+    
+    plot(ch03.fit, how="oneplot", 
+         id_legend=T, colour_by_id=T, main = "Chamber 03")
+    
+    plot(ch04.fit, how="oneplot", 
+         id_legend=T, colour_by_id=T, main = "Chamber 04")
+    
+    plot(ch07.fit, how="oneplot", 
+         id_legend=T, colour_by_id=T, main = "Chamber 07")
+    
+    plot(ch08.fit, how="oneplot", 
+         id_legend=T, colour_by_id=T, main = "Chamber 08")
+    
+    plot(ch11.fit, how="oneplot", 
+         id_legend=T, colour_by_id=T, main = "Chamber 11")
+    
+    plot(ch12.fit, how="oneplot", 
+         id_legend=T, colour_by_id=T, main = "Chamber 12")
+    
+    dev.off()
 }
