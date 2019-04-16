@@ -253,8 +253,7 @@ compare_chamber_results_at_canopy_level <- function() {
         ylim(-5,60)+
         ggtitle("Chamber 01")
     
-    plot(p1)
-    
+
     p2 <- ggplot(ch02) +
         geom_point(aes(Ca, An_can, col="red3"),
                    size=4)+
@@ -546,4 +545,181 @@ compare_chamber_results_at_canopy_level <- function() {
          id_legend=T, colour_by_id=T, main = "Chamber 12")
     
     dev.off()
+    
+    #### reprocessing data
+    nrow <- length(ch01.tf$canopy)/2
+    ch01.tf$method <- rep(c("obs", "mod"), each=nrow)
+    ch01.tf$canopy[(nrow+1):(2*nrow)] <- as.character(ch01.tf$canopy[1:nrow])
+    ch01.tf$canopy <- as.factor(ch01.tf$canopy)
+    ch01.tf$chamber <- "ch01"
+    
+    nrow <- length(ch02.tf$canopy)/2
+    ch02.tf$method <- rep(c("obs", "mod"), each=nrow)
+    ch02.tf$canopy[(nrow+1):(2*nrow)] <- as.character(ch02.tf$canopy[1:nrow])
+    ch02.tf$canopy <- as.factor(ch02.tf$canopy)
+    ch02.tf$chamber <- "ch02"
+    
+    nrow <- length(ch03.tf$canopy)/2
+    ch03.tf$method <- rep(c("obs", "mod"), each=nrow)
+    ch03.tf$canopy[(nrow+1):(2*nrow)] <- as.character(ch03.tf$canopy[1:nrow])
+    ch03.tf$canopy <- as.factor(ch03.tf$canopy)
+    ch03.tf$chamber <- "ch03"
+    
+    nrow <- length(ch04.tf$canopy)/2
+    ch04.tf$method <- rep(c("obs", "mod"), each=nrow)
+    ch04.tf$canopy[(nrow+1):(2*nrow)] <- as.character(ch04.tf$canopy[1:nrow])
+    ch04.tf$canopy <- as.factor(ch04.tf$canopy)
+    ch04.tf$chamber <- "ch04"
+    
+    nrow <- length(ch07.tf$canopy)/2
+    ch07.tf$method <- rep(c("obs", "mod"), each=nrow)
+    ch07.tf$canopy[(nrow+1):(2*nrow)] <- as.character(ch07.tf$canopy[1:nrow])
+    ch07.tf$canopy <- as.factor(ch07.tf$canopy)
+    ch07.tf$chamber <- "ch07"
+    
+    nrow <- length(ch08.tf$canopy)/2
+    ch08.tf$method <- rep(c("obs", "mod"), each=nrow)
+    ch08.tf$canopy[(nrow+1):(2*nrow)] <- as.character(ch08.tf$canopy[1:nrow])
+    ch08.tf$canopy <- as.factor(ch08.tf$canopy)
+    ch08.tf$chamber <- "ch08"
+    
+    nrow <- length(ch11.tf$canopy)/2
+    ch11.tf$method <- rep(c("obs", "mod"), each=nrow)
+    ch11.tf$canopy[(nrow+1):(2*nrow)] <- as.character(ch11.tf$canopy[1:nrow])
+    ch11.tf$canopy <- as.factor(ch11.tf$canopy)
+    ch11.tf$chamber <- "ch11"
+    
+    nrow <- length(ch12.tf$canopy)/2
+    ch12.tf$method <- rep(c("obs", "mod"), each=nrow)
+    ch12.tf$canopy[(nrow+1):(2*nrow)] <- as.character(ch12.tf$canopy[1:nrow])
+    ch12.tf$canopy <- as.factor(ch12.tf$canopy)
+    ch12.tf$chamber <- "ch12"
+    
+    plotDF <- do.call("rbind", list(ch01.tf, ch02.tf, ch03.tf, ch04.tf,
+                                    ch07.tf, ch08.tf, ch11.tf, ch12.tf))
+    
+    ### plot leaf vs. canopy response to eCO2
+    p1 <- ggplot(plotDF) +
+        geom_point(aes(Ca, An, col=method, pch=as.factor(plotDF$canopy)),
+                   size=1)+
+        geom_smooth(aes(Ca, An, col=method, lty=as.factor(plotDF$canopy), fill=method),
+                    formula = 'y ~ log(x)', method = 'glm')+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.text.x=element_text(size=12),
+              axis.title.x=element_text(size=14),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="bottom",
+              legend.text.align=0)+
+        xlab(expression(paste(C[a]* " (umol ", " ", mol^-1, ")")))+
+        ylab(expression(paste("A (umol "* CO[2], " ", m^-1, s^-1, ")")))+
+        scale_color_manual(name="Method",
+                           limits=c("obs", "mod"),
+                           values=c("blue2", "red3"),
+                           labels=c("Observed", "Modeled"))+
+        scale_linetype_discrete(name="Canopy")+
+        scale_shape_discrete(name="Canopy")+
+        scale_fill_discrete(name="Method")+
+        xlim(0,1600)+
+        ylim(-5,60)+
+        ggtitle("All")+
+        theme(legend.direction = "vertical", legend.box = "horizontal")
+    
+    p2 <- ggplot(plotDF[plotDF$canopy=="whole",]) +
+        geom_point(aes(Ca, An, color=method),
+                   size=1)+
+        geom_smooth(aes(Ca, An, color=method),
+                    formula = 'y ~ log(x)', method = 'glm')+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.text.x=element_text(size=12),
+              axis.title.x=element_text(size=14),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="bottom",
+              legend.text.align=0)+
+        xlab(expression(paste(C[a]* " (umol ", " ", mol^-1, ")")))+
+        ylab(expression(paste("A (umol "* CO[2], " ", m^-1, s^-1, ")")))+
+        scale_color_manual(name="Method",
+                           limits=c("obs", "mod"),
+                           values=c("blue2", "red3"),
+                           labels=c("Observed", "Modeled"))+
+        scale_fill_discrete(name="Method")+
+        xlim(0,1600)+
+        ylim(-5,60)+
+        ggtitle("Whole")+
+        theme(legend.direction = "vertical", legend.box = "horizontal")
+    
+    p3 <- ggplot(plotDF[plotDF$canopy=="m+b",]) +
+        geom_point(aes(Ca, An, color=method),
+                   size=1)+
+        geom_smooth(aes(Ca, An, color=method),
+                    formula = 'y ~ log(x)', method = 'glm')+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.text.x=element_text(size=12),
+              axis.title.x=element_text(size=14),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="bottom",
+              legend.text.align=0)+
+        xlab(expression(paste(C[a]* " (umol ", " ", mol^-1, ")")))+
+        ylab(expression(paste("A (umol "* CO[2], " ", m^-1, s^-1, ")")))+
+        scale_color_manual(name="Method",
+                           limits=c("obs", "mod"),
+                           values=c("blue2", "red3"),
+                           labels=c("Observed", "Modeled"))+
+        scale_fill_discrete(name="Method")+
+        xlim(0,1600)+
+        ylim(-5,60)+
+        ggtitle("M+B")+
+        theme(legend.direction = "vertical", legend.box = "horizontal")
+    
+    
+    p4 <- ggplot(plotDF[plotDF$canopy=="bottom",]) +
+        geom_point(aes(Ca, An, color=method),
+                   size=1)+
+        geom_smooth(aes(Ca, An, color=method),
+                    formula = 'y ~ log(x)', method = 'glm')+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.text.x=element_text(size=12),
+              axis.title.x=element_text(size=14),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="bottom",
+              legend.text.align=0)+
+        xlab(expression(paste(C[a]* " (umol ", " ", mol^-1, ")")))+
+        ylab(expression(paste("A (umol "* CO[2], " ", m^-1, s^-1, ")")))+
+        scale_color_manual(name="Method",
+                           limits=c("obs", "mod"),
+                           values=c("blue2", "red3"),
+                           labels=c("Observed", "Modeled"))+
+        scale_fill_discrete(name="Method")+
+        xlim(0,1600)+
+        ylim(-5,60)+
+        ggtitle("Bottom")+
+        theme(legend.direction = "vertical", legend.box = "horizontal")
+    
+    pdf("output/grouped_result_comparison_A_vs_Ca_flux.pdf", width=16, height=6)
+    plot_grid(p1, p2, p3, p4,
+              labels="AUTO", ncol=4, align="v", axis = "l")
+    dev.off()  
+    
+    plot(p2)
+    
+    
 }

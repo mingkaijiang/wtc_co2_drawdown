@@ -29,6 +29,11 @@ generate_met_data_2009()
 ############################# compare scaled canopy with canopy fluxes ##############
 compare_chamber_results_at_canopy_level()
 
+
+############################# conceptual figure #####################################
+make_conceptual_figure()
+
+
 ### to do list: 
 ### 1. continue statistical tests on treatment effect on vcmax, jmax and j-v ratios
 ### 2. draw a figure on this and make it a supplementary material
@@ -46,8 +51,7 @@ compare_chamber_results_at_canopy_level()
 ###    in particular, what met data to use, which files to use (mergeall or the current one)
 ### 10. check why we have modelled CO2 curve higher than leaf-scaled curve. In theory should be the opposite.
 ### 11. check the theoretical plot in Rogers 2017 and replot.
-
-### 12. Write as things move forward 
+### 12. read and write as things move forward
 
 ############################# processing canopy data #################################
 #### data explained
