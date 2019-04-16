@@ -38,10 +38,16 @@ compare_chamber_results_at_canopy_level()
 ### end of 03/29
 
 ### 6. prepare met data
-### 7. contact Craig for canopy data check
-### 8. run the two-leaf model, what's needed?
-### 9. work out canopy data plots at individual chamber and canopy level
-### 10. Write as things move forward 
+### 7. run the two-leaf model
+### 8. work out canopy data plots at individual chamber and canopy level
+### end of 04/16
+
+### 9. contact Craig for canopy data check
+###    in particular, what met data to use, which files to use (mergeall or the current one)
+### 10. check why we have modelled CO2 curve higher than leaf-scaled curve. In theory should be the opposite.
+### 11. check the theoretical plot in Rogers 2017 and replot.
+
+### 12. Write as things move forward 
 
 ############################# processing canopy data #################################
 #### data explained
@@ -54,21 +60,6 @@ canopyDF <- processing_canopy_data()
 ### fit canopy ACI curve for each treatment and chamber
 ### this is just for fun, there's no Ci so can't do it!
 #fits.canopy <- canopy_ACI_processing(canopyDF)
-
-
-############################# to do list #################################
-#### 1. check data quality on canopy:
-####    because very small vcmax and jmax values,
-####    it seems that some data are jumping around, so need to smooth them,
-####    also, need to understand what slope really mean.
-####    and get PARi data
-#### 2. check leaf data:
-####    some Jmax/Vcmax ratio seems not correct
-####    splitt data into different canopy treatment?
-####    is there any more data available on HIEv?
-#### 3. make plots so that we can compare the canopy and leaf data together
-####    create plots for each chamber: one plot on leaf response, one plot on different canopy response.
-
 
 
 
