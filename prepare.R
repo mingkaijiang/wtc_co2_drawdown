@@ -17,7 +17,8 @@ pacman::p_load(dplyr,
                plantecophys,
                stringr,        # to subtract characters
                lme4,
-               cowplot)    
+               cowplot,
+               nlme)    
 
 
 #### Sourcing all R files in the modules subdirectory

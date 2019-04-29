@@ -64,7 +64,7 @@ processing_canopy_data <- function() {
     
     ########################  using drawdownanalysis9Sepb.csv file ###########################
     ### read in raw data
-    myDF <- read.csv("data/drawdownanalysis9Sepb.csv")
+    myDF <- read.csv("data/canopy_drawdown/drawdownanalysis9Sepb.csv")
     
     ### set up dataset
     myDF$canopy <- as.character(myDF$canopy)

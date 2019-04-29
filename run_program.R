@@ -11,8 +11,26 @@ rm(list=ls(all=TRUE))
 #### read in necessary stuffs
 source("prepare.R")
 
+############################# conceptual figure #####################################
+#### Make conceptual figure based on data from Rogers et al. 2017 NP
+make_conceptual_figure()
+
+############################# processing canopy data #################################
+#### data explained
+#### column canopy: 12345 - full canopy
+####                345 - middle canopy
+####                45 - lower canopy
+####                0 - no canopy
+canopyDF <- processing_canopy_data()
+
+
+############################# plot leaf and canopy A-CA curves ######################
+#### compares leaf and canopy level A-CA curves and the shape of the curves
+plot_A_Ca_for_leaf_and_canopy_data(cDF=canopyDF)
+
 
 ############################# fit A-CI curve - leaf #################################
+#### Fit leaf level A-Ci curves to generate parameters for two-leaf modeling
 leaf_ACI_processing()
 
 ############################# generate met data for two-leaf model ###################
@@ -26,12 +44,8 @@ generate_met_data_2009()
 #generate_met_data_2008_2009()
 
 
-############################# compare scaled canopy with canopy fluxes ##############
+############## compare modeled (leaf scaled-up) with canopy (CO2 drawdown) fluxes ##############
 compare_chamber_results_at_canopy_level()
-
-
-############################# conceptual figure #####################################
-make_conceptual_figure()
 
 
 ### to do list: 
@@ -53,13 +67,10 @@ make_conceptual_figure()
 ### 11. check the theoretical plot in Rogers 2017 and replot.
 ### 12. read and write as things move forward
 
-############################# processing canopy data #################################
-#### data explained
-#### column canopy: 12345 - full canopy
-####                345 - middle canopy
-####                45 - lower canopy
-####                0 - no canopy
-canopyDF <- processing_canopy_data()
+
+
+
+
 
 ### fit canopy ACI curve for each treatment and chamber
 ### this is just for fun, there's no Ci so can't do it!
