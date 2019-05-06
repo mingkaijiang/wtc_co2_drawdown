@@ -26,6 +26,7 @@ canopyDF <- processing_canopy_data()
 
 ############################# plot leaf and canopy A-CA curves ######################
 #### compares leaf and canopy level A-CA curves and the shape of the curves
+cDF=canopyDF
 plot_A_Ca_for_leaf_and_canopy_data(cDF=canopyDF)
 
 

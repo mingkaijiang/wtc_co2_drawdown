@@ -20,13 +20,13 @@ compare_chamber_results_at_canopy_level <- function() {
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
-              axis.title.x=element_text(size=14),
+              axis.title.x=element_text(size=12),
               axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=14),
+              axis.title.y=element_text(size=12),
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="bottom",
+              legend.position="none",
               legend.text.align=0)+
         geom_abline(lty=2, color="grey")+
         xlab(expression(paste(A[observed]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
@@ -45,13 +45,13 @@ compare_chamber_results_at_canopy_level <- function() {
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
-              axis.title.x=element_text(size=14),
+              axis.title.x=element_text(size=12),
               axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=14),
+              axis.title.y=element_text(size=12),
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="bottom",
+              legend.position="none",
               legend.text.align=0)+
         geom_abline(lty=2, color="grey")+
         xlab(expression(paste(A[observed]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
@@ -70,13 +70,13 @@ compare_chamber_results_at_canopy_level <- function() {
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
-              axis.title.x=element_text(size=14),
+              axis.title.x=element_text(size=12),
               axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=14),
+              axis.title.y=element_text(size=12),
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="bottom",
+              legend.position="none",
               legend.text.align=0)+
         geom_abline(lty=2, color="grey")+
         xlab(expression(paste(A[observed]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
@@ -95,13 +95,13 @@ compare_chamber_results_at_canopy_level <- function() {
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
-              axis.title.x=element_text(size=14),
+              axis.title.x=element_text(size=12),
               axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=14),
+              axis.title.y=element_text(size=12),
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="bottom",
+              legend.position="none",
               legend.text.align=0)+
         geom_abline(lty=2, color="grey")+
         xlab(expression(paste(A[observed]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
@@ -120,13 +120,13 @@ compare_chamber_results_at_canopy_level <- function() {
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
-              axis.title.x=element_text(size=14),
+              axis.title.x=element_text(size=12),
               axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=14),
+              axis.title.y=element_text(size=12),
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="bottom",
+              legend.position="none",
               legend.text.align=0)+
         geom_abline(lty=2, color="grey")+
         xlab(expression(paste(A[observed]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
@@ -145,13 +145,13 @@ compare_chamber_results_at_canopy_level <- function() {
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
-              axis.title.x=element_text(size=14),
+              axis.title.x=element_text(size=12),
               axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=14),
+              axis.title.y=element_text(size=12),
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="bottom",
+              legend.position="none",
               legend.text.align=0)+
         geom_abline(lty=2, color="grey")+
         xlab(expression(paste(A[observed]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
@@ -170,13 +170,13 @@ compare_chamber_results_at_canopy_level <- function() {
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
-              axis.title.x=element_text(size=14),
+              axis.title.x=element_text(size=12),
               axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=14),
+              axis.title.y=element_text(size=12),
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="bottom",
+              legend.position="none",
               legend.text.align=0)+
         geom_abline(lty=2, color="grey")+
         xlab(expression(paste(A[observed]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
@@ -195,13 +195,13 @@ compare_chamber_results_at_canopy_level <- function() {
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
-              axis.title.x=element_text(size=14),
+              axis.title.x=element_text(size=12),
               axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=14),
+              axis.title.y=element_text(size=12),
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="bottom",
+              legend.position="none",
               legend.text.align=0)+
         geom_abline(lty=2, color="grey")+
         xlab(expression(paste(A[observed]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
@@ -214,11 +214,16 @@ compare_chamber_results_at_canopy_level <- function() {
         ylim(-5,60)+
         ggtitle("Chamber 12")
     
+    combined_plots <- plot_grid(p1, p2, p3, p4, p7, p8, p11, p12, 
+                                labels="AUTO", ncol=2, align="vh", axis = "l")
 
+    legend_shared <- get_legend(p1 + theme(legend.position="bottom",
+                                           legend.box = 'vertical',
+                                           legend.box.just = 'left'))
+    
     
     pdf("output/chamber_result_comparison_A_flux.pdf", width=6, height=12)
-    plot_grid(p1, p2, p3, p4, p7, p8, p11, p12, 
-              labels="AUTO", ncol=2, align="v", axis = "l")
+    plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
     dev.off()
     
     
@@ -242,7 +247,7 @@ compare_chamber_results_at_canopy_level <- function() {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="bottom",
+              legend.position="none",
               legend.text.align=0)+
         xlab(expression(paste(C[a]* " (umol ", " ", mol^-1, ")")))+
         ylab(expression(paste(A[scaled]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
@@ -272,7 +277,7 @@ compare_chamber_results_at_canopy_level <- function() {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="bottom",
+              legend.position="none",
               legend.text.align=0)+
         xlab(expression(paste(C[a]* " (umol ", " ", mol^-1, ")")))+
         ylab(expression(paste(A[scaled]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
@@ -301,7 +306,7 @@ compare_chamber_results_at_canopy_level <- function() {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="bottom",
+              legend.position="none",
               legend.text.align=0)+
         xlab(expression(paste(C[a]* " (umol ", " ", mol^-1, ")")))+
         ylab(expression(paste(A[scaled]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
@@ -330,7 +335,7 @@ compare_chamber_results_at_canopy_level <- function() {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="bottom",
+              legend.position="none",
               legend.text.align=0)+
         xlab(expression(paste(C[a]* " (umol ", " ", mol^-1, ")")))+
         ylab(expression(paste(A[scaled]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
@@ -359,7 +364,7 @@ compare_chamber_results_at_canopy_level <- function() {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="bottom",
+              legend.position="none",
               legend.text.align=0)+
         xlab(expression(paste(C[a]* " (umol ", " ", mol^-1, ")")))+
         ylab(expression(paste(A[scaled]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
@@ -388,7 +393,7 @@ compare_chamber_results_at_canopy_level <- function() {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="bottom",
+              legend.position="none",
               legend.text.align=0)+
         xlab(expression(paste(C[a]* " (umol ", " ", mol^-1, ")")))+
         ylab(expression(paste(A[scaled]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
@@ -417,7 +422,7 @@ compare_chamber_results_at_canopy_level <- function() {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="bottom",
+              legend.position="none",
               legend.text.align=0)+
         xlab(expression(paste(C[a]* " (umol ", " ", mol^-1, ")")))+
         ylab(expression(paste(A[scaled]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
@@ -446,7 +451,7 @@ compare_chamber_results_at_canopy_level <- function() {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="bottom",
+              legend.position="none",
               legend.text.align=0)+
         xlab(expression(paste(C[a]* " (umol ", " ", mol^-1, ")")))+
         ylab(expression(paste(A[scaled]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
@@ -457,9 +462,16 @@ compare_chamber_results_at_canopy_level <- function() {
         ylim(-5,60)+
         ggtitle("Chamber 12")
     
+    legend_shared <- get_legend(p1 + theme(legend.position="bottom",
+                                           legend.box = 'vertical',
+                                           legend.box.just = 'left'))
+    
+    combined_lots <- plot_grid(p1, p2, p3, p4, p7, p8, p11, p12, 
+                               labels="AUTO", ncol=2, align="vh", axis = "l")
+    
     pdf("output/chamber_result_comparison_A_vs_Ca_flux.pdf", width=6, height=12)
-    plot_grid(p1, p2, p3, p4, p7, p8, p11, p12, 
-              labels="AUTO", ncol=2, align="v", axis = "l")
+    plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
+    
     dev.off()    
     
     
@@ -718,8 +730,6 @@ compare_chamber_results_at_canopy_level <- function() {
     plot_grid(p1, p2, p3, p4,
               labels="AUTO", ncol=4, align="v", axis = "l")
     dev.off()  
-    
-    plot(p2)
     
     
 }

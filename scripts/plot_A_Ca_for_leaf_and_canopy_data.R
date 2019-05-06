@@ -68,7 +68,9 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="right")+
+              legend.position="none",
+              legend.box = 'vertical',
+              legend.box.just = 'left')+
         xlab(expression(paste(C[a]* " (umol ", m^-2, s^-1, ")")))+
         ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, s^-1, ")")))+
         scale_fill_manual(name="Position",
@@ -87,6 +89,8 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
                           values=c("slateblue", "yellowgreen"),
                           labels=c("Canopy", "Leaf"))
     
+    #plot(p1)
+    
     p2 <- ggplot() +
         geom_smooth(data=ch02DF, aes(Ca, Photo, group=ch02DF$Source,
                                      col=as.factor(ch02DF$Source)),
@@ -103,7 +107,9 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="right")+
+              legend.position="none",
+              legend.box = 'vertical',
+              legend.box.just = 'left')+
         xlab(expression(paste(C[a]* " (umol ", m^-2, s^-1, ")")))+
         ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, s^-1, ")")))+
         scale_fill_manual(name="Position",
@@ -138,7 +144,9 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="right")+
+              legend.position="none",
+              legend.box = 'vertical',
+              legend.box.just = 'left')+
         xlab(expression(paste(C[a]* " (umol ", m^-2, s^-1, ")")))+
         ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, s^-1, ")")))+
         scale_fill_manual(name="Position",
@@ -173,7 +181,9 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="right")+
+              legend.position="none",
+              legend.box = 'vertical',
+              legend.box.just = 'left')+
         xlab(expression(paste(C[a]* " (umol ", m^-2, s^-1, ")")))+
         ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, s^-1, ")")))+
         scale_fill_manual(name="Position",
@@ -208,7 +218,9 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="right")+
+              legend.position="none",
+              legend.box = 'vertical',
+              legend.box.just = 'left')+
         xlab(expression(paste(C[a]* " (umol ", m^-2, s^-1, ")")))+
         ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, s^-1, ")")))+
         scale_fill_manual(name="Position",
@@ -243,7 +255,9 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="right")+
+              legend.position="none",
+              legend.box = 'vertical',
+              legend.box.just = 'left')+
         xlab(expression(paste(C[a]* " (umol ", m^-2, s^-1, ")")))+
         ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, s^-1, ")")))+
         scale_fill_manual(name="Position",
@@ -278,7 +292,9 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="right")+
+              legend.position="none",
+              legend.box = 'vertical',
+              legend.box.just = 'left')+
         xlab(expression(paste(C[a]* " (umol ", m^-2, s^-1, ")")))+
         ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, s^-1, ")")))+
         scale_fill_manual(name="Position",
@@ -313,7 +329,9 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="right")+
+              legend.position="none",
+              legend.box = 'vertical',
+              legend.box.just = 'left')+
         xlab(expression(paste(C[a]* " (umol ", m^-2, s^-1, ")")))+
         ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, s^-1, ")")))+
         scale_fill_manual(name="Position",
@@ -333,11 +351,17 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
                            labels=c("Canopy", "Leaf"))
     
     
-    plot(p1)
+    legend_shared <- get_legend(p1 + theme(legend.position="bottom",
+                                           legend.box = 'vertical',
+                                           legend.box.just = 'left'))
     
-    pdf("output/chamber_result_comparison_A_vs_Ca_flux_no_scaling.pdf", width=12, height=12)
-    plot_grid(p1, p2, p3, p4, p5, p6, p7, p8, 
-              labels="AUTO", ncol=2, align="v", axis = "l")
+    combined_plots <- plot_grid(p1, p2, p3, p4, p5, p6, p7, p8, 
+                                labels="AUTO", ncol=2, align="vh", axis = "l")
+    
+    #plot(p1)
+    
+    pdf("output/chamber_result_comparison_A_vs_Ca_flux_no_scaling.pdf", width=10, height=20)
+    plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
     dev.off()    
     
   }
