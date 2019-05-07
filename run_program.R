@@ -48,6 +48,11 @@ generate_met_data_2009()
 ############## compare modeled (leaf scaled-up) with canopy (CO2 drawdown) fluxes ##############
 compare_chamber_results_at_canopy_level()
 
+############## compare canopy scaled down data with leaf data to compute A-Ci curves and stats ##############
+cDF <- canopyDF
+compare_chamber_results_at_leaf_level(cDF=canopyDF)
+
+
 
 ### to do list: 
 ### 1. continue statistical tests on treatment effect on vcmax, jmax and j-v ratios
