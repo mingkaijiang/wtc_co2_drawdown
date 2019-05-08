@@ -33,35 +33,7 @@ processing_canopy_data <- function() {
     ####       by Drake's method (Drake et al. 2018),
     ####       i.e. express raw canopy flux on a leaf area basis by dividing by total canopy leaf area
     
-    
-    ########################  using mergeall.text file ###########################
-    ##### read in raw data - this dataset does not have PAR 
-    ##myDF <- read.table("data/mergeall.txt", sep=",", header=T)
-    #
-    #### set up dataset
-    ##myDF$canopy <- as.character(myDF$canopy)
-    ##myDF$datetime <- as.POSIXct(as.character(myDF$datetime))
-    ##myDF$vtime <- as.POSIXct(as.character(myDF$vtime))
-    #
-    #### extract time information
-    ##myDF$time <- strftime(myDF$datetime, format="%H:%M:%S")
-    ##myDF$time <- as.POSIXct(myDF$time, format="%H:%M:%S")
-    ##myDF$date <- strftime(myDF$datetime, format="%Y-%m-%d")
-    #
-    #### check canopy data structure
-    #canopy_data_check_and_plot(myDF)
-    #
-    #### time series data correct to control for breaks in the dataseries
-    #myDF <- canopy_data_control(myDF)
-    #
-    #### Calculate CO2 flux for each minute and output in the unit of ppm CO2 min-1
-    #myDF2 <- calculate_co2_flux_per_second(myDF)
-    #
-    #### plotting co2 flux at per second rate for different treatments
-    #canopy_data_per_second_check_and_plot(myDF2)
-    
-    
-    
+
     ########################  using drawdownanalysis9Sepb.csv file ###########################
     ### read in raw data
     myDF <- read.csv("data/canopy_drawdown/drawdownanalysis9Sepb.csv")
@@ -105,7 +77,39 @@ processing_canopy_data <- function() {
     ### plotting co2 flux at per second rate for different treatments
     canopy_data_per_second_check_and_plot2(myDF)
     
-    return(myDF)
+    ### add VPD 
+    ## Saturation Vapor Pressure (es) = 0.6108 * exp(17.27 * T / (T + 237.3))
+    myDF$es <- 0.6106 * exp(17.27 * myDF$Tair / (myDF$Tair + 237.3))
+    
+    ## calculate RH
+    myDF$rh <- 100 - 5 * (myDF$Tair - myDF$DPLicorCh)
+    
+    ## Actual Vapor Pressure (ea) = RH / 100 * es 
+    myDF$ea <- myDF$rh / 100 * myDF$es
+    
+    ##  VPD = ea - es
+    #myDF$VPD <- myDF$ea - myDF$es
+    myDF$VPD <- myDF$es * (100 - myDF$rh)/100
+    
+    
+    ### add H2O flux
+    process_canopy_second_dataset_to_get_H2O_flux()
+    
+    
+    
+    
+    
+    
+
+    
+    ### return
+    outDF <- myDF[,c("Chamber", "Canopy", "vCo2", 
+                     "vT", "datetime", "Tair",
+                     "DPLicorCh", "PARi", "slope2", 
+                     "cmarea", "nslope2","k", "time", 
+                     "leak", "corrflux", "ncorrflux", "VPD")]
+    
+    return(outDF)
 
     
 }
