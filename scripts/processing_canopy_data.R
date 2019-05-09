@@ -79,10 +79,10 @@ processing_canopy_data <- function() {
     
     ### add VPD 
     ## Saturation Vapor Pressure (es) = 0.6108 * exp(17.27 * T / (T + 237.3))
-    myDF$es <- 0.6106 * exp(17.27 * myDF$Tair / (myDF$Tair + 237.3))
+    myDF$es <- 0.6106 * exp(17.27 * myDF$vT / (myDF$vT + 237.3))
     
     ## calculate RH
-    myDF$rh <- 100 - 5 * (myDF$Tair - myDF$DPLicorCh)
+    myDF$rh <- 100 - 5 * (myDF$vT - myDF$DPLicorCh)
     
     ## Actual Vapor Pressure (ea) = RH / 100 * es 
     myDF$ea <- myDF$rh / 100 * myDF$es
@@ -93,21 +93,33 @@ processing_canopy_data <- function() {
     
     
     ### add H2O flux
-    process_canopy_second_dataset_to_get_H2O_flux()
+    myDF2 <- process_canopy_second_dataset_to_get_H2O_flux()
     
     
-    
-    
-    
+    ### reprocess time
+    myDF$time1 <- sub(".+? ", "", myDF$datetime)
+    myDF$time2 <- substr(myDF$time1,1,nchar(myDF$time1)-3)
+    myDF$time <- paste0(myDF$time2, ":00")
+    myDF$datetime <- as.POSIXct(paste(myDF$date, myDF$time), format="%Y-%m-%d %H:%M:%S")
+    myDF <- myDF[,!(colnames(myDF)%in% c("time1", "time2"))]
     
 
+    ### combine both datasets
+    cDF <- merge(myDF, myDF2, by.x=c("Chamber", "Canopy", "datetime"), 
+                 by.y=c("Chamber", "Canopy", "datetime"))
+
+    ### only include the complete data where normalized flux is available
+    cDF <- cDF[complete.cases(cDF$ncorrflux), ]
+    cDF <- cDF[complete.cases(cDF$H2O_flux_normalized), ]
+    
     
     ### return
-    outDF <- myDF[,c("Chamber", "Canopy", "vCo2", 
-                     "vT", "datetime", "Tair",
+    outDF <- cDF[,c("Chamber", "Canopy", "vCo2", 
+                     "vT", "date", "time",  "datetime", 
+                    "Tair", "VPD", 
                      "DPLicorCh", "PARi", "slope2", 
-                     "cmarea", "nslope2","k", "time", 
-                     "leak", "corrflux", "ncorrflux", "VPD")]
+                     "cmarea", "nslope2","k", 
+                     "leak", "corrflux", "ncorrflux", "rh", "co2_flux", "H2O_flux_normalized")]
     
     return(outDF)
 

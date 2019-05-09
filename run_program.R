@@ -17,12 +17,13 @@ make_conceptual_figure()
 
 ############################# processing canopy data #################################
 #### data explained
-#### column canopy: 12345 - full canopy
-####                345 - middle canopy
-####                45 - lower canopy
-####                0 - no canopy
+#### column canopy: 12345 - full canopy present
+####                345 - middle canopy, top canopy missing, middle + bottom canopy present
+####                45 - lower canopy, top 2/3 canopy missing, bottom canopy present
+####                0 - no canopy present
 canopyDF <- processing_canopy_data()
 
+with(canopyDF[canopyDF$Canopy=="12345" & canopyDF$Chamber == "4", ], plot(rh ~ datetime))
 
 ############################# plot leaf and canopy A-CA curves ######################
 #### compares leaf and canopy level A-CA curves and the shape of the curves
