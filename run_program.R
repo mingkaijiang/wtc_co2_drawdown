@@ -23,6 +23,12 @@ make_conceptual_figure()
 ####                0 - no canopy present
 canopyDF <- processing_canopy_data()
 
+
+### note:
+## 3. next to calculate stomatal conductance, ci, and Jmax, Vcmax based on canopy data
+## 4. if the value don't make sense, change bin size and redo things.
+## 5. also need to update met data with the correct VPD data
+
 with(canopyDF[canopyDF$Canopy=="12345" & canopyDF$Chamber == "4", ], plot(rh ~ datetime))
 
 ############################# plot leaf and canopy A-CA curves ######################

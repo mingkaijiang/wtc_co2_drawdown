@@ -382,22 +382,16 @@ calculate_h2o_flux_per_second2 <- function(myDF) {
             t.elapsed <- unique(myDF.out$time_elapsed[myDF.out$chamber==i & myDF.out$canopy==j])
             #t.elapsed <- t.elapsed[t.elapsed!=0]
             
-            for (k in 16:length(t.elapsed)) {
-                ## compute 10 min means, output unit in g chamber-1 m-1
-                m1 <- mean(myDF.out[myDF.out$time_elapsed%in%t.elapsed[(k-15):(k-1)]&myDF.out$chamber==i&myDF.out$canopy==j,"CondWater"], na.rm=T)
-                m2 <- mean(myDF.out[myDF.out$time_elapsed%in%t.elapsed[(k-14):(k)]&myDF.out$chamber==i&myDF.out$canopy==j,"CondWater"], na.rm=T)
+            for (k in 6:length(t.elapsed)) {
+                ## compute 1 min means, output unit in g chamber-1 m-1
+                m1 <- mean(myDF.out[myDF.out$time_elapsed%in%t.elapsed[(k-5):(k-1)]&myDF.out$chamber==i&myDF.out$canopy==j,"rh_total"], na.rm=T)
+                m2 <- mean(myDF.out[myDF.out$time_elapsed%in%t.elapsed[(k-4):(k)]&myDF.out$chamber==i&myDF.out$canopy==j,"rh_total"], na.rm=T)
                 
-    
-                myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$chamber==i&myDF.out$canopy==j, "h2o_cond"] <- (m2-m1)/
-                    as.numeric(difftime(myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$chamber==i&myDF.out$canopy==j,"time"],myDF.out[myDF.out$time_elapsed==t.elapsed[k-15]&myDF.out$chamber==i&myDF.out$canopy==j,"time"],unit="mins"))
+                m3 <- mean(myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$chamber==i&myDF.out$canopy==j,"rh_total"], na.rm=T)
+                m4 <- mean(myDF.out[myDF.out$time_elapsed==t.elapsed[k-1]&myDF.out$chamber==i&myDF.out$canopy==j,"rh_total"], na.rm=T)
                 
-                
-                
-                m3 <- mean(myDF.out[myDF.out$time_elapsed%in%t.elapsed[(k-15):(k-1)]&myDF.out$chamber==i&myDF.out$canopy==j,"rh_total"], na.rm=T)
-                m4 <- mean(myDF.out[myDF.out$time_elapsed%in%t.elapsed[(k-14):(k)]&myDF.out$chamber==i&myDF.out$canopy==j,"rh_total"], na.rm=T)
-                
-                myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$chamber==i&myDF.out$canopy==j, "h2o_rh"] <- (m4-m3)/
-                    as.numeric(difftime(myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$chamber==i&myDF.out$canopy==j,"time"],myDF.out[myDF.out$time_elapsed==t.elapsed[k-15]&myDF.out$chamber==i&myDF.out$canopy==j,"time"],unit="mins"))
+                myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$chamber==i&myDF.out$canopy==j, "h2o_rh"] <- (m2-m1)/
+                    as.numeric(difftime(myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$chamber==i&myDF.out$canopy==j,"time"],myDF.out[myDF.out$time_elapsed==t.elapsed[k-5]&myDF.out$chamber==i&myDF.out$canopy==j,"time"],unit="mins"))
             }
         }
     }

@@ -112,7 +112,6 @@ processing_canopy_data <- function() {
     cDF <- cDF[complete.cases(cDF$ncorrflux), ]
     cDF <- cDF[complete.cases(cDF$H2O_flux_normalized), ]
     
-    
     ### return
     outDF <- cDF[,c("Chamber", "Canopy", "vCo2", 
                      "vT", "date", "time",  "datetime", 
