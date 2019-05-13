@@ -23,9 +23,46 @@ canopy_ACI_processing <- function(cDF) {
     ### get Ci from gs, A and Ca
     myDF$Ci <- with(myDF, Ca - (Photo/gs))
     
-    #### Fitting ACI curve
-    fits <- fitacis(myDF, group="Chamber", fitmethod="bilinear")
+    ### create an identity list for each chamber and canopy
+    myDF$identity <- paste0(myDF$Chamber, "-", myDF$Canopy)
     
+    ### remove 7-45 because can't be fitted
+    myDF <- myDF[myDF$identity!="7-45",]
+    
+    
+    #### Fitting ACI curve
+    fits <- fitacis(myDF, group="identity", fitmethod="bilinear", Tcorrect=T)
+    
+    ### summary table between vcmax and jmax
+    coefDF <- coef(fits)
+    coefDF$Canopy <- sub(".*-", "", coefDF$identity)
+    coefDF$Chamber <- sub("-.*", "", coefDF$identity)
+    
+    ### assign CO2, water treatment
+    ## chambers 1, 3, 5, 7, 9, 11 are CO2 ambient
+    ## chambers 1, 3, 4, 6, 8, 11 are wet 
+    
+    for (i in c(1, 3, 5, 7, 9, 11)) {
+        coefDF[coefDF$Chamber == i, "CO2_treatment"] <- "ambient"
+    }
+    
+    for (i in c(2, 4, 6, 8, 10, 12)) {
+        coefDF[coefDF$Chamber == i, "CO2_treatment"] <- "elevated"
+    }
+    
+    for (i in c(1, 3, 4, 6, 8, 11)) {
+        coefDF[coefDF$Chamber == i, "Water_treatment"] <- "wet"
+    }
+    
+    for (i in c(2, 5, 7, 9, 10, 12)) {
+        coefDF[coefDF$Chamber == i, "Water_treatment"] <- "dry"
+    }
+    
+    ### add vcmax to jmax ratio
+    coefDF$JVratio <- coefDF$Jmax/coefDF$Vcmax
+    
+    
+    ### plot some broad summary
     pdf("output/canopy_scale_aci_fitting.pdf")
     
     par(mfrow=c(2, 2))
@@ -37,44 +74,58 @@ canopy_ACI_processing <- function(cDF) {
     ### plot more individual level data
     plot(fits, how="oneplot", what="data")
     plot(fits, how="oneplot", add=T, what="model", lwd=c(1,1))
-    
-    
-    ### plot relationship between vcmax and jmax
-    coefDF <- coef(fits)
-    with(coefDF, plot(Vcmax, Jmax, col=Chamber, pch=19))
-    legend("bottomright", legend=coefDF$Chamber, col=coefDF$Chamber, pch=19)
-    
-    
+
     ### look at other elements
     rmses <- sapply(fits, "[[", "RMSE")
     plot(rmses, type='h', ylab="RMSE", xlab="Curve nr", xaxt="n")
-    axis(side=1, at=c(1:8), labels=c(1,2,3,4,7,8,11,12))
-    
-    ## And plot the worst-fitting curve:
-    #plot(fits[[which.max(rmses)]])
-    #text(500,28, "Worst fitting curve", font=2, cex=1.5)
     
     dev.off()
     
-    #
-    ## It is very straightforward to summarize the coefficients by a factor variable
-    ## that was contained in the original data. In manyacidat, there is a factor variable
-    ## 'treatment'.
-    ## We first have to refit the curves, using the 'id' argument:
-    #fits <- fitacis(myDF.clean, "Canopy", fitmethod="bilinear", id="Chamber")
-    #
-    ## And now use this to plot Vcmax by treatment.
-    #boxplot(Vcmax ~ Canopy, data=coef(fits), ylim=c(0,130))
-    #
-    ## As of package version 1.4-2, you can also use the id variable for colouring curves,
-    ## when plotting all fitted curves in one plot.
-    ## Set colours to be used. Also note that the 'id' variable has to be a factor,
-    ## colours will be set in order of the levels of the factor.
-    ## Set palette of colours:
-    #palette(rainbow(8))
-    #
-    ## Use colours, add legend.
-    #plot(fits, how="oneplot", colour_by_id = TRUE, id_legend=TRUE)
+
+    #### compute statistics on each individual treatment factor
+    op <- par(mfrow = c(3, 1))
+    with(coefDF, {
+        interaction.plot(CO2_treatment, Water_treatment, Vcmax)
+        interaction.plot(CO2_treatment, Canopy, Vcmax)
+        interaction.plot(Canopy, Water_treatment, Vcmax)
+    }
+    )
+    par(op)
+    
+    ##### check vcmax relationship
+    ### 3-way anova 
+    fm <- aov(Vcmax ~ CO2_treatment * Water_treatment * Canopy, data = coefDF)
+    summary(fm)
+    
+    ## obtain r2 from the anova model
+    lm <- lm(Vcmax ~ CO2_treatment * Water_treatment * Canopy, data = coefDF)
+    anova(lm)
+    summary(lm)
+    
+    
+    ##### check jmax relationship
+    ### 3-way anova 
+    fm <- aov(Jmax ~ CO2_treatment * Water_treatment * Canopy, data = coefDF)
+    summary(fm)
+    
+    ## obtain r2 from the anova model
+    lm <- lm(Jmax ~ CO2_treatment * Water_treatment * Canopy, data = coefDF)
+    anova(lm)
+    summary(lm)
+    
+    
+    ##### check jv ratio relationship
+    ### 3-way anova 
+    fm <- aov(JVratio ~ CO2_treatment * Water_treatment * Canopy, data = coefDF)
+    summary(fm)
+    
+    ## obtain r2 from the anova model
+    lm <- lm(JVratio ~ CO2_treatment * Water_treatment * Canopy, data = coefDF)
+    anova(lm)
+    summary(lm)
+    
+
+
     
     
     return(fits)
