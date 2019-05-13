@@ -23,12 +23,6 @@ make_conceptual_figure()
 ####                0 - no canopy present
 canopyDF <- processing_canopy_data()
 
-
-### note:
-## 3. next to calculate stomatal conductance, ci, and Jmax, Vcmax based on canopy data
-## 4. if the value don't make sense, change bin size and redo things.
-## 5. also need to update met data with the correct VPD data
-
 ############################# plot leaf and canopy A-CA curves ######################
 #### compares leaf and canopy level A-CA curves and the shape of the curves
 cDF=canopyDF
@@ -59,7 +53,10 @@ compare_ACI_results_with_canopy_and_leaf_data(cDF=canopyDF)
 #############################  two-leaf modeling met data generation ###################
 ### this script generate met data based on 2009 met data collected at WTC
 ### need to combine with canopy drawdown data from inside the chambers
+update VPD calculations !!!
+
 generate_met_data_2009()
+
 
 #### this script generate met data for period 2008.04.14 to 2009.03.06
 #### which is before the co2 drawdown experiment

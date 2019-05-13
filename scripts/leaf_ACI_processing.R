@@ -437,7 +437,14 @@ leaf_ACI_processing <- function() {
     dev.off()
     
     
-
+    #### to do list:
+    ### 1. resolve Jmax_SE is NA problem
+    ### 2. repeat leaf ACI for canopy ACI
+    ### 3. combine leaf and canopy raw data together to compare scale treatment effect
+    ###   3.1 generate stats
+    ###   3.2 generate figures
+    ###   3.3 save output
+    ###   
 
     
 

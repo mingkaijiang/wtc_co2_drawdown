@@ -27,11 +27,11 @@ canopy_ACI_processing <- function(cDF) {
     myDF$identity <- paste0(myDF$Chamber, "-", myDF$Canopy)
     
     ### remove 7-45 because can't be fitted
-    myDF <- myDF[myDF$identity!="7-45",]
+    myDFnew <- myDF[myDF$identity!="7-45",]
     
     
     #### Fitting ACI curve
-    fits <- fitacis(myDF, group="identity", fitmethod="bilinear", Tcorrect=T)
+    fits <- fitacis(myDFnew, group="identity", fitmethod="bilinear", Tcorrect=T)
     
     ### summary table between vcmax and jmax
     coefDF <- coef(fits)
@@ -124,8 +124,140 @@ canopy_ACI_processing <- function(cDF) {
     anova(lm)
     summary(lm)
     
+    
+    #### because the water treatment was unbalanced 
+    #### i.e. wet = chambers 1, 3, 4, 8, 11, and dry = 2, 7, 12,
+    #### it is possible that the experimental design intentionally ignored water treatment.
+    #### This is partially proven by leaf-scale data (including all time points), 
+    #### as there was no water treatment effect
+    #### hence, below I can ignore water treatment and group data with CO2 treatment and canopy positions
+    #### and check the fit ACI results thereafter. 
+    for (i in c(1, 3, 5, 7, 9, 11)) {
+        myDF[myDF$Chamber == i, "CO2_treatment"] <- "ambient"
+    }
+    
+    for (i in c(2, 4, 6, 8, 10, 12)) {
+        myDF[myDF$Chamber == i, "CO2_treatment"] <- "elevated"
+    }
+    
+    ### create an identity list for each chamber and canopy
+    myDF$identity2 <- paste0(myDF$CO2_treatment, "-", myDF$Canopy)
 
-
+    #### Fitting ACI curve
+    fits.sub <- fitacis(myDF, group="identity2", fitmethod="bilinear", Tcorrect=T)
+    
+    ### summary table between vcmax and jmax
+    coefDF <- coef(fits.sub)
+    coefDF$Canopy <- sub(".*-", "", coefDF$identity2)
+    coefDF$CO2_treatment <- sub("-.*", "", coefDF$identity2)
+    
+    ### add vcmax to jmax ratio
+    coefDF$JVratio <- coefDF$Jmax/coefDF$Vcmax
+    
+    ### assign CO2 treatment
+    for (i in c(1, 3, 5, 7, 9, 11)) {
+        coefDF[coefDF$Chamber == i, "CO2_treatment"] <- "ambient"
+    }
+    
+    for (i in c(2, 4, 6, 8, 10, 12)) {
+        coefDF[coefDF$Chamber == i, "CO2_treatment"] <- "elevated"
+    }
+    
+    ### look at box plot of the groups 
+    p4 <- ggplot(coefDF)+
+        geom_errorbar(mapping=aes(Canopy,ymin=Vcmax-Vcmax_SE,ymax=Vcmax+Vcmax_SE,
+                                  color=CO2_treatment), width=0.2,
+                      position=position_dodge(width=0.5))+
+        geom_point(aes(Canopy,Vcmax,
+                       color=CO2_treatment), size=4,
+                   position=position_dodge(width=0.5))+
+        xlab(expression(paste("Position")))+
+        ylab(expression(Vc[max]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        scale_color_manual(name=expression(paste(CO[2] * " treatment")),
+                           limits=c("ambient", "elevated"),
+                           values=c("blue3", "red2"))+
+        scale_linetype_manual(name=expression(paste(H[2] * "O treatment")),
+                              limits=c("wet", "dry"),
+                              values=c(1, 1))+
+        scale_shape_manual(name=expression(paste(H[2] * "O treatment")),
+                           limits=c("wet", "dry"),
+                           values=c(19, 17))+
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_blank(), 
+              axis.text.x = element_blank(),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              legend.text.align=0)+
+        ylim(0,50)
+    
+    plot(p4)
+    
+    p5 <- ggplot(coefDF)+
+        geom_point(aes(Canopy,Jmax,
+                       color=CO2_treatment), size=4,
+                   position=position_dodge(width=0.5))+
+        xlab(expression(paste("Position")))+
+        ylab(expression(J[max]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        scale_color_manual(name=expression(paste(CO[2] * " treatment")),
+                           limits=c("ambient", "elevated"),
+                           values=c("blue3", "red2"))+
+        scale_linetype_manual(name=expression(paste(H[2] * "O treatment")),
+                              limits=c("wet", "dry"),
+                              values=c(1, 1))+
+        scale_shape_manual(name=expression(paste(H[2] * "O treatment")),
+                           limits=c("wet", "dry"),
+                           values=c(19, 17))+
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_blank(), 
+              axis.text.x = element_blank(),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              legend.text.align=0)+
+        ylim(0,80)
+    
+    plot(p5)
+    
+    p6 <- ggplot(coefDF)+
+        geom_point(aes(Canopy,JVratio,
+                       color=CO2_treatment), size=4,
+                   position=position_dodge(width=0.5))+
+        xlab(expression(paste("Position")))+
+        ylab("J/V ratio")+
+        scale_color_manual(name=expression(paste(CO[2] * " treatment")),
+                           limits=c("ambient", "elevated"),
+                           values=c("blue3", "red2"))+
+        scale_linetype_manual(name=expression(paste(H[2] * "O treatment")),
+                              limits=c("wet", "dry"),
+                              values=c(1, 1))+
+        scale_shape_manual(name=expression(paste(H[2] * "O treatment")),
+                           limits=c("wet", "dry"),
+                           values=c(19, 17))+
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="bottom",
+              legend.text.align=0)+
+        ylim(1,4)
+    
+    plot(p6)
+    
+    pdf("output/canopy_parameter_summary.pdf", width=8, height=14)
+    plot_grid(p4, p5, p6, rel_heights=c(1,1,1.5),
+              labels="AUTO", ncol=1, align="v", axis = "l")
+    dev.off()
     
     
     return(fits)
