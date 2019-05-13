@@ -1,19 +1,30 @@
 #### individual canopy ACi curve measurement processing
 #### Fit A-CI curve for each chamber
 
-canopy_ACI_processing <- function(myDF) {
+canopy_ACI_processing <- function(cDF) {
     
-    myDF.rename <- myDF
-    colnames(myDF.rename) <- c("Chamber", "Canopy","Ci", 
-                               "Tair", "datetime", "Tair",
-                               "DPLicorCh", "PARi", "slope2", 
-                               "cmarea", "nslope2","k", "time", 
-                               "leak", "corrflux", "Photo")
+    myDF.rename <- cDF
+    colnames(myDF.rename) <- c("Chamber", "Canopy","Ca", "Tair", 
+                               "date", "time", "datetime", "T",
+                               "VPD", "DPLicorCh", "PARi", "slope2", 
+                               "cmarea", "nslope2","k", "leak", 
+                               "corrflux", "ncorrflux", "rh", "Photo",
+                               "transpiration")
+    
+    
+    ### clean the dataset to exclude na, negative values
+    myDF.clean <- myDF.rename[complete.cases(myDF.rename$Photo), ]
+    myDF <- myDF.clean[myDF.clean$transpiration > 0, ]
+    
+    
+    ### get gs from transpiration
+    myDF$gs <- myDF$transpiration / myDF$VPD
+    
+    ### get Ci from gs, A and Ca
+    myDF$Ci <- with(myDF, Ca - (Photo/gs))
     
     #### Fitting ACI curve
-    myDF.clean <- myDF.rename[complete.cases(myDF.rename$Photo), ]
-    
-    fits <- fitacis(myDF.clean, group="Chamber", fitmethod="bilinear")
+    fits <- fitacis(myDF, group="Chamber", fitmethod="bilinear")
     
     pdf("output/canopy_scale_aci_fitting.pdf")
     

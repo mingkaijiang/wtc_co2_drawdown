@@ -1,4 +1,4 @@
-compare_chamber_results_at_leaf_level <- function(cDF) {
+compare_ACI_results_with_canopy_and_leaf_data <- function(cDF) {
     #### This script plots A-Ci curve for leaf and canopy data at the leaf level
     #### and generate statistics
     
