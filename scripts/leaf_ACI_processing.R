@@ -49,6 +49,15 @@ leaf_ACI_processing <- function() {
     
     coefDF$Date <- as.Date(coefDF$Date)
     
+    ### calculate Ac_Aj transition Ci point
+    for (i in unique(coefDF$Identity)) {
+        testDF <- subset(myDF, Identity==i)
+        fit.i <- fitaci(testDF)
+        out <- findCiTransition(fit.i)
+        coefDF[coefDF$Identity==i,"Ac_Aj"] <- out[1]
+    }
+    
+    
     coefDF.sub <- coefDF
     
     ### investigate jsut a subset of the data, close to canopy drawdown dates
@@ -427,7 +436,7 @@ leaf_ACI_processing <- function() {
               panel.grid.major=element_blank(),
               legend.position="bottom",
               legend.text.align=0)+
-        ylim(1,2)
+        ylim(1,3)
     
     plot(p6)
     
@@ -437,10 +446,52 @@ leaf_ACI_processing <- function() {
     dev.off()
     
     
+    #### make summary plots using idnvidual chamber data
+    co2_trt <- 
+        
+        
+        
+    p6 <- ggplot(outDF)+
+        #geom_errorbar(mapping=aes(Height,ymin=Vcmax-Vcmax_SE,ymax=Vcmax+Vcmax_SE,
+        #                          color=CO2_treatment), width=0.2,
+        #              position=position_dodge(width=0.5))+
+        geom_point(aes(Height,Vcmax,
+                       color=CO2_treatment), size=4,
+                   position=position_dodge(width=0.5))+
+        xlab(expression(paste("Position")))+
+        ylab("J/V ratio")+
+        scale_color_manual(name=expression(paste(CO[2] * " treatment")),
+                           limits=c("ambient", "elevated"),
+                           values=c("blue3", "red2"))+
+        scale_linetype_manual(name=expression(paste(H[2] * "O treatment")),
+                              limits=c("wet", "dry"),
+                              values=c(1, 1))+
+        scale_shape_manual(name=expression(paste(H[2] * "O treatment")),
+                           limits=c("wet", "dry"),
+                           values=c(19, 17))+
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="bottom",
+              legend.text.align=0)+
+        ylim(1,200)
+    
+    plot(p6)
+    
+    
+    
     #### to do list:
     ### 1. resolve Jmax_SE is NA problem
     ### 2. repeat leaf ACI for canopy ACI
-    ### 3. combine leaf and canopy raw data together to compare scale treatment effect
+    ###    2.1. question is, do we really need to group data points together, and then run ACI stats?
+    ###    2.2 I think it might make sense to run individual chamber data then group them together thereafter. 
+    ### 3. Compute Aj, Ac for both canopy and leaf level data
+    ### 4. combine leaf and canopy raw data together to compare scale treatment effect
     ###   3.1 generate stats
     ###   3.2 generate figures
     ###   3.3 save output

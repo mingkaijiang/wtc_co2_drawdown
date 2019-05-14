@@ -250,7 +250,9 @@ canopy_ACI_processing <- function(cDF) {
               panel.grid.major=element_blank(),
               legend.position="bottom",
               legend.text.align=0)+
-        ylim(1,4)
+        ylim(1,4)+
+        scale_x_discrete(name="Canopy presence", breaks=c("12345", "345", "45"), 
+                         labels=c("Whole", "Middle+Bottom", "Bottom"))
     
     plot(p6)
     
