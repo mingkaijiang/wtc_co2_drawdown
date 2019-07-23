@@ -223,6 +223,242 @@ leaf_ACI_processing <- function() {
     dev.off()
     
     
+    ##### make box plot
+    sumDF.co2 <- summaryBy(Vcmax + Jmax + Rd + ALEAF + GS + ELEAF + Ac + Aj +Ci_transition_Ac_Aj + GammaStar + Km ~ CO2_treatment,
+                           data=outDF, FUN = c(mean, se), keep.names=T)
+    
+    sumDF.h2o <- summaryBy(Vcmax + Jmax + Rd + ALEAF + GS + ELEAF + Ac + Aj +Ci_transition_Ac_Aj + GammaStar + Km ~ Water_treatment,
+                           data=outDF, FUN = c(mean, se), keep.names=T)
+    
+    sumDF.ht <- summaryBy(Vcmax + Jmax + Rd + ALEAF + GS + ELEAF + Ac + Aj +Ci_transition_Ac_Aj + GammaStar + Km ~ Height,
+                           data=outDF, FUN = c(mean, se), keep.names=T)
+    
+    
+    
+    p1 <- ggplot(sumDF.co2) +
+        geom_errorbar(aes(x=CO2_treatment, ymin=(Vcmax.mean - Vcmax.se), 
+                          ymax = (Vcmax.mean+Vcmax.se)), position = "dodge", width=0.2)+
+        geom_point(aes(CO2_treatment, Vcmax.mean, fill=CO2_treatment), size = 10, shape=21)+
+        xlab("")+
+        ylab(expression(V[cmax]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
+                           limits=c("ambient", "elevated"),
+                           values=c("grey", "black"))+
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_blank(), 
+              axis.text.x = element_blank(),
+              axis.text.y=element_text(size=18),
+              axis.title.y=element_text(size=18),
+              legend.text=element_text(size=18),
+              legend.title=element_text(size=18),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+        ylim(40,100)+
+        ggtitle("a")
+    
+    p2 <- ggplot(sumDF.h2o) +
+        geom_errorbar(aes(x=Water_treatment, ymin=(Vcmax.mean - Vcmax.se), 
+                          ymax = (Vcmax.mean+Vcmax.se)), position = "dodge", width=0.2)+
+        geom_point(aes(Water_treatment, Vcmax.mean, fill=Water_treatment), size = 10, shape=21)+
+        xlab("")+
+        ylab(expression(V[cmax]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        scale_fill_manual(name=expression(paste(H[2] * "O treatment")),
+                          limits=c("wet", "dry"),
+                          values=c("grey", "black"))+
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_blank(), 
+              axis.text.x = element_blank(),
+              axis.text.y=element_blank(), 
+              axis.title.y=element_blank(), 
+              legend.text=element_text(size=18),
+              legend.title=element_text(size=18),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+        ylim(40,100)+
+        ggtitle("b")
+    
+    
+    p3 <- ggplot(sumDF.ht) +
+        geom_errorbar(aes(x=Height, ymin=(Vcmax.mean - Vcmax.se), 
+                          ymax = (Vcmax.mean+Vcmax.se)), position = "dodge", width=0.2)+
+        geom_point(aes(Height, Vcmax.mean, fill=Height), size = 10, shape=21)+
+        xlab("")+
+        ylab(expression(V[cmax]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        scale_fill_manual(name="Canopy position",
+                          limits=c("up", "low"),
+                          values=c("grey", "black"))+
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_blank(), 
+              axis.text.x = element_blank(),
+              axis.text.y=element_blank(), 
+              axis.title.y=element_blank(), 
+              legend.text=element_text(size=18),
+              legend.title=element_text(size=18),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+        ylim(40,100)+
+        ggtitle("c")
+    
+
+    p4 <- ggplot(sumDF.co2) +
+        geom_errorbar(aes(x=CO2_treatment, ymin=(Jmax.mean - Jmax.se), 
+                          ymax = (Jmax.mean+Jmax.se)), position = "dodge", width=0.2)+
+        geom_point(aes(CO2_treatment, Jmax.mean, fill=CO2_treatment), size = 10, shape=21)+
+        xlab("")+
+        ylab(expression(J[max]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
+                          limits=c("ambient", "elevated"),
+                          values=c("grey", "black"))+
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_blank(), 
+              axis.text.x = element_blank(),
+              axis.text.y=element_text(size=18),
+              axis.title.y=element_text(size=18),
+              legend.text=element_text(size=18),
+              legend.title=element_text(size=18),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+        ylim(50,150)+
+        ggtitle("d")
+    
+    
+    p5 <- ggplot(sumDF.h2o) +
+        geom_errorbar(aes(x=Water_treatment, ymin=(Jmax.mean - Jmax.se), 
+                          ymax = (Jmax.mean+Jmax.se)), position = "dodge", width=0.2)+
+        geom_point(aes(Water_treatment, Jmax.mean, fill=Water_treatment), size = 10, shape=21)+
+        xlab("")+
+        ylab(expression(J[max]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        scale_fill_manual(name=expression(paste(H[2] * "O treatment")),
+                          limits=c("wet", "dry"),
+                          values=c("grey", "black"))+
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_blank(), 
+              axis.text.x = element_blank(),
+              axis.text.y=element_blank(), 
+              axis.title.y=element_blank(), 
+              legend.text=element_text(size=18),
+              legend.title=element_text(size=18),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+        ylim(50,150)+
+        ggtitle("e")
+    
+    
+    p6 <- ggplot(sumDF.ht) +
+        geom_errorbar(aes(x=Height, ymin=(Jmax.mean - Jmax.se), 
+                          ymax = (Jmax.mean+Jmax.se)), position = "dodge", width=0.2)+
+        geom_point(aes(Height, Jmax.mean, fill=Height), size = 10, shape=21)+
+        xlab("")+
+        ylab(expression(J[max]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        scale_fill_manual(name="Canopy position",
+                          limits=c("up", "low"),
+                          values=c("grey", "black"))+
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_blank(), 
+              axis.text.x = element_blank(),
+              axis.text.y=element_blank(), 
+              axis.title.y=element_blank(), 
+              legend.text=element_text(size=18),
+              legend.title=element_text(size=18),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+        ylim(50,150)+
+        ggtitle("f")
+    
+    
+    p7 <- ggplot(sumDF.co2) +
+        geom_errorbar(aes(x=CO2_treatment, ymin=(Ci_transition_Ac_Aj.mean - Ci_transition_Ac_Aj.se), 
+                          ymax = (Ci_transition_Ac_Aj.mean+Ci_transition_Ac_Aj.se)), position = "dodge", width=0.2)+
+        geom_point(aes(CO2_treatment, Ci_transition_Ac_Aj.mean, fill=CO2_treatment), size = 10, shape=21)+
+        xlab(expression(paste(CO[2] * " treatment")))+
+        ylab(expression(C[i]*" transition point (umol " * mol^-1 * ")"))+
+        scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
+                          limits=c("ambient", "elevated"),
+                          values=c("grey", "black"))+
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=20), 
+              axis.text.x = element_text(size=18),
+              axis.text.y=element_text(size=18),
+              axis.title.y=element_text(size=18),
+              legend.text=element_text(size=18),
+              legend.title=element_text(size=18),
+              panel.grid.major=element_blank(),
+              legend.position="bottom",
+              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+        ylim(200,300)+
+        scale_x_discrete(breaks=c("ambient", "elevated"),
+                           labels=c("ambient", "elevated"))+
+        guides(fill = guide_legend(title.position = "top"))+
+        ggtitle("g")
+    
+    
+    p8 <- ggplot(sumDF.h2o) +
+        geom_errorbar(aes(x=Water_treatment, ymin=(Ci_transition_Ac_Aj.mean - Ci_transition_Ac_Aj.se), 
+                          ymax = (Ci_transition_Ac_Aj.mean+Ci_transition_Ac_Aj.se)), position = "dodge", width=0.2)+
+        geom_point(aes(Water_treatment, Ci_transition_Ac_Aj.mean, fill=Water_treatment), size = 10, shape=21)+
+        xlab("Water treatment")+
+        ylab(expression(C[i]*" transition point (umol " * mol^-1 * ")"))+
+        scale_fill_manual(name="Water treatment",
+                          limits=c("wet", "dry"),
+                          values=c("grey", "black"))+
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=20), 
+              axis.text.x = element_text(size=18),
+              axis.text.y=element_blank(), 
+              axis.title.y=element_blank(), 
+              legend.text=element_text(size=18),
+              legend.title=element_text(size=18),
+              panel.grid.major=element_blank(),
+              legend.position="bottom",
+              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+        ylim(200,300)+
+        scale_x_discrete(breaks=c("wet", "dry"),
+                         labels=c("Watered", "Droughted"))+
+        guides(fill = guide_legend(title.position = "top"))+
+        ggtitle("h")
+    
+    
+    p9 <- ggplot(sumDF.ht) +
+        geom_errorbar(aes(x=Height, ymin=(Ci_transition_Ac_Aj.mean - Ci_transition_Ac_Aj.se), 
+                          ymax = (Ci_transition_Ac_Aj.mean+Ci_transition_Ac_Aj.se)), position = "dodge", width=0.2)+
+        geom_point(aes(Height, Ci_transition_Ac_Aj.mean, fill=Height), size = 10, shape=21)+
+        xlab("Canopy position")+
+        ylab(expression(C[i]*" transition point (umol " * mol^-1 * ")"))+
+        scale_fill_manual(name="Canopy position",
+                          limits=c("up", "low"),
+                          values=c("grey", "black"))+
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=20), 
+              axis.text.x = element_text(size=18),
+              axis.text.y=element_blank(), 
+              axis.title.y=element_blank(), 
+              legend.text=element_text(size=18),
+              legend.title=element_text(size=18),
+              panel.grid.major=element_blank(),
+              legend.position="bottom",
+              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+        ylim(200,300)+
+        scale_x_discrete(breaks=c("up", "low"),
+                         labels=c("Up", "Low"))+
+        guides(fill = guide_legend(title.position = "top"))+
+        ggtitle("i")
+    
+
+    pdf("output/leaf_parameter_summary_break_into_groups.pdf", width=12, height=14)
+    plot_grid(p1, p2, p3, 
+              p4, p5, p6, 
+              p7, p8, p9, 
+              rel_heights=c(1,1,1.5),
+              rel_widths=c(1.2, 1, 1),
+              labels="", ncol=3, align="h", axis = "l")
+    dev.off()
+    
     ### testing water by co2 interation
     ## vcmax
     mod1 <- lme(Vcmax ~ Water_treatment * CO2_treatment * Height, random=~1|chamber, 
@@ -445,44 +681,7 @@ leaf_ACI_processing <- function() {
               labels="AUTO", ncol=1, align="v", axis = "l")
     dev.off()
     
-    
-    #### make summary plots using idnvidual chamber data
-    co2_trt <- 
-        
-        
-        
-    p6 <- ggplot(outDF)+
-        #geom_errorbar(mapping=aes(Height,ymin=Vcmax-Vcmax_SE,ymax=Vcmax+Vcmax_SE,
-        #                          color=CO2_treatment), width=0.2,
-        #              position=position_dodge(width=0.5))+
-        geom_point(aes(Height,Vcmax,
-                       color=CO2_treatment), size=4,
-                   position=position_dodge(width=0.5))+
-        xlab(expression(paste("Position")))+
-        ylab("J/V ratio")+
-        scale_color_manual(name=expression(paste(CO[2] * " treatment")),
-                           limits=c("ambient", "elevated"),
-                           values=c("blue3", "red2"))+
-        scale_linetype_manual(name=expression(paste(H[2] * "O treatment")),
-                              limits=c("wet", "dry"),
-                              values=c(1, 1))+
-        scale_shape_manual(name=expression(paste(H[2] * "O treatment")),
-                           limits=c("wet", "dry"),
-                           values=c(19, 17))+
-        theme(panel.grid.minor=element_blank(),
-              axis.title.x = element_text(size=14), 
-              axis.text.x = element_text(size=12),
-              axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=14),
-              legend.text=element_text(size=12),
-              legend.title=element_text(size=14),
-              panel.grid.major=element_blank(),
-              legend.position="bottom",
-              legend.text.align=0)+
-        ylim(1,200)
-    
-    plot(p6)
-    
+      
     
     
     #### to do list:
@@ -502,3 +701,4 @@ leaf_ACI_processing <- function() {
     
     
 }
+
