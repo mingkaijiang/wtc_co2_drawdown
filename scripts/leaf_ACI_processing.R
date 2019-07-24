@@ -6,7 +6,7 @@ leaf_ACI_processing <- function() {
     
     ### read in datasets
     myDF1 <- read.csv("data/ACi_curves/HFE_Aci_2008-2009.csv",stringsAsFactors=FALSE)
-    myDF2  <- read.csv("data/ACi_curves/HFE_Aci_lowcanopy_2008-2009.csv",stringsAsFactors=FALSE)
+    myDF2 <- read.csv("data/ACi_curves/HFE_Aci_lowcanopy_2008-2009.csv",stringsAsFactors=FALSE)
     
     ### combine the datasets
     ### multiple factors: CO2 treatment
@@ -20,6 +20,7 @@ leaf_ACI_processing <- function() {
     
     myDF$year <- year(myDF$Date)
     myDF <- subset(myDF, year == 2009)
+    #myDF <- subset(myDF, Identity != 80)
     
     unique(myDF[c("chamber", "Height", "CO2_treatment", "Water_treatment")])
     
@@ -153,74 +154,74 @@ leaf_ACI_processing <- function() {
     ### visually check whether Jmax, Vcmax, and JVratio change with multiple treatments
     
     ### plot a time series of Vcmax and Jmax and JV ratio
-    p1 <- ggplot(coefDF) +
-        geom_point(aes(Date, Vcmax, col=CO2_treatment, 
-                       pch=Water_treatment, size=as.factor(coefDF$Height)))+
-        theme_linedraw() +
-        theme(panel.grid.minor=element_blank(),
-              axis.title.x = element_blank(), 
-              axis.text.x = element_blank(),
-              axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=14),
-              legend.text=element_text(size=12),
-              legend.title=element_text(size=14),
-              panel.grid.major=element_blank(),
-              legend.position="none",
-              legend.text.align=0)+
-        ylab(expression(Vc[max]))+
-        scale_color_manual(limits=c("ambient", "elevated"),
-                           values=c("blue2", "red3"))+
-        scale_size_manual(name="Position",
-                          values=c(1,4))
-    
-    
-    p2 <- ggplot(coefDF) +
-        geom_point(aes(Date, Jmax, col=CO2_treatment, 
-                       pch=Water_treatment, size=as.factor(coefDF$Height)))+
-        theme_linedraw() +
-        theme(panel.grid.minor=element_blank(),
-              axis.title.x = element_blank(), 
-              axis.text.x = element_blank(),
-              axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=14),
-              legend.text=element_text(size=12),
-              legend.title=element_text(size=14),
-              panel.grid.major=element_blank(),
-              legend.position="none",
-              legend.text.align=0)+
-        ylab(expression(J[max]))+
-        scale_color_manual(limits=c("ambient", "elevated"),
-                           values=c("blue2", "red3"))+
-        scale_size_manual(name="Position",
-                          values=c(1,4))
-    
-    p3 <- ggplot(coefDF) +
-        geom_point(aes(Date, JVratio, col=CO2_treatment, 
-                       pch=Water_treatment, size=as.factor(coefDF$Height)))+
-        theme_linedraw() +
-        theme(panel.grid.minor=element_blank(),
-              axis.title.x = element_text(size=14), 
-              axis.text.x = element_text(size=12),
-              axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=14),
-              legend.text=element_text(size=12),
-              legend.title=element_text(size=14),
-              panel.grid.major=element_blank(),
-              legend.position="bottom",
-              legend.text.align=0)+
-        ylab("JV ratio")+
-        scale_color_manual(name=expression(paste(CO[2], " treatment")),
-                           limits=c("ambient", "elevated"),
-                           values=c("blue2", "red3"))+
-        scale_size_manual(name="Position",
-                          values=c(1,4))+
-        scale_shape_discrete(name="Water treatment")+
-        theme(legend.direction = "vertical", legend.box = "horizontal")
-
-    pdf("output/leaf_flux_all_treatment_time_series_parameters.pdf", width=6, height=12)
-    plot_grid(p1, p2, p3, rel_heights=c(1,1,1.5),
-              labels="AUTO", ncol=1, align="v", axis = "l")
-    dev.off()
+    #p1 <- ggplot(coefDF) +
+    #    geom_point(aes(Date, Vcmax, col=CO2_treatment, 
+    #                   pch=Water_treatment, size=as.factor(coefDF$Height)))+
+    #    theme_linedraw() +
+    #    theme(panel.grid.minor=element_blank(),
+    #          axis.title.x = element_blank(), 
+    #          axis.text.x = element_blank(),
+    #          axis.text.y=element_text(size=12),
+    #          axis.title.y=element_text(size=14),
+    #          legend.text=element_text(size=12),
+    #          legend.title=element_text(size=14),
+    #          panel.grid.major=element_blank(),
+    #          legend.position="none",
+    #          legend.text.align=0)+
+    #    ylab(expression(Vc[max]))+
+    #    scale_color_manual(limits=c("ambient", "elevated"),
+    #                       values=c("blue2", "red3"))+
+    #    scale_size_manual(name="Position",
+    #                      values=c(1,4))
+    #
+    #
+    #p2 <- ggplot(coefDF) +
+    #    geom_point(aes(Date, Jmax, col=CO2_treatment, 
+    #                   pch=Water_treatment, size=as.factor(coefDF$Height)))+
+    #    theme_linedraw() +
+    #    theme(panel.grid.minor=element_blank(),
+    #          axis.title.x = element_blank(), 
+    #          axis.text.x = element_blank(),
+    #          axis.text.y=element_text(size=12),
+    #          axis.title.y=element_text(size=14),
+    #          legend.text=element_text(size=12),
+    #          legend.title=element_text(size=14),
+    #          panel.grid.major=element_blank(),
+    #          legend.position="none",
+    #          legend.text.align=0)+
+    #    ylab(expression(J[max]))+
+    #    scale_color_manual(limits=c("ambient", "elevated"),
+    #                       values=c("blue2", "red3"))+
+    #    scale_size_manual(name="Position",
+    #                      values=c(1,4))
+    #
+    #p3 <- ggplot(coefDF) +
+    #    geom_point(aes(Date, JVratio, col=CO2_treatment, 
+    #                   pch=Water_treatment, size=as.factor(coefDF$Height)))+
+    #    theme_linedraw() +
+    #    theme(panel.grid.minor=element_blank(),
+    #          axis.title.x = element_text(size=14), 
+    #          axis.text.x = element_text(size=12),
+    #          axis.text.y=element_text(size=12),
+    #          axis.title.y=element_text(size=14),
+    #          legend.text=element_text(size=12),
+    #          legend.title=element_text(size=14),
+    #          panel.grid.major=element_blank(),
+    #          legend.position="bottom",
+    #          legend.text.align=0)+
+    #    ylab("JV ratio")+
+    #    scale_color_manual(name=expression(paste(CO[2], " treatment")),
+    #                       limits=c("ambient", "elevated"),
+    #                       values=c("blue2", "red3"))+
+    #    scale_size_manual(name="Position",
+    #                      values=c(1,4))+
+    #    scale_shape_discrete(name="Water treatment")+
+    #    theme(legend.direction = "vertical", legend.box = "horizontal")
+    #
+    #pdf("output/leaf_flux_all_treatment_time_series_parameters.pdf", width=6, height=12)
+    #plot_grid(p1, p2, p3, rel_heights=c(1,1,1.5),
+    #          labels="AUTO", ncol=1, align="v", axis = "l")
+    #dev.off()
     
     
     ##### make box plot
@@ -462,28 +463,46 @@ leaf_ACI_processing <- function() {
     ### testing water by co2 interation
     ## vcmax
     mod1 <- lme(Vcmax ~ Water_treatment * CO2_treatment * Height, random=~1|chamber, 
-                data=coefDF, 
+                data=subDF, 
                 method="REML")
     anova.lme(mod1, 
               type="sequential", 
               adjustSigma = FALSE)
+    ## there is no water effect and water interaction effect on Vcmax
+    lm1 <- lm(Vcmax ~ CO2_treatment * Water_treatment * Height, data = subDF)
+    summary(mod1)
+    
+    ### this result is essentially the same result as the three-way anova test,
+    ### i.e. there is a water by co2 interaction effect
+    library(car)
+    Anova(mod1)
     
     ## Jmax
     mod2 <- lme(Jmax ~ Water_treatment * CO2_treatment * Height, random=~1|chamber, 
-                data=coefDF, 
+                data=subDF, 
                 method="REML")
     anova.lme(mod2, 
               type="sequential", 
               adjustSigma = FALSE)
+    ## there is no water effect and water interaction effect on Jmax
     
     ## JV ratio
     mod3 <- lme(JVratio ~ Water_treatment * CO2_treatment * Height, random=~1|chamber, 
-                data=coefDF, 
+                data=subDF, 
                 method="REML")
     anova.lme(mod3, 
               type="sequential", 
               adjustSigma = FALSE)
+    ## there is no water effect and water interaction effect on JV ratio
     
+    ## Ci point
+    mod4 <- lme(Ac_Aj ~ Water_treatment * CO2_treatment * Height, random=~1|chamber, 
+                data=subDF, 
+                method="REML")
+    anova.lme(mod4, 
+              type="sequential", 
+              adjustSigma = FALSE)
+    ## there is no water effect and water interaction effect on Ac_Aj
 
     
     #### compute statistics on each individual treatment factor
@@ -496,193 +515,467 @@ leaf_ACI_processing <- function() {
     )
     par(op)
     
-    ##### check vcmax relationship
-    ### 3-way anova 
-    fm <- aov(Vcmax ~ CO2_treatment * Water_treatment * Height, data = coefDF)
-    summary(fm)
+    interaction.plot(x.factor     = coefDF$CO2_treatment,
+                    trace.factor = coefDF$Height, 
+                    response     = coefDF$Vcmax, 
+                    fun = mean,
+                    type="b",
+                    col=c("black","red","green"),  ### Colors for levels of trace var.
+                    pch=c(19, 17, 15),             ### Symbols for levels of trace var.
+                    fixed=TRUE,                    ### Order by factor order in data
+                    leg.bty = "o")
     
-    ## obtain r2 from the anova model
-    lm <- lm(Vcmax ~ CO2_treatment * Water_treatment * Height, data = coefDF)
-    anova(lm)
-    summary(lm)
     
+    ###### check vcmax relationship
+    #### 3-way anova 
+    #fm <- aov(Vcmax ~ CO2_treatment * Water_treatment * Height, data = subDF)
+    #summary(fm)
+    #
+    ### obtain r2 from the anova model
+    #lm <- lm(Vcmax ~ CO2_treatment * Water_treatment * Height, data = subDF)
+    #anova(lm)
+    #summary(lm)
+    #
+    #
+    #### to obtain the model without 3-way interaction
+    #fm1 <- update(fm, . ~ . -CO2_treatment:Water_treatment:Height)
+    #summary(fm1)
+    #
+    #### remove all two-way interactions
+    #fm2 <- update(fm1, .~CO2_treatment+Water_treatment+Height)
+    #summary(fm2)
+    #
+    #### check the two models
+    #anova(fm, fm2)
+    #
+    #### the table of effects from the model is:
+    #model.tables(fm2,type="effects")
+    #model.tables(fm2,type="means")
     
-    ### to obtain the model without 3-way interaction
-    fm1 <- update(fm, . ~ . -CO2_treatment:Water_treatment:Height)
-    summary(fm1)
-    
-    ### remove all two-way interactions
-    fm2 <- update(fm1, .~CO2_treatment+Water_treatment+Height)
-    summary(fm2)
-    
-    ### check the two models
-    anova(fm, fm2)
-    
-    ### the table of effects from the model is:
-    model.tables(fm2,type="effects")
-    model.tables(fm2,type="means")
-    
-    #test1 <- summaryBy(Vcmax~Water_treatment, data=coefDF, FUN=c(mean,se), keep.names=T)
-    #test2 <- summaryBy(Vcmax~CO2_treatment, data=coefDF, FUN=c(mean,se), keep.names=T)
-    #test3 <- summaryBy(Vcmax~Height, data=coefDF, FUN=c(mean,se), keep.names=T)
+    #test1 <- summaryBy(Vcmax~Water_treatment, data=subDF, FUN=c(mean,se), keep.names=T)
+    #test2 <- summaryBy(Vcmax~CO2_treatment, data=subDF, FUN=c(mean,se), keep.names=T)
+    #test3 <- summaryBy(Vcmax~Height, data=subDF, FUN=c(mean,se), keep.names=T)
     
     ### we can remove the water effect
-    fm.vcmax <- aov(Vcmax ~ CO2_treatment + Height, data = coefDF)
-    summary(fm.vcmax)
+    #fm.vcmax <- aov(Vcmax ~ CO2_treatment + Height, data = subDF)
+    #summary(fm.vcmax)
+    #
+    #### check residual of the three way anova
+    #op <-  par(mfrow = c(2, 2))
+    #plot(fm)
+    #par(op)
+    #
+    #subDF %>% group_by(CO2_treatment, Height) %>% summarise(mean(Vcmax))
+    #model.tables(fm.vcmax, type="means")
+    #
+    #
+    ###### check jmax relationship
+    #### 3-way anova 
+    #fm <- aov(Jmax ~ CO2_treatment * Water_treatment * Height, data = subDF)
+    #summary(fm)
+    #
+    ### obtain r2 from the anova model
+    #lm <- lm(Jmax ~ CO2_treatment * Water_treatment * Height, data = subDF)
+    #anova(lm)
+    #summary(lm)
+    #
+    #
+    ###### check jv ratio relationship
+    #### 3-way anova 
+    #fm <- aov(JVratio ~ CO2_treatment * Water_treatment * Height, data = subDF)
+    #summary(fm)
+    #
+    ### obtain r2 from the anova model
+    #lm <- lm(JVratio ~ CO2_treatment * Water_treatment * Height, data = subDF)
+    #anova(lm)
+    #summary(lm)
+    #
+    #
+    ##### we can't group anything together
+    #myDF$Identity2 <- paste0(myDF$Height, "-", myDF$CO2_treatment, ".", myDF$Water_treatment)
+    #fits.gp <- fitacis(myDF, group="Identity2", fitmethod="bilinear", Tcorrect=T)
+    #
+    #
+    #### assign factors onto the dataframe
+    #coefDF <- coef(fits.gp)
+    #coefDF$Height <- sub("-.*", "", coefDF$Identity2)
+    #coefDF$Water_treatment <- str_sub(coefDF$Identity2, start=-3)
+    #coefDF$CO2_treatment <- sub(".*-", "", coefDF$Identity2)
+    #coefDF$CO2_treatment <- sub(".dry", "", coefDF$CO2_treatment)
+    #coefDF$CO2_treatment <- sub(".wet", "", coefDF$CO2_treatment)
+    #
+    #### add vcmax to jmax ratio
+    #coefDF$JVratio <- coefDF$Jmax/coefDF$Vcmax
+    #
+    #
+    #
+    #### look at box plot of the groups 
+    #p4 <- ggplot(coefDF)+
+    #    geom_errorbar(mapping=aes(Height,ymin=Vcmax-Vcmax_SE,ymax=Vcmax+Vcmax_SE,
+    #                   color=CO2_treatment, lty=as.factor(coefDF$Water_treatment)), width=0.2,
+    #                  position=position_dodge(width=0.5))+
+    #    geom_point(aes(Height,Vcmax,
+    #                   color=CO2_treatment, pch=as.factor(coefDF$Water_treatment)), size=4,
+    #               position=position_dodge(width=0.5))+
+    #    xlab(expression(paste("Position")))+
+    #    ylab(expression(Vc[max]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+    #    scale_color_manual(name=expression(paste(CO[2] * " treatment")),
+    #                      limits=c("ambient", "elevated"),
+    #                      values=c("blue3", "red2"))+
+    #    scale_linetype_manual(name=expression(paste(H[2] * "O treatment")),
+    #                       limits=c("wet", "dry"),
+    #                       values=c(1, 1))+
+    #    scale_shape_manual(name=expression(paste(H[2] * "O treatment")),
+    #                          limits=c("wet", "dry"),
+    #                          values=c(19, 17))+
+    #    theme(panel.grid.minor=element_blank(),
+    #          axis.title.x = element_blank(), 
+    #          axis.text.x = element_blank(),
+    #          axis.text.y=element_text(size=12),
+    #          axis.title.y=element_text(size=14),
+    #          legend.text=element_text(size=12),
+    #          legend.title=element_text(size=14),
+    #          panel.grid.major=element_blank(),
+    #          legend.position="none",
+    #          legend.text.align=0)+
+    #    ylim(0,150)
+    #
+    #plot(p4)
+    #
+    #p5 <- ggplot(coefDF)+
+    #    #geom_errorbar(mapping=aes(Height,ymin=Vcmax-Vcmax_SE,ymax=Vcmax+Vcmax_SE,
+    #    #                          color=CO2_treatment), width=0.2,
+    #    #              position=position_dodge(width=0.5))+
+    #    geom_point(aes(Height,Jmax,
+    #                   color=CO2_treatment, pch=as.factor(coefDF$Water_treatment)), size=4,
+    #               position=position_dodge(width=0.5))+
+    #    xlab(expression(paste("Position")))+
+    #    ylab(expression(J[max]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+    #    scale_color_manual(name=expression(paste(CO[2] * " treatment")),
+    #                       limits=c("ambient", "elevated"),
+    #                       values=c("blue3", "red2"))+
+    #    scale_linetype_manual(name=expression(paste(H[2] * "O treatment")),
+    #                          limits=c("wet", "dry"),
+    #                          values=c(1, 1))+
+    #    scale_shape_manual(name=expression(paste(H[2] * "O treatment")),
+    #                       limits=c("wet", "dry"),
+    #                       values=c(19, 17))+
+    #    theme(panel.grid.minor=element_blank(),
+    #          axis.title.x = element_blank(), 
+    #          axis.text.x = element_blank(),
+    #          axis.text.y=element_text(size=12),
+    #          axis.title.y=element_text(size=14),
+    #          legend.text=element_text(size=12),
+    #          legend.title=element_text(size=14),
+    #          panel.grid.major=element_blank(),
+    #          legend.position="none",
+    #          legend.text.align=0)+
+    #    ylim(0,240)
+    #
+    #plot(p5)
+    #
+    #p6 <- ggplot(coefDF)+
+    #    #geom_errorbar(mapping=aes(Height,ymin=Vcmax-Vcmax_SE,ymax=Vcmax+Vcmax_SE,
+    #    #                          color=CO2_treatment), width=0.2,
+    #    #              position=position_dodge(width=0.5))+
+    #    geom_point(aes(Height,JVratio,
+    #                   color=CO2_treatment, pch=as.factor(coefDF$Water_treatment)), size=4,
+    #               position=position_dodge(width=0.5))+
+    #    xlab(expression(paste("Position")))+
+    #    ylab("J/V ratio")+
+    #    scale_color_manual(name=expression(paste(CO[2] * " treatment")),
+    #                       limits=c("ambient", "elevated"),
+    #                       values=c("blue3", "red2"))+
+    #    scale_linetype_manual(name=expression(paste(H[2] * "O treatment")),
+    #                          limits=c("wet", "dry"),
+    #                          values=c(1, 1))+
+    #    scale_shape_manual(name=expression(paste(H[2] * "O treatment")),
+    #                       limits=c("wet", "dry"),
+    #                       values=c(19, 17))+
+    #    theme(panel.grid.minor=element_blank(),
+    #          axis.title.x = element_text(size=14), 
+    #          axis.text.x = element_text(size=12),
+    #          axis.text.y=element_text(size=12),
+    #          axis.title.y=element_text(size=14),
+    #          legend.text=element_text(size=12),
+    #          legend.title=element_text(size=14),
+    #          panel.grid.major=element_blank(),
+    #          legend.position="bottom",
+    #          legend.text.align=0)+
+    #    ylim(1,3)
+    #
+    #plot(p6)
+    #
+    #pdf("output/leaf_parameter_summary.pdf", width=8, height=14)
+    #plot_grid(p4, p5, p6, rel_heights=c(1,1,1.5),
+    #          labels="AUTO", ncol=1, align="v", axis = "l")
+    #dev.off()
     
-    ### check residual of the three way anova
-    op <-  par(mfrow = c(2, 2))
-    plot(fm)
-    par(op)
     
-    coefDF %>% group_by(CO2_treatment, Height) %>% summarise(mean(Vcmax))
-    model.tables(fm.vcmax, type="means")
+    ########### select well watered treatments to exclude droughted treatment for the following analysis
+    subDF2 <- subset(subDF, Water_treatment == "wet")
+    subDF2 <- subset(subDF, Identity != 80)
     
     
-    ##### check jmax relationship
-    ### 3-way anova 
-    fm <- aov(Jmax ~ CO2_treatment * Water_treatment * Height, data = coefDF)
-    summary(fm)
+    ### testing two-way anova between CO2 treatment and height
+    ## vcmax
+    fm1 <- aov(Vcmax ~ CO2_treatment * Height, data = subDF2)
+    summary(fm1)
+
+    lm <- lm(Vcmax ~ CO2_treatment * Height, data = subDF2)
+    summary(lm)
+
+    ## jmax
+    fm2 <- aov(Jmax ~ CO2_treatment * Height, data = subDF2)
+    summary(fm2)
     
-    ## obtain r2 from the anova model
-    lm <- lm(Jmax ~ CO2_treatment * Water_treatment * Height, data = coefDF)
-    anova(lm)
+    lm <- lm(Jmax ~ CO2_treatment * Height, data = subDF2)
+    summary(lm)
+    
+    ## jv ratio
+    fm3 <- aov(JVratio ~ CO2_treatment * Height, data = subDF2)
+    summary(fm3)
+    
+    lm <- lm(JVratio ~ CO2_treatment * Height, data = subDF2)
+    summary(lm)
+    
+    ## Ac_Aj
+    fm4 <- aov(Ac_Aj ~ CO2_treatment * Height, data = subDF2)
+    summary(fm4)
+    
+    lm <- lm(Ac_Aj ~ CO2_treatment * Height, data = subDF2)
     summary(lm)
     
     
-    ##### check jv ratio relationship
-    ### 3-way anova 
-    fm <- aov(JVratio ~ CO2_treatment * Water_treatment * Height, data = coefDF)
-    summary(fm)
     
-    ## obtain r2 from the anova model
-    lm <- lm(JVratio ~ CO2_treatment * Water_treatment * Height, data = coefDF)
-    anova(lm)
-    summary(lm)
+    ##### make box plot
+    outDF$JVratio <- outDF$Jmax/outDF$Vcmax
+    sumDF <- summaryBy(Vcmax + Jmax + Rd + ALEAF + GS + ELEAF + Ac + Aj +Ci_transition_Ac_Aj + GammaStar + Km + JVratio~ CO2_treatment+Height,
+                           data=outDF, FUN = c(mean, se), keep.names=T)
     
     
-    #### we can't group anything together
-    myDF$Identity2 <- paste0(myDF$Height, "-", myDF$CO2_treatment, ".", myDF$Water_treatment)
-    fits.gp <- fitacis(myDF, group="Identity2", fitmethod="bilinear", Tcorrect=T)
     
-    
-    ### assign factors onto the dataframe
-    coefDF <- coef(fits.gp)
-    coefDF$Height <- sub("-.*", "", coefDF$Identity2)
-    coefDF$Water_treatment <- str_sub(coefDF$Identity2, start=-3)
-    coefDF$CO2_treatment <- sub(".*-", "", coefDF$Identity2)
-    coefDF$CO2_treatment <- sub(".dry", "", coefDF$CO2_treatment)
-    coefDF$CO2_treatment <- sub(".wet", "", coefDF$CO2_treatment)
-    
-    ### add vcmax to jmax ratio
-    coefDF$JVratio <- coefDF$Jmax/coefDF$Vcmax
-    
-
-
-    ### look at box plot of the groups 
-    p4 <- ggplot(coefDF)+
-        geom_errorbar(mapping=aes(Height,ymin=Vcmax-Vcmax_SE,ymax=Vcmax+Vcmax_SE,
-                       color=CO2_treatment, lty=as.factor(coefDF$Water_treatment)), width=0.2,
-                      position=position_dodge(width=0.5))+
-        geom_point(aes(Height,Vcmax,
-                       color=CO2_treatment, pch=as.factor(coefDF$Water_treatment)), size=4,
+    p1 <- ggplot(sumDF) +
+        geom_errorbar(aes(x=Height, ymin=(Vcmax.mean - Vcmax.se), 
+                          ymax = (Vcmax.mean+Vcmax.se), color=CO2_treatment),
+                      position=position_dodge(width=0.5),width=0.2)+
+        geom_point(aes(Height, Vcmax.mean, fill=CO2_treatment), size = 10, shape=21, 
                    position=position_dodge(width=0.5))+
-        xlab(expression(paste("Position")))+
-        ylab(expression(Vc[max]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        xlab("")+
+        ylab(expression(V[cmax]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
+                          limits=c("ambient", "elevated"),
+                          values=c("grey", "black"))+
         scale_color_manual(name=expression(paste(CO[2] * " treatment")),
                           limits=c("ambient", "elevated"),
-                          values=c("blue3", "red2"))+
-        scale_linetype_manual(name=expression(paste(H[2] * "O treatment")),
-                           limits=c("wet", "dry"),
-                           values=c(1, 1))+
-        scale_shape_manual(name=expression(paste(H[2] * "O treatment")),
-                              limits=c("wet", "dry"),
-                              values=c(19, 17))+
+                          values=c("black", "black"))+
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_blank(), 
               axis.text.x = element_blank(),
-              axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=14),
-              legend.text=element_text(size=12),
-              legend.title=element_text(size=14),
+              axis.text.y=element_text(size=18),
+              axis.title.y=element_text(size=18),
+              legend.text=element_text(size=18),
+              legend.title=element_text(size=18),
               panel.grid.major=element_blank(),
               legend.position="none",
-              legend.text.align=0)+
-        ylim(0,150)
+              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+        ylim(40,100)+
+        ggtitle("a")
     
-    plot(p4)
-    
-    p5 <- ggplot(coefDF)+
-        #geom_errorbar(mapping=aes(Height,ymin=Vcmax-Vcmax_SE,ymax=Vcmax+Vcmax_SE,
-        #                          color=CO2_treatment), width=0.2,
-        #              position=position_dodge(width=0.5))+
-        geom_point(aes(Height,Jmax,
-                       color=CO2_treatment, pch=as.factor(coefDF$Water_treatment)), size=4,
+    p2 <- ggplot(sumDF) +
+        geom_errorbar(aes(x=Height, ymin=(Jmax.mean - Jmax.se), 
+                          ymax = (Jmax.mean+Jmax.se), color=CO2_treatment),
+                      position=position_dodge(width=0.5),width=0.3)+
+        geom_point(aes(Height, Jmax.mean, fill=CO2_treatment), size = 10, shape=21, 
                    position=position_dodge(width=0.5))+
-        xlab(expression(paste("Position")))+
+        xlab("")+
         ylab(expression(J[max]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
+                          limits=c("ambient", "elevated"),
+                          values=c("grey", "black"))+
         scale_color_manual(name=expression(paste(CO[2] * " treatment")),
                            limits=c("ambient", "elevated"),
-                           values=c("blue3", "red2"))+
-        scale_linetype_manual(name=expression(paste(H[2] * "O treatment")),
-                              limits=c("wet", "dry"),
-                              values=c(1, 1))+
-        scale_shape_manual(name=expression(paste(H[2] * "O treatment")),
-                           limits=c("wet", "dry"),
-                           values=c(19, 17))+
+                           values=c("black", "black"))+
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_blank(), 
               axis.text.x = element_blank(),
-              axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=14),
-              legend.text=element_text(size=12),
-              legend.title=element_text(size=14),
+              axis.text.y=element_text(size=18),
+              axis.title.y=element_text(size=18),
+              legend.text=element_text(size=18),
+              legend.title=element_text(size=18),
               panel.grid.major=element_blank(),
               legend.position="none",
-              legend.text.align=0)+
-        ylim(0,240)
+              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+        ylim(50,150)+
+        ggtitle("b")
     
-    plot(p5)
-    
-    p6 <- ggplot(coefDF)+
-        #geom_errorbar(mapping=aes(Height,ymin=Vcmax-Vcmax_SE,ymax=Vcmax+Vcmax_SE,
-        #                          color=CO2_treatment), width=0.2,
-        #              position=position_dodge(width=0.5))+
-        geom_point(aes(Height,JVratio,
-                       color=CO2_treatment, pch=as.factor(coefDF$Water_treatment)), size=4,
+    p3 <- ggplot(sumDF) +
+        geom_errorbar(aes(x=Height, ymin=(JVratio.mean - JVratio.se), 
+                          ymax = (JVratio.mean+JVratio.se), color=CO2_treatment),
+                      position=position_dodge(width=0.5),width=0.2)+
+        geom_point(aes(Height, JVratio.mean, fill=CO2_treatment), size = 10, shape=21, 
                    position=position_dodge(width=0.5))+
-        xlab(expression(paste("Position")))+
-        ylab("J/V ratio")+
+        xlab("")+
+        ylab("JV ratio")+
+        scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
+                          limits=c("ambient", "elevated"),
+                          values=c("grey", "black"))+
         scale_color_manual(name=expression(paste(CO[2] * " treatment")),
                            limits=c("ambient", "elevated"),
-                           values=c("blue3", "red2"))+
-        scale_linetype_manual(name=expression(paste(H[2] * "O treatment")),
-                              limits=c("wet", "dry"),
-                              values=c(1, 1))+
-        scale_shape_manual(name=expression(paste(H[2] * "O treatment")),
-                           limits=c("wet", "dry"),
-                           values=c(19, 17))+
+                           values=c("black", "black"))+
         theme(panel.grid.minor=element_blank(),
-              axis.title.x = element_text(size=14), 
-              axis.text.x = element_text(size=12),
-              axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=14),
-              legend.text=element_text(size=12),
-              legend.title=element_text(size=14),
+              axis.title.x = element_blank(), 
+              axis.text.x = element_blank(),
+              axis.text.y=element_text(size=18),
+              axis.title.y=element_text(size=18),
+              legend.text=element_text(size=18),
+              legend.title=element_text(size=18),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+        ylim(1,2)+
+        ggtitle("c")
+    
+    p4 <- ggplot(sumDF) +
+        geom_errorbar(aes(x=Height, ymin=(Ci_transition_Ac_Aj.mean - Ci_transition_Ac_Aj.se), 
+                          ymax = (Ci_transition_Ac_Aj.mean+Ci_transition_Ac_Aj.se), color=CO2_treatment),
+                      position=position_dodge(width=0.5),width=0.2)+
+        geom_point(aes(Height, Ci_transition_Ac_Aj.mean, fill=CO2_treatment), size = 10, shape=21, 
+                   position=position_dodge(width=0.5))+
+        xlab("")+
+        ylab(expression(C[i]*" transition (umol " * mol^-1 * ")"))+
+        scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
+                          limits=c("ambient", "elevated"),
+                          values=c("grey", "black"))+
+        scale_color_manual(name=expression(paste(CO[2] * " treatment")),
+                           limits=c("ambient", "elevated"),
+                           values=c("black", "black"))+
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_blank(), 
+              axis.text.x = element_blank(),
+              axis.text.y=element_text(size=18),
+              axis.title.y=element_text(size=18),
+              legend.text=element_text(size=18),
+              legend.title=element_text(size=18),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+        ylim(180,360)+
+        ggtitle("d")
+
+    
+    p5 <- ggplot(sumDF) +
+        geom_errorbar(aes(x=Height, ymin=(Ac.mean - Ac.se), 
+                          ymax = (Ac.mean+Ac.se), color=CO2_treatment),
+                      position=position_dodge(width=0.5),width=0.2)+
+        geom_point(aes(Height, Ac.mean, fill=CO2_treatment), size = 10, shape=21, 
+                   position=position_dodge(width=0.5))+
+        xlab("")+
+        ylab(expression(A[c]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
+                          limits=c("ambient", "elevated"),
+                          values=c("grey", "black"))+
+        scale_color_manual(name=expression(paste(CO[2] * " treatment")),
+                           limits=c("ambient", "elevated"),
+                           values=c("black", "black"))+
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_blank(), 
+              axis.text.x = element_text(size=18),
+              axis.text.y=element_text(size=18), 
+              axis.title.y=element_text(size=18), 
+              legend.text=element_text(size=18),
+              legend.title=element_text(size=18),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+        ylim(9,25)+
+        scale_x_discrete(breaks=c("up", "low"),
+                         labels=c("Up", "Low"))+
+        guides(fill = guide_legend(title.position = "top"))+
+        ggtitle("e")
+    
+    p6 <- ggplot(sumDF) +
+        geom_errorbar(aes(x=Height, ymin=(Aj.mean - Aj.se), 
+                          ymax = (Aj.mean+Aj.se), color=CO2_treatment),
+                      position=position_dodge(width=0.5),width=0.3)+
+        geom_point(aes(Height, Aj.mean, fill=CO2_treatment), size = 10, shape=21, 
+                   position=position_dodge(width=0.5))+
+        xlab("")+
+        ylab(expression(A[j]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
+                          limits=c("ambient", "elevated"),
+                          values=c("grey", "black"))+
+        scale_color_manual(name=expression(paste(CO[2] * " treatment")),
+                           limits=c("ambient", "elevated"),
+                           values=c("black", "black"))+
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_blank(), 
+              axis.text.x = element_text(size=18),
+              axis.text.y=element_text(size=18), 
+              axis.title.y=element_text(size=18), 
+              legend.text=element_text(size=18),
+              legend.title=element_text(size=18),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+        ylim(9,25)+
+        scale_x_discrete(breaks=c("up", "low"),
+                         labels=c("Up", "Low"))+
+        guides(fill = guide_legend(title.position = "top"))+
+        ggtitle("f")
+    
+    
+    p7 <- ggplot(sumDF) +
+        geom_errorbar(aes(x=Height, ymin=(ALEAF.mean - ALEAF.se), 
+                          ymax = (ALEAF.mean+ALEAF.se), color=CO2_treatment),
+                      position=position_dodge(width=0.5),width=0.2)+
+        geom_point(aes(Height, ALEAF.mean, fill=CO2_treatment), size = 10, shape=21, 
+                   position=position_dodge(width=0.5))+
+        xlab("Canopy position")+
+        ylab(expression(A[leaf]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
+                          limits=c("ambient", "elevated"),
+                          values=c("grey", "black"))+
+        scale_color_manual(name=expression(paste(CO[2] * " treatment")),
+                           limits=c("ambient", "elevated"),
+                           values=c("black", "black"))+
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=20), 
+              axis.text.x = element_text(size=18),
+              axis.text.y=element_text(size=18), 
+              axis.title.y=element_text(size=18), 
+              legend.text=element_text(size=18),
+              legend.title=element_text(size=18),
               panel.grid.major=element_blank(),
               legend.position="bottom",
-              legend.text.align=0)+
-        ylim(1,3)
+              plot.title = element_text(size = 18, face = "bold", hjust=0.05))+
+        ylim(9,25)+
+        scale_x_discrete(breaks=c("up", "low"),
+                         labels=c("Up", "Low"))+
+        guides(fill = guide_legend(title.position = "top"))+
+        ggtitle("g")
     
-    plot(p6)
     
-    pdf("output/leaf_parameter_summary.pdf", width=8, height=14)
-    plot_grid(p4, p5, p6, rel_heights=c(1,1,1.5),
-              labels="AUTO", ncol=1, align="v", axis = "l")
+    #library("gridExtra")
+    
+    
+    pdf("output/leaf_parameter_summary_break_into_groups_exclude_water.pdf", width=12, height=14)
+    #plot_grid(p1, p2, 
+    #          p3, p4, 
+    #          p5, p6, 
+    #          rel_heights=c(1,1,1.4),
+    #          rel_widths=c(1, 1.1),
+    #          labels="", ncol=2, align="h", axis = "l")
+    grid.arrange(p1, p2, p3, p4, p5, p6, 
+                 p7,  
+                 heights=c(1, 1, 1.2, 1.8),
+                 #ncol = 2, nrow = 4, 
+                 layout_matrix = rbind(c(1,2),
+                                       c(3,4),
+                                       c(5,6),
+                                       c(7,7)))
+    
     dev.off()
-    
-      
-    
     
     #### to do list:
     ### 1. resolve Jmax_SE is NA problem

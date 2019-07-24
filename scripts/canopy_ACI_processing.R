@@ -143,8 +143,13 @@ canopy_ACI_processing <- function(cDF) {
     ### create an identity list for each chamber and canopy
     myDF$identity2 <- paste0(myDF$CO2_treatment, "-", myDF$Canopy)
 
+    
+    ######## Note: here you need to fit by chamber and group by treatment!
     #### Fitting ACI curve
-    fits.sub <- fitacis(myDF, group="identity2", fitmethod="bilinear", Tcorrect=T)
+    fits.sub <- fitacis(myDF, group="identity", fitmethod="bilinear", Tcorrect=T)
+    ### problems noted: 1. missing chamber 12-345, 2. chamber 7-45 could not be fitted by default method
+    ### need to go through these data and check what's wrong - can it be fitted individually?
+    
     
     ### summary table between vcmax and jmax
     coefDF <- coef(fits.sub)
