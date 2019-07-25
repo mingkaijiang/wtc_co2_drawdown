@@ -219,27 +219,99 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     
     ##### preparing aci fit
     fits.ch01 <- fitacis(ch01DF, group="Position", fitmethod="bilinear", Tcorrect=T)
+    fits.ch03 <- fitacis(ch03DF, group="Position", fitmethod="bilinear", Tcorrect=T)
+    fits.ch11 <- fitacis(ch11DF, group="Position", fitmethod="bilinear", Tcorrect=T)
     
     #plot(fits.ch01, how="oneplot")
     #plot(fits.ch01[[1]], col=alpha("black",0.2), add=T)
     #plot(fits.ch01[[2]], col=alpha("blue2", 0.2), add=T)
-    plot(fits.ch01, how="oneplot", what="data", 
-         pch=c(21, 22, 23, 24, 25), col=T)
-    plot(fits.ch01, how="oneplot", color="blue", 
-         add=T, what="model", lwd=3, lty=c(1,2,3,4,5))
-    abline(v=410, add=T, lwd = 2)
-    dev.off()
+    #plot(fits.ch01, how="oneplot", what="data", 
+    #     pch=c(21, 22, 23, 24, 25), col=T)
+    #plot(fits.ch01[[1]], how="oneplot", color="blue", 
+    #     add=T, what="model", lwd=3, lty=c(1,2,3,4,5))
+    #abline(v=410, add=T, lwd = 2)
+    #dev.off()
 
     ##
-    pdf("output/chamber_result_comparison_A_vs_Ci_flux_no_scaling_ambient.pdf", width=4, height=14)
-    par(mfrow=c(5,1))
+    pdf("output/chamber_result_comparison_A_vs_Ci_flux_no_scaling_ambient.pdf", width=8, height=14)
+    par(mfrow=c(5,3),mar=c(2,2,4,1),oma = c(4, 6, 0, 0))
     
-    plot(fits.ch01[[5]],lwd=3, col=alpha("black",0.6), pch=21, main="Up leaves")
-    plot(fits.ch01[[4]],lwd=3, col=alpha("black",0.6), pch=21, main="Low leaves", addlegend=F)
-    plot(fits.ch01[[1]],lwd=3, col=alpha("black",0.6), pch=21, main="Whole canopy", addlegend=F)
-    plot(fits.ch01[[2]],lwd=3, col=alpha("black",0.6), pch=21, main="T+M canopy", addlegend=F)
-    plot(fits.ch01[[3]],lwd=3, col=alpha("black",0.6), pch=21, main="Top canopy", addlegend=F)
+    ymin <- -2
+    ymax <- 30
+    title.size <-2
+    
+    ### first row
+    plot(fits.ch01[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    #mtext("Up leaves", side = 2, line = 1, cex = 1.2)
+    
+    plot(fits.ch03[[5]],lwd=3, col=alpha("black",0.6), pch=21, main="Up leaves", cex.main=title.size,
+         xlim=c(0, 1600), ylim=c(ymin, ymax), addlegend=F)
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch11[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax), addlegend=F)
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    ### second row
+    plot(fits.ch01[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch03[[4]],lwd=3, col=alpha("black",0.6), pch=21, main="Low leaves", cex.main=title.size,addlegend=F, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch11[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    
+    ### third row
+    plot(fits.ch01[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch03[[1]],lwd=3, col=alpha("black",0.6), pch=21, main="Whole canopy", cex.main=title.size,addlegend=F,
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch11[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    
+    ### fourth row
+    plot(fits.ch01[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch03[[2]],lwd=3, col=alpha("black",0.6), pch=21, main="T+M canopy", cex.main=title.size,addlegend=F, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch11[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    ### fifth row
+    plot(fits.ch01[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
 
+    plot(fits.ch03[[3]],lwd=3, col=alpha("black",0.6), pch=21, main="Top canopy", cex.main=title.size,addlegend=F, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch11[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    # print the overall labels
+    mtext(expression(C[i] * " (ppm)"), side = 1, outer = TRUE, line = 2, cex=2)
+    mtext(expression(A[n] * " (" * mu * "mol " * m^-2 * " " * s^-1 * ")"), side = 2, outer = TRUE, line = 2, cex=2)
+    
     dev.off()
     
     
@@ -285,6 +357,10 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     #  guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
     #
     #plot(p1)
+    
+    
+    #### export biochemical parameter summary table
+    coef(fits.ch01)
     
 
   }
