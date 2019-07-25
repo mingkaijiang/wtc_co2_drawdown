@@ -15,6 +15,16 @@ source("prepare.R")
 #### Make conceptual figure based on data from Rogers et al. 2017 NP
 make_conceptual_figure()
 
+
+############################# fit A-CI curve  #################################
+#### Fit leaf level A-Ci curves to:
+###                                1. generate parameters for two-leaf modeling
+###                                2. compare treatment effect (i.e. group by treatment, chamber as random variable)
+###                                3. layer effect (i.e. top and bottom layers)
+###                                4. save stats and figures
+###                                5. output parameters for leaf and canopy comparison
+leaf_ACI_processing()
+
 ############################# processing canopy data #################################
 #### data explained
 #### column canopy: 12345 - full canopy present
@@ -26,18 +36,15 @@ canopyDF <- processing_canopy_data()
 ############################# plot leaf and canopy A-CA curves ######################
 #### compares leaf and canopy level A-CA curves and the shape of the curves
 cDF=canopyDF
+
+### the full dataset
 plot_A_Ca_for_leaf_and_canopy_data(cDF=canopyDF)
+
+### a subset of dataset that is ambient CO2 and well-watered treatment
+plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment(cDF=canopyDF)
 
 
 ############################# fit A-CI curve  #################################
-#### Fit leaf level A-Ci curves to:
-###                                1. generate parameters for two-leaf modeling
-###                                2. compare treatment effect (i.e. group by treatment, chamber as random variable)
-###                                3. layer effect (i.e. top and bottom layers)
-###                                4. save stats and figures
-###                                5. output parameters for leaf and canopy comparison
-leaf_ACI_processing()
-
 #### Fit canopy level A-Ci curves to:
 ###                                1. generate parameters to compare against leaf scale A-Ci
 ###                                2. compare treatment effect (reduced sample size)
