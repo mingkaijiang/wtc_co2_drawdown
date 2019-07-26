@@ -93,7 +93,7 @@ leaf_ACI_processing <- function() {
         test <- subset(myDF, Identity == id.list[i])
         
         ## fit
-        fit1 <- fitaci(test, fitmethod="bilinear")
+        fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T)
         
         ## assign to list
         outlist[[i]] <- fit1
@@ -976,21 +976,6 @@ leaf_ACI_processing <- function() {
                                        c(7,7)))
     
     dev.off()
-    
-    #### to do list:
-    ### 1. resolve Jmax_SE is NA problem
-    ### 2. repeat leaf ACI for canopy ACI
-    ###    2.1. question is, do we really need to group data points together, and then run ACI stats?
-    ###    2.2 I think it might make sense to run individual chamber data then group them together thereafter. 
-    ### 3. Compute Aj, Ac for both canopy and leaf level data
-    ### 4. combine leaf and canopy raw data together to compare scale treatment effect
-    ###   3.1 generate stats
-    ###   3.2 generate figures
-    ###   3.3 save output
-    ###   
-
-    
-
     
     
 }

@@ -73,7 +73,7 @@ canopy_ACI_processing <- function(cDF) {
         test <- subset(myDF, identity == id.list[i])
         
         ## fit
-        fit1 <- fitaci(test, fitmethod="bilinear")
+        fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T)
         
         ## assign to list
         outlist[[i]] <- fit1

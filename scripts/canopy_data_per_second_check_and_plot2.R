@@ -206,7 +206,7 @@ canopy_data_per_second_check_and_plot2 <- function(myDF){
     
     
     ### output
-    pdf("output/overall_data_fluxes2.pdf", width=12, height=6)
+    pdf("output/overall_data_fluxes2_per_atm_co2_concentration.pdf", width=12, height=6)
     plot(p1)
     plot(p2)
     plot(p3)
@@ -218,4 +218,536 @@ canopy_data_per_second_check_and_plot2 <- function(myDF){
     plot(p9)
     plot(p10)
     dev.off()
+    
+    
+    
+    
+    ### Chamber 1 example
+    p3 <- ggplot(myDF[myDF$Chamber==1,], aes(x=time_elapsed, y=ncorrflux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x="Time", y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 1 example")
+    
+    ### Chamber 2 example
+    p4 <- ggplot(myDF[myDF$Chamber==2,], aes(x=time_elapsed, y=ncorrflux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x="Time", y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 2 example")
+    
+    ### Chamber 3 example
+    p5 <- ggplot(myDF[myDF$Chamber==3,], aes(x=time_elapsed, y=ncorrflux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x="Time", y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 3 example")
+    
+    
+    ### Chamber 4 example
+    p6 <- ggplot(myDF[myDF$Chamber==4,], aes(x=time_elapsed, y=ncorrflux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x="Time", y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 4 example")
+    
+    ### Chamber 7 example
+    p7 <- ggplot(myDF[myDF$Chamber==7,], aes(x=time_elapsed, y=ncorrflux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x="Time", y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 7 example")
+    
+    ### Chamber 8 example
+    p8 <- ggplot(myDF[myDF$Chamber==8,], aes(x=time_elapsed, y=ncorrflux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x="Time", y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 8 example")
+    
+    ### Chamber 11 example
+    p9 <- ggplot(myDF[myDF$Chamber==11,], aes(x=time_elapsed, y=ncorrflux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x="Time", y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 11 example")
+    
+    ### Chamber 12 example
+    p10 <- ggplot(myDF[myDF$Chamber==12,], aes(x=time_elapsed, y=ncorrflux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x="Time", y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 12 example")
+    
+    
+    ### output
+    pdf("output/overall_data_fluxes2_per_co2_flux.pdf", width=12, height=6)
+
+    plot(p3)
+    plot(p4)
+    plot(p5)
+    plot(p6)
+    plot(p7)
+    plot(p8)
+    plot(p9)
+    plot(p10)
+    dev.off()
+    
+    
+    
+    
+    ### Chamber 1 example
+    p3 <- ggplot(myDF[myDF$Chamber==1,], aes(x=vCo2, y=ncorrflux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 1 example")
+    
+    ### Chamber 2 example
+    p4 <- ggplot(myDF[myDF$Chamber==2,], aes(x=vCo2, y=ncorrflux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 2 example")
+    
+    ### Chamber 3 example
+    p5 <- ggplot(myDF[myDF$Chamber==3,], aes(x=vCo2, y=ncorrflux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 3 example")
+    
+    
+    ### Chamber 4 example
+    p6 <- ggplot(myDF[myDF$Chamber==4,], aes(x=vCo2, y=ncorrflux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 4 example")
+    
+    ### Chamber 7 example
+    p7 <- ggplot(myDF[myDF$Chamber==7,], aes(x=vCo2, y=ncorrflux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 7 example")
+    
+    ### Chamber 8 example
+    p8 <- ggplot(myDF[myDF$Chamber==8,], aes(x=vCo2, y=ncorrflux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 8 example")
+    
+    ### Chamber 11 example
+    p9 <- ggplot(myDF[myDF$Chamber==11,], aes(x=vCo2, y=ncorrflux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 11 example")
+    
+    ### Chamber 12 example
+    p10 <- ggplot(myDF[myDF$Chamber==12,], aes(x=vCo2, y=ncorrflux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 12 example")
+    
+    
+    ### output
+    pdf("output/overall_data_fluxes2_co2_flux_per_atm_co2.pdf", width=12, height=6)
+    
+    plot(p3)
+    plot(p4)
+    plot(p5)
+    plot(p6)
+    plot(p7)
+    plot(p8)
+    plot(p9)
+    plot(p10)
+    dev.off()
+    
+    
+    ### Chamber 1 example
+    p3 <- ggplot(myDF[myDF$Chamber==1,], aes(x=vCo2, y=co2_flux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 1 example")
+    
+    ### Chamber 2 example
+    p4 <- ggplot(myDF[myDF$Chamber==2,], aes(x=vCo2, y=co2_flux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 2 example")
+    
+    ### Chamber 3 example
+    p5 <- ggplot(myDF[myDF$Chamber==3,], aes(x=vCo2, y=co2_flux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 3 example")
+    
+    
+    ### Chamber 4 example
+    p6 <- ggplot(myDF[myDF$Chamber==4,], aes(x=vCo2, y=co2_flux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 4 example")
+    
+    ### Chamber 7 example
+    p7 <- ggplot(myDF[myDF$Chamber==7,], aes(x=vCo2, y=co2_flux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 7 example")
+    
+    ### Chamber 8 example
+    p8 <- ggplot(myDF[myDF$Chamber==8,], aes(x=vCo2, y=co2_flux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 8 example")
+    
+    ### Chamber 11 example
+    p9 <- ggplot(myDF[myDF$Chamber==11,], aes(x=vCo2, y=co2_flux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 11 example")
+    
+    ### Chamber 12 example
+    p10 <- ggplot(myDF[myDF$Chamber==12,], aes(x=vCo2, y=co2_flux, color=factor(Canopy)))+
+        geom_point(size=2.0)+
+        geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=14), 
+              axis.text.x = element_text(size=12),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right")+
+        scale_colour_manual(name="Canopy", values = c("12345" = "red", "345" = "green",
+                                                      "45" = "blue"),
+                            labels=c("full", "top + middle", "top"))+
+        ggtitle("Chamber 12 example")
+    
+    ### output
+    pdf("output/overall_data_fluxes_co2_flux_per_atm_co2.pdf", width=12, height=6)
+    
+    plot(p3)
+    plot(p4)
+    plot(p5)
+    plot(p6)
+    plot(p7)
+    plot(p8)
+    plot(p9)
+    plot(p10)
+    dev.off()
+    
 }

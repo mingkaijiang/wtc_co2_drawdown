@@ -120,6 +120,12 @@ processing_canopy_data <- function() {
                      "cmarea", "nslope2","k", 
                      "leak", "corrflux", "ncorrflux", "rh", "co2_flux", "H2O_flux_normalized")]
     
+    colnames(outDF) <- c("Chamber", "Canopy", "vCo2", 
+                         "vT", "date", "time",  "datetime", 
+                         "Tair", "VPD", 
+                         "DPLicorCh", "PARi", "slope2", 
+                         "cmarea", "nslope2","k", 
+                         "leak", "corrflux", "co2_flux", "rh", "my_co2_flux", "H2O_flux_normalized")
     return(outDF)
 
     
