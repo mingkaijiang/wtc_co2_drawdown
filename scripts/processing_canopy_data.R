@@ -145,8 +145,16 @@ processing_canopy_data <- function() {
     myDF$datetime <- as.POSIXct(paste(myDF$date, myDF$time), format="%Y-%m-%d %H:%M:%S")
     myDF <- myDF[,!(colnames(myDF)%in% c("time1", "time2"))]
     
-
+    test <- subset(myDF, Chamber == "12" & Canopy == "345")
+    
+    test2 <- subset(myDF2, Chamber == "12" & Canopy == "345")
+    test2$date <- as.Date(test2$datetime)
+    unique(test2$date)
+    test3 <- subset(test2, date=="2009-03-24")
+    
     ### combine both datasets
+    ### problem with this function, chamber 12 canopy 345 gone missing here
+    
     cDF <- merge(myDF, myDF2, by.x=c("Chamber", "Canopy", "datetime"), 
                  by.y=c("Chamber", "Canopy", "datetime"))
 

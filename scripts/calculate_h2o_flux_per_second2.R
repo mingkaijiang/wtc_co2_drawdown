@@ -339,9 +339,10 @@ calculate_h2o_flux_per_second2 <- function(myDF) {
     tDF23 <- subset(myDF, chamber == "12" & canopy == "345")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF23$vCo2)
+    #r.n <- which.max(tDF23$vCo2)
+    r.n <- 3
     
-    ### fine total row numbers (excluding pre-treatment rows)
+    ### find total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF23$chamber[r.n:dim(tDF23)[1]])
     
     ### set up time points

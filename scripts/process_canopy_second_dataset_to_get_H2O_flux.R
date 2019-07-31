@@ -42,7 +42,8 @@ process_canopy_second_dataset_to_get_H2O_flux <- function() {
     
     #with(myDF2[myDF2$canopy=="12345" & myDF2$chamber == "1", ], plot(H2O_flux_normalized ~ datetime))
     
-
+    #test2 <- subset(myDF2, chamber == "12" & canopy == "345")
+    
     ## return selected columns
     
     outDF <- myDF2[,c("chamber", "canopy", "datetime", "H2O_flux_normalized")]
