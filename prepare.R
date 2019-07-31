@@ -18,7 +18,8 @@ pacman::p_load(dplyr,
                stringr,        # to subtract characters
                lme4,
                cowplot,
-               nlme)    
+               nlme,
+               gridExtra)    
 
 
 #### Sourcing all R files in the modules subdirectory

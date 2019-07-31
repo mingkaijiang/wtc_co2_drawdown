@@ -13,10 +13,19 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     
     #### subset year 2009
     lDF$year <- year(lDF$Date)
-    lDF <- subset(lDF, year == 2009)
+    lDF$Date <- as.Date(lDF$Date)
+    
+    lDF <- subset(lDF, Identity %in% c("90", "91", "92", "93", "96", "97", "100", "101", ### low
+                                     "78", "104", "103", "87", "81", "82", "84", "86"))  ### high
+    
+    #lDF <- subset(lDF, Date >= "2008-10-01")
+    #lDF <- subset(lDF, Identity !="69")
+    #lDF <- subset(lDF, Identity !="65")
+    #lDF <- subset(lDF, Identity !="63")
+    #lDF <- subset(lDF, Identity !="64")
     
     ### remove duplicated ch03 measurements
-    lDF <- subset(lDF, Date!="2009-01-10")
+    #lDF <- subset(lDF, Date!="2009-01-10")
     
     ### rename canopy DF
     ### note the Tleaf definition is not real!
@@ -28,10 +37,14 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
                        "transpiration")
     
     ### clean the dataset to exclude na, negative values
+    cDF[cDF$Chamber == 2 & cDF$Photo > 15, "Photo"] <- NA
+    cDF[cDF$Chamber == 12 & cDF$Photo > 25, "Photo"] <- NA
+    cDF[cDF$Chamber == 7 & cDF$Photo > 16, "Photo"] <- NA
+    
     cDF <- cDF[complete.cases(cDF$Photo), ]
     cDF <- cDF[cDF$transpiration > 0, ]
-    
-    
+    cDF <- cDF[cDF$Photo > 0, ]
+
     ### get gs from transpiration
     cDF$gs <- cDF$transpiration / cDF$VPD
     
@@ -42,29 +55,34 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     ## chambers 1, 3, 5, 7, 9, 11 are CO2 ambient
     ## chambers 1, 3, 4, 6, 8, 11 are wet 
     
+    ### ambient CO2
     ch01DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
-                                   ch.l="ch01", ch.c="1")
-
-    #ch02DF <- leaf_canopy_combined(lDF, cDF, 
-    #                               ch.l="ch02", ch.c="2")
+                                                      ch.l="ch01", ch.c="1")
     
     ch03DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
-                                   ch.l="ch03", ch.c="3")
+                                                      ch.l="ch03", ch.c="3")
     
-    #ch04DF <- leaf_canopy_combined(lDF, cDF, 
-    #                               ch.l="ch04", ch.c="4")
-    
-    #ch07DF <- leaf_canopy_combined(lDF, cDF, 
-    #                               ch.l="ch07", ch.c="7")
-    
-    #ch08DF <- leaf_canopy_combined(lDF, cDF, 
-    #                               ch.l="ch08", ch.c="8")
+    ch07DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
+                                                      ch.l="ch07", ch.c="7")
     
     ch11DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
-                                   ch.l="ch11", ch.c="11")
+                                                      ch.l="ch11", ch.c="11")
     
-    #ch12DF <- leaf_canopy_combined(lDF, cDF,
-    #                               ch.l="ch12", ch.c="12")
+    ### elevated CO2
+    ch02DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
+                                                      ch.l="ch02", ch.c="2")
+    
+    ch04DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
+                                                      ch.l="ch04", ch.c="4")
+    
+    ch08DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
+                                                      ch.l="ch08", ch.c="8")
+    
+    ch12DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF,
+                                                      ch.l="ch12", ch.c="12")
+    
+    #test <- subset(ch08DF, Position == "345")
+    #with(test, plot(Photo~Ca))
     
     
     #### clearly some data points are problematic, so removing them
@@ -129,6 +147,41 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     
     
     p2 <- ggplot() +
+      geom_point(data=ch02DF, aes(Ca, Photo, 
+                                  fill=as.factor(ch02DF$Position), 
+                                  pch = as.factor(ch02DF$Source)), alpha=0.9)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab(expression(paste(C[a]* " (umol ", m^-2, " ", s^-1, ")")))+
+      ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      scale_fill_manual(name="Position",
+                        limits=c("12345", "345", "45", "up", "low"),
+                        values=c("blue2", "red3", "purple", "orange", "green"),
+                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_color_manual(name="Position",
+                         limits=c("12345", "345", "45", "up", "low"),
+                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
+                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_shape_manual(name="Measurements",
+                         values=c(21, 24),
+                         labels=c("Canopy", "Leaf"))+
+      xlim(0,2000)+
+      ylim(-5,40)+
+      ggtitle("Chamber 02")+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+    
+    
+    p3 <- ggplot() +
       geom_point(data=ch03DF, aes(Ca, Photo, 
                                   fill=as.factor(ch03DF$Position), 
                                   pch = as.factor(ch03DF$Source)), alpha=0.9)+
@@ -165,8 +218,113 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
       ggtitle("Chamber 03")+
       guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
     
+    
+    p4 <- ggplot() +
+      geom_point(data=ch04DF, aes(Ca, Photo, 
+                                  fill=as.factor(ch04DF$Position), 
+                                  pch = as.factor(ch04DF$Source)), alpha=0.9)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab(expression(paste(C[a]* " (umol ", m^-2," ", s^-1, ")")))+
+      ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      scale_fill_manual(name="Position",
+                        limits=c("12345", "345", "45", "up", "low"),
+                        values=c("blue2", "red3", "purple", "orange", "green"),
+                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_color_manual(name="Position",
+                         limits=c("12345", "345", "45", "up", "low"),
+                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
+                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_shape_manual(name="Measurements",
+                         values=c(21, 24),
+                         labels=c("Canopy", "Leaf"))+
+      xlim(0,2000)+
+      ylim(-5,40)+
+      ggtitle("Chamber 04")+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+    
+    
+    p5 <- ggplot() +
+      geom_point(data=ch07DF, aes(Ca, Photo, 
+                                  fill=as.factor(ch07DF$Position), 
+                                  pch = as.factor(ch07DF$Source)), alpha=0.9)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab(expression(paste(C[a]* " (umol ", m^-2," ", s^-1, ")")))+
+      ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      scale_fill_manual(name="Position",
+                        limits=c("12345", "345", "45", "up", "low"),
+                        values=c("blue2", "red3", "purple", "orange", "green"),
+                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_color_manual(name="Position",
+                         limits=c("12345", "345", "45", "up", "low"),
+                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
+                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_shape_manual(name="Measurements",
+                         values=c(21, 24),
+                         labels=c("Canopy", "Leaf"))+
+      xlim(0,2000)+
+      ylim(-5,40)+
+      ggtitle("Chamber 07")+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+    
+    
+    p6 <- ggplot() +
+      geom_point(data=ch08DF, aes(Ca, Photo, 
+                                  fill=as.factor(ch08DF$Position), 
+                                  pch = as.factor(ch08DF$Source)), alpha=0.9)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab(expression(paste(C[a]* " (umol ", m^-2," ", s^-1, ")")))+
+      ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      scale_fill_manual(name="Position",
+                        limits=c("12345", "345", "45", "up", "low"),
+                        values=c("blue2", "red3", "purple", "orange", "green"),
+                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_color_manual(name="Position",
+                         limits=c("12345", "345", "45", "up", "low"),
+                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
+                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_shape_manual(name="Measurements",
+                         values=c(21, 24),
+                         labels=c("Canopy", "Leaf"))+
+      xlim(0,2000)+
+      ylim(-5,40)+
+      ggtitle("Chamber 08")+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+    
 
-    p3 <- ggplot() +
+    p7 <- ggplot() +
       geom_point(data=ch11DF, aes(Ca, Photo, 
                                   fill=as.factor(ch11DF$Position), 
                                   pch = as.factor(ch11DF$Source)), alpha=0.9)+
@@ -204,13 +362,51 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
       guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
     
     
+    p8 <- ggplot() +
+      geom_point(data=ch12DF, aes(Ca, Photo, 
+                                  fill=as.factor(ch12DF$Position), 
+                                  pch = as.factor(ch12DF$Source)), alpha=0.9)+
+      #geom_smooth(data=ch12DF, aes(Ca, Photo, group=ch12DF$Position,
+      #                             col=as.factor(ch12DF$Position)),
+      #            method = "lm", formula = y ~ splines::bs(x, 5), se=F)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab(expression(paste(C[a]* " (umol ", m^-2, " ",  s^-1, ")")))+
+      ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      scale_fill_manual(name="Position",
+                        limits=c("12345", "345", "45", "up", "low"),
+                        values=c("blue2", "red3", "purple", "orange", "green"),
+                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_color_manual(name="Position",
+                         limits=c("12345", "345", "45", "up", "low"),
+                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
+                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_shape_manual(name="Measurements",
+                         values=c(21, 24),
+                         labels=c("Canopy", "Leaf"))+
+      xlim(0,2000)+
+      ylim(-5,40)+
+      ggtitle("Chamber 12")+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+    
+    
     ### combined plots + shared legend
     legend_shared <- get_legend(p1 + theme(legend.position="bottom",
                                            legend.box = 'vertical',
                                            legend.box.just = 'left'))
     
-    combined_plots <- plot_grid(p1, p2, p3, 
-                                labels="AUTO", ncol=1, align="vh", axis = "l")
+    combined_plots <- plot_grid(p1, p2, p3, p4, p5, p6, p7, p8, 
+                                labels="AUTO", ncol=2, align="vh", axis = "l")
     
 
     ### output
@@ -219,10 +415,18 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     dev.off()    
     
     
-    ##### preparing aci fit
-    fits.ch01 <- fitacis(ch01DF, group="Position", fitmethod="bilinear", Tcorrect=T)
-    fits.ch03 <- fitacis(ch03DF, group="Position", fitmethod="bilinear", Tcorrect=T)
-    fits.ch11 <- fitacis(ch11DF, group="Position", fitmethod="bilinear", Tcorrect=T)
+    ##### preparing acifit
+    #### the fit TPU function makes it long to run!
+    fits.ch01 <- fitacis(ch01DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
+    fits.ch03 <- fitacis(ch03DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
+    fits.ch07 <- fitacis(ch07DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
+    fits.ch11 <- fitacis(ch11DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
+    
+    fits.ch02 <- fitacis(ch02DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
+    ### 345 cannot be fitted with default method
+    fits.ch04 <- fitacis(ch04DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
+    fits.ch08 <- fitacis(ch08DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
+    fits.ch12 <- fitacis(ch12DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
     
     #plot(fits.ch01, how="oneplot")
     #plot(fits.ch01[[1]], col=alpha("black",0.2), add=T)
@@ -235,20 +439,24 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     #dev.off()
 
     ##
-    pdf("output/chamber_result_comparison_A_vs_Ci_flux_no_scaling_ambient.pdf", width=8, height=14)
-    par(mfrow=c(5,3),mar=c(2,2,4,1),oma = c(4, 6, 0, 0))
+    pdf("output/chamber_result_comparison_A_vs_Ci_flux_no_scaling_ambient.pdf", width=20, height=14)
+    par(mfrow=c(5,8),mar=c(2,2,4,1),oma = c(4, 6, 0, 0))
     
     ymin <- -2
-    ymax <- 30
+    ymax <- 40
     title.size <-2
     
     ### first row
-    plot(fits.ch01[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
+    plot(fits.ch01[[5]],lwd=3, col=alpha("black",0.6), pch=21, main="Up leaves", cex.main=title.size,
          xlim=c(0, 1600), ylim=c(ymin, ymax))
     abline(v=c(380, 620), lwd=2, lty=c(3,1))
     #mtext("Up leaves", side = 2, line = 1, cex = 1.2)
     
-    plot(fits.ch03[[5]],lwd=3, col=alpha("black",0.6), pch=21, main="Up leaves", cex.main=title.size,
+    plot(fits.ch03[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax), addlegend=F)
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch07[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
          xlim=c(0, 1600), ylim=c(ymin, ymax), addlegend=F)
     abline(v=c(380, 620), lwd=2, lty=c(3,1))
     
@@ -256,12 +464,32 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
          xlim=c(0, 1600), ylim=c(ymin, ymax), addlegend=F)
     abline(v=c(380, 620), lwd=2, lty=c(3,1))
     
+    plot(fits.ch02[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax), addlegend=F)
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch04[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax), addlegend=F)
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch08[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax), addlegend=F)
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch12[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax), addlegend=F)
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
     ### second row
-    plot(fits.ch01[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+    plot(fits.ch01[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, main="Low leaves", cex.main=title.size,
          xlim=c(0, 1600), ylim=c(ymin, ymax))
     abline(v=c(380, 620), lwd=2, lty=c(3,1))
     
-    plot(fits.ch03[[4]],lwd=3, col=alpha("black",0.6), pch=21, main="Low leaves", cex.main=title.size,addlegend=F, 
+    plot(fits.ch03[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch07[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
          xlim=c(0, 1600), ylim=c(ymin, ymax))
     abline(v=c(380, 620), lwd=2, lty=c(3,1))
     
@@ -269,13 +497,33 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
          xlim=c(0, 1600), ylim=c(ymin, ymax))
     abline(v=c(380, 620), lwd=2, lty=c(3,1))
     
-    
-    ### third row
-    plot(fits.ch01[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+    plot(fits.ch02[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
          xlim=c(0, 1600), ylim=c(ymin, ymax))
     abline(v=c(380, 620), lwd=2, lty=c(3,1))
     
-    plot(fits.ch03[[1]],lwd=3, col=alpha("black",0.6), pch=21, main="Whole canopy", cex.main=title.size,addlegend=F,
+    plot(fits.ch04[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch08[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch12[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    
+    ### third row
+    plot(fits.ch01[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, main="Whole canopy", cex.main=title.size,
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch03[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch07[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
          xlim=c(0, 1600), ylim=c(ymin, ymax))
     abline(v=c(380, 620), lwd=2, lty=c(3,1))
     
@@ -283,13 +531,33 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
          xlim=c(0, 1600), ylim=c(ymin, ymax))
     abline(v=c(380, 620), lwd=2, lty=c(3,1))
     
-    
-    ### fourth row
-    plot(fits.ch01[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
+    plot(fits.ch02[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
          xlim=c(0, 1600), ylim=c(ymin, ymax))
     abline(v=c(380, 620), lwd=2, lty=c(3,1))
     
-    plot(fits.ch03[[2]],lwd=3, col=alpha("black",0.6), pch=21, main="T+M canopy", cex.main=title.size,addlegend=F, 
+    plot(fits.ch04[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch08[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch12[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    
+    ### fourth row
+    plot(fits.ch01[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,main="T+M canopy", cex.main=title.size,
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch03[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch07[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
          xlim=c(0, 1600), ylim=c(ymin, ymax))
     abline(v=c(380, 620), lwd=2, lty=c(3,1))
     
@@ -297,16 +565,52 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
          xlim=c(0, 1600), ylim=c(ymin, ymax))
     abline(v=c(380, 620), lwd=2, lty=c(3,1))
     
+    plot(fits.ch02[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch04[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch08[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch12[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
     ### fifth row
-    plot(fits.ch01[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+    plot(fits.ch01[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, main="Top canopy", cex.main=title.size,
          xlim=c(0, 1600), ylim=c(ymin, ymax))
     abline(v=c(380, 620), lwd=2, lty=c(3,1))
 
-    plot(fits.ch03[[3]],lwd=3, col=alpha("black",0.6), pch=21, main="Top canopy", cex.main=title.size,addlegend=F, 
+    plot(fits.ch03[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch07[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
          xlim=c(0, 1600), ylim=c(ymin, ymax))
     abline(v=c(380, 620), lwd=2, lty=c(3,1))
     
     plot(fits.ch11[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch02[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch04[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch08[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+         xlim=c(0, 1600), ylim=c(ymin, ymax))
+    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    
+    plot(fits.ch12[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
          xlim=c(0, 1600), ylim=c(ymin, ymax))
     abline(v=c(380, 620), lwd=2, lty=c(3,1))
     
@@ -564,5 +868,10 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     
     dev.off()
     
+    coefDF <- coef(fits.all)
+    coefDF$JV_ratio <- coefDF$Jmax / coefDF$Vcmax
+  
     
-  }
+    
+    
+}

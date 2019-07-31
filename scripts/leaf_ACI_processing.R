@@ -15,17 +15,21 @@ leaf_ACI_processing <- function() {
     ###                   canopy location
     ###                   time
     myDF <- rbind(myDF1, myDF2)
-    myDF <- subset(myDF, chamber %in% c("ch01", "ch02", "ch03", "ch04", "ch05", "ch06",
-                                        "ch07", "ch08", "ch09", "ch10", "ch11", "ch12"))
+    myDF <- subset(myDF, chamber %in% c("ch01", "ch02", "ch03", "ch04", #"ch05", "ch06",
+                                        "ch07", "ch08", #"ch09", "ch10", 
+                                        "ch11", "ch12"))
     
     myDF$year <- year(myDF$Date)
-    myDF <- subset(myDF, year == 2009)
-    #myDF <- subset(myDF, Identity != 80)
+    #myDF <- subset(myDF, year == 2009)
     
-    unique(myDF[c("chamber", "Height", "CO2_treatment", "Water_treatment")])
+    ### I think we don't want to subset the dataset,
+    ### because summer 2008-9 has a drought treatment.
+    ### Plus, we would have less sample size. 
+    #myDF$Date <- as.Date(myDF$Date)
+    #myDF <- subset(myDF, Date >= "2008-10-01")
     
     #### Fitting ACI curve at the finest resolution
-    fits.all <- fitacis(myDF, group="Identity", fitmethod="bilinear", Tcorrect=T)
+    fits.all <- fitacis(myDF, group="Identity", fitmethod="bilinear",Tcorrect=T, fitTPU=T)
     
     ### plot all fittings on the same graph, looks messy
     #plot(fits.all, how="oneplot")
@@ -40,8 +44,8 @@ leaf_ACI_processing <- function() {
         coefDF[coefDF$Identity==i, "chamber"] <- unique(myDF[myDF$Identity==i, "chamber"])
         coefDF[coefDF$Identity==i, "Height"] <- unique(myDF[myDF$Identity==i, "Height"])
         coefDF[coefDF$Identity==i, "CO2_treatment"] <- unique(myDF[myDF$Identity==i, "CO2_treatment"])
-        coefDF[coefDF$Identity==i, "Water_treatment"] <- unique(myDF[myDF$Identity==i, "Water_treatment"])
-        coefDF[coefDF$Identity==i, "inside_or_outside_WTC"] <- unique(myDF[myDF$Identity==i, "inside_or_outside_WTC"])
+        #coefDF[coefDF$Identity==i, "Water_treatment"] <- unique(myDF[myDF$Identity==i, "Water_treatment"])
+        #coefDF[coefDF$Identity==i, "inside_or_outside_WTC"] <- unique(myDF[myDF$Identity==i, "inside_or_outside_WTC"])
     }
     
     
@@ -49,43 +53,32 @@ leaf_ACI_processing <- function() {
     coefDF$JVratio <- coefDF$Jmax/coefDF$Vcmax
     
     coefDF$Date <- as.Date(coefDF$Date)
-    
+
     ### calculate Ac_Aj transition Ci point
     for (i in unique(coefDF$Identity)) {
         testDF <- subset(myDF, Identity==i)
-        fit.i <- fitaci(testDF)
+        fit.i <- fitaci(testDF,Tcorrect=T, fitTPU=T)
         out <- findCiTransition(fit.i)
         coefDF[coefDF$Identity==i,"Ac_Aj"] <- out[1]
     }
     
-    
-    coefDF.sub <- coefDF
-    
-    ### investigate jsut a subset of the data, close to canopy drawdown dates
-    coefDF.sub$year <- year(coefDF.sub$Date)
-    coefDF.sub <- subset(coefDF.sub, year == 2009)
-    coefDF.sub <- coefDF.sub[!(coefDF.sub$chamber%in%c("ch15","ch16","ch17")),]
-    
-    ### ignore the last entry as it is simply a duplicated
-    subDF <- coefDF.sub[1:24,] 
+    ### exclude outliers
+    coefDF.sub <- coefDF[coefDF$JVratio <= 3, ]
     
     ### make a list of identify
-    id.list <- unique(subDF$Identity)
+    id.list <- unique(coefDF.sub$Identity)
     
     ### prepare an output df
-    outDF <- data.frame(id.list, NA, NA, NA, NA, NA, NA,
+    outDF <- data.frame(id.list, NA, NA, NA, NA, NA, NA, 
                         NA, NA, NA, NA, NA, NA,
                         NA, NA, NA, NA, NA, NA,
                         NA, NA, NA, NA, NA, NA,
                         NA, NA, NA, NA, NA)
-    colnames(outDF) <- c("Identity", "Chamber", "CO2_treatment", "Water_treatment", "Height",
+    colnames(outDF) <- c("Identity", "Chamber", "CO2_treatment", "Height", "Date",
                          "RMSE", "Vcmax", "Vcmax.se", "Jmax", "Jmax.se", "Rd", "Rd.se",
                          "Ci", "ALEAF", "GS", "ELEAF", "Ac", "Aj", "Ap", "Rd2", "VPD",
                          "Tleaf", "Ca", "Cc", "PPFD", "Ci_transition_Ac_Aj",
                          "curve.fitting", "Patm", "GammaStar", "Km")
-    
-    ### prepare an output list
-    outlist <- list()
     
     ### the for loop
     for (i in 1:length(id.list)) {
@@ -93,17 +86,14 @@ leaf_ACI_processing <- function() {
         test <- subset(myDF, Identity == id.list[i])
         
         ## fit
-        fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T)
-        
-        ## assign to list
-        outlist[[i]] <- fit1
+        fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU=T)
         
         ## get information on identity
         outDF[outDF$Identity == id.list[i], "CO2_treatment"] <- unique(test$CO2_treatment)
-        outDF[outDF$Identity == id.list[i], "Water_treatment"] <- unique(test$Water_treatment)
         outDF[outDF$Identity == id.list[i], "Chamber"] <- unique(test$chamber)
         outDF[outDF$Identity == id.list[i], "Height"] <- unique(test$Height)
         outDF[outDF$Identity == id.list[i], "curve.fitting"] <- fit1$fitmethod
+        outDF[outDF$Identity == id.list[i], "Date"] <- unique(test$Date)
         
         ## assign fitted values
         outDF[outDF$Identity == id.list[i], "RMSE"] <- fit1$RMSE
@@ -134,22 +124,24 @@ leaf_ACI_processing <- function() {
         outDF[outDF$Identity == id.list[i], "Km"] <- fit1$Km
     }
     
+    outDF$JVratio <- outDF$Jmax / outDF$Vcmax
+    
     ### save
-    write.csv(outDF, "output/leaf_scale_parameters.csv")
+    write.csv(outDF, "output/leaf_scale_parameters.csv", row.names=F)
     
     
     ### create pdf
-    pdf("output/leaf_level_individual_chamber_result.pdf", height=24, width=20)
-    par(mfrow=c(6,4))
-    
-    ## make plot
-    plot.sequence <- c(1,9,12,15,2,11,14,17,6,4,21,19,10,24,16,13,5,8,20,22, 3,7,18)
-    for (i in 1:length(plot.sequence)) {
-        plot(outlist[[plot.sequence[i]]], main=paste0(outDF$Chamber[plot.sequence[i]], ", ", outDF$Height[plot.sequence[i]], ", ",
-                                                      outDF$CO2_treatment[plot.sequence[i]], ", ", outDF$Water_treatment[plot.sequence[i]]))
-    }
-    
-    dev.off()
+    #pdf("output/leaf_level_individual_chamber_result.pdf", height=24, width=20)
+    #par(mfrow=c(6,4))
+    #
+    ### make plot
+    #plot.sequence <- c(1,9,12,15,2,11,14,17,6,4,21,19,10,24,16,13,5,8,20,22, 3,7,18)
+    #for (i in 1:length(plot.sequence)) {
+    #    plot(outlist[[plot.sequence[i]]], main=paste0(outDF$Chamber[plot.sequence[i]], ", ", outDF$Height[plot.sequence[i]], ", ",
+    #                                                  outDF$CO2_treatment[plot.sequence[i]], ", ", outDF$Water_treatment[plot.sequence[i]]))
+    #}
+    #
+    #dev.off()
     
     ### visually check whether Jmax, Vcmax, and JVratio change with multiple treatments
     
@@ -228,8 +220,8 @@ leaf_ACI_processing <- function() {
     sumDF.co2 <- summaryBy(Vcmax + Jmax + Rd + ALEAF + GS + ELEAF + Ac + Aj +Ci_transition_Ac_Aj + GammaStar + Km ~ CO2_treatment,
                            data=outDF, FUN = c(mean, se), keep.names=T)
     
-    sumDF.h2o <- summaryBy(Vcmax + Jmax + Rd + ALEAF + GS + ELEAF + Ac + Aj +Ci_transition_Ac_Aj + GammaStar + Km ~ Water_treatment,
-                           data=outDF, FUN = c(mean, se), keep.names=T)
+    #sumDF.h2o <- summaryBy(Vcmax + Jmax + Rd + ALEAF + GS + ELEAF + Ac + Aj +Ci_transition_Ac_Aj + GammaStar + Km ~ Water_treatment,
+    #                       data=outDF, FUN = c(mean, se), keep.names=T)
     
     sumDF.ht <- summaryBy(Vcmax + Jmax + Rd + ALEAF + GS + ELEAF + Ac + Aj +Ci_transition_Ac_Aj + GammaStar + Km ~ Height,
                            data=outDF, FUN = c(mean, se), keep.names=T)
@@ -258,30 +250,30 @@ leaf_ACI_processing <- function() {
         ylim(40,100)+
         ggtitle("a")
     
-    p2 <- ggplot(sumDF.h2o) +
-        geom_errorbar(aes(x=Water_treatment, ymin=(Vcmax.mean - Vcmax.se), 
-                          ymax = (Vcmax.mean+Vcmax.se)), position = "dodge", width=0.2)+
-        geom_point(aes(Water_treatment, Vcmax.mean, fill=Water_treatment), size = 10, shape=21)+
-        xlab("")+
-        ylab(expression(V[cmax]*" (umol " * m^-2 * " " * s^-1 * ")"))+
-        scale_fill_manual(name=expression(paste(H[2] * "O treatment")),
-                          limits=c("wet", "dry"),
-                          values=c("grey", "black"))+
-        theme(panel.grid.minor=element_blank(),
-              axis.title.x = element_blank(), 
-              axis.text.x = element_blank(),
-              axis.text.y=element_blank(), 
-              axis.title.y=element_blank(), 
-              legend.text=element_text(size=18),
-              legend.title=element_text(size=18),
-              panel.grid.major=element_blank(),
-              legend.position="none",
-              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-        ylim(40,100)+
-        ggtitle("b")
+    #p2 <- ggplot(sumDF.h2o) +
+    #    geom_errorbar(aes(x=Water_treatment, ymin=(Vcmax.mean - Vcmax.se), 
+    #                      ymax = (Vcmax.mean+Vcmax.se)), position = "dodge", width=0.2)+
+    #    geom_point(aes(Water_treatment, Vcmax.mean, fill=Water_treatment), size = 10, shape=21)+
+    #    xlab("")+
+    #    ylab(expression(V[cmax]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+    #    scale_fill_manual(name=expression(paste(H[2] * "O treatment")),
+    #                      limits=c("wet", "dry"),
+    #                      values=c("grey", "black"))+
+    #    theme(panel.grid.minor=element_blank(),
+    #          axis.title.x = element_blank(), 
+    #          axis.text.x = element_blank(),
+    #          axis.text.y=element_blank(), 
+    #          axis.title.y=element_blank(), 
+    #          legend.text=element_text(size=18),
+    #          legend.title=element_text(size=18),
+    #          panel.grid.major=element_blank(),
+    #          legend.position="none",
+    #          plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+    #    ylim(40,100)+
+    #    ggtitle("b")
     
     
-    p3 <- ggplot(sumDF.ht) +
+    p2 <- ggplot(sumDF.ht) +
         geom_errorbar(aes(x=Height, ymin=(Vcmax.mean - Vcmax.se), 
                           ymax = (Vcmax.mean+Vcmax.se)), position = "dodge", width=0.2)+
         geom_point(aes(Height, Vcmax.mean, fill=Height), size = 10, shape=21)+
@@ -301,10 +293,10 @@ leaf_ACI_processing <- function() {
               legend.position="none",
               plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
         ylim(40,100)+
-        ggtitle("c")
+        ggtitle("b")
     
 
-    p4 <- ggplot(sumDF.co2) +
+    p3 <- ggplot(sumDF.co2) +
         geom_errorbar(aes(x=CO2_treatment, ymin=(Jmax.mean - Jmax.se), 
                           ymax = (Jmax.mean+Jmax.se)), position = "dodge", width=0.2)+
         geom_point(aes(CO2_treatment, Jmax.mean, fill=CO2_treatment), size = 10, shape=21)+
@@ -323,34 +315,34 @@ leaf_ACI_processing <- function() {
               panel.grid.major=element_blank(),
               legend.position="none",
               plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-        ylim(50,150)+
-        ggtitle("d")
+        ylim(50,200)+
+        ggtitle("c")
     
     
-    p5 <- ggplot(sumDF.h2o) +
-        geom_errorbar(aes(x=Water_treatment, ymin=(Jmax.mean - Jmax.se), 
-                          ymax = (Jmax.mean+Jmax.se)), position = "dodge", width=0.2)+
-        geom_point(aes(Water_treatment, Jmax.mean, fill=Water_treatment), size = 10, shape=21)+
-        xlab("")+
-        ylab(expression(J[max]*" (umol " * m^-2 * " " * s^-1 * ")"))+
-        scale_fill_manual(name=expression(paste(H[2] * "O treatment")),
-                          limits=c("wet", "dry"),
-                          values=c("grey", "black"))+
-        theme(panel.grid.minor=element_blank(),
-              axis.title.x = element_blank(), 
-              axis.text.x = element_blank(),
-              axis.text.y=element_blank(), 
-              axis.title.y=element_blank(), 
-              legend.text=element_text(size=18),
-              legend.title=element_text(size=18),
-              panel.grid.major=element_blank(),
-              legend.position="none",
-              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-        ylim(50,150)+
-        ggtitle("e")
+    #p5 <- ggplot(sumDF.h2o) +
+    #    geom_errorbar(aes(x=Water_treatment, ymin=(Jmax.mean - Jmax.se), 
+    #                      ymax = (Jmax.mean+Jmax.se)), position = "dodge", width=0.2)+
+    #    geom_point(aes(Water_treatment, Jmax.mean, fill=Water_treatment), size = 10, shape=21)+
+    #    xlab("")+
+    #    ylab(expression(J[max]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+    #    scale_fill_manual(name=expression(paste(H[2] * "O treatment")),
+    #                      limits=c("wet", "dry"),
+    #                      values=c("grey", "black"))+
+    #    theme(panel.grid.minor=element_blank(),
+    #          axis.title.x = element_blank(), 
+    #          axis.text.x = element_blank(),
+    #          axis.text.y=element_blank(), 
+    #          axis.title.y=element_blank(), 
+    #          legend.text=element_text(size=18),
+    #          legend.title=element_text(size=18),
+    #          panel.grid.major=element_blank(),
+    #          legend.position="none",
+    #          plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+    #    ylim(50,150)+
+    #    ggtitle("e")
     
     
-    p6 <- ggplot(sumDF.ht) +
+    p4 <- ggplot(sumDF.ht) +
         geom_errorbar(aes(x=Height, ymin=(Jmax.mean - Jmax.se), 
                           ymax = (Jmax.mean+Jmax.se)), position = "dodge", width=0.2)+
         geom_point(aes(Height, Jmax.mean, fill=Height), size = 10, shape=21)+
@@ -369,11 +361,11 @@ leaf_ACI_processing <- function() {
               panel.grid.major=element_blank(),
               legend.position="none",
               plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-        ylim(50,150)+
-        ggtitle("f")
+        ylim(50,200)+
+        ggtitle("d")
     
     
-    p7 <- ggplot(sumDF.co2) +
+    p5 <- ggplot(sumDF.co2) +
         geom_errorbar(aes(x=CO2_treatment, ymin=(Ci_transition_Ac_Aj.mean - Ci_transition_Ac_Aj.se), 
                           ymax = (Ci_transition_Ac_Aj.mean+Ci_transition_Ac_Aj.se)), position = "dodge", width=0.2)+
         geom_point(aes(CO2_treatment, Ci_transition_Ac_Aj.mean, fill=CO2_treatment), size = 10, shape=21)+
@@ -392,40 +384,40 @@ leaf_ACI_processing <- function() {
               panel.grid.major=element_blank(),
               legend.position="bottom",
               plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-        ylim(200,300)+
+        ylim(200,400)+
         scale_x_discrete(breaks=c("ambient", "elevated"),
                            labels=c("ambient", "elevated"))+
         guides(fill = guide_legend(title.position = "top"))+
-        ggtitle("g")
+        ggtitle("e")
     
     
-    p8 <- ggplot(sumDF.h2o) +
-        geom_errorbar(aes(x=Water_treatment, ymin=(Ci_transition_Ac_Aj.mean - Ci_transition_Ac_Aj.se), 
-                          ymax = (Ci_transition_Ac_Aj.mean+Ci_transition_Ac_Aj.se)), position = "dodge", width=0.2)+
-        geom_point(aes(Water_treatment, Ci_transition_Ac_Aj.mean, fill=Water_treatment), size = 10, shape=21)+
-        xlab("Water treatment")+
-        ylab(expression(C[i]*" transition point (umol " * mol^-1 * ")"))+
-        scale_fill_manual(name="Water treatment",
-                          limits=c("wet", "dry"),
-                          values=c("grey", "black"))+
-        theme(panel.grid.minor=element_blank(),
-              axis.title.x = element_text(size=20), 
-              axis.text.x = element_text(size=18),
-              axis.text.y=element_blank(), 
-              axis.title.y=element_blank(), 
-              legend.text=element_text(size=18),
-              legend.title=element_text(size=18),
-              panel.grid.major=element_blank(),
-              legend.position="bottom",
-              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-        ylim(200,300)+
-        scale_x_discrete(breaks=c("wet", "dry"),
-                         labels=c("Watered", "Droughted"))+
-        guides(fill = guide_legend(title.position = "top"))+
-        ggtitle("h")
+    #p8 <- ggplot(sumDF.h2o) +
+    #    geom_errorbar(aes(x=Water_treatment, ymin=(Ci_transition_Ac_Aj.mean - Ci_transition_Ac_Aj.se), 
+    #                      ymax = (Ci_transition_Ac_Aj.mean+Ci_transition_Ac_Aj.se)), position = "dodge", width=0.2)+
+    #    geom_point(aes(Water_treatment, Ci_transition_Ac_Aj.mean, fill=Water_treatment), size = 10, shape=21)+
+    #    xlab("Water treatment")+
+    #    ylab(expression(C[i]*" transition point (umol " * mol^-1 * ")"))+
+    #    scale_fill_manual(name="Water treatment",
+    #                      limits=c("wet", "dry"),
+    #                      values=c("grey", "black"))+
+    #    theme(panel.grid.minor=element_blank(),
+    #          axis.title.x = element_text(size=20), 
+    #          axis.text.x = element_text(size=18),
+    #          axis.text.y=element_blank(), 
+    #          axis.title.y=element_blank(), 
+    #          legend.text=element_text(size=18),
+    #          legend.title=element_text(size=18),
+    #          panel.grid.major=element_blank(),
+    #          legend.position="bottom",
+    #          plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+    #    ylim(200,300)+
+    #    scale_x_discrete(breaks=c("wet", "dry"),
+    #                     labels=c("Watered", "Droughted"))+
+    #    guides(fill = guide_legend(title.position = "top"))+
+    #    ggtitle("h")
     
     
-    p9 <- ggplot(sumDF.ht) +
+    p6 <- ggplot(sumDF.ht) +
         geom_errorbar(aes(x=Height, ymin=(Ci_transition_Ac_Aj.mean - Ci_transition_Ac_Aj.se), 
                           ymax = (Ci_transition_Ac_Aj.mean+Ci_transition_Ac_Aj.se)), position = "dodge", width=0.2)+
         geom_point(aes(Height, Ci_transition_Ac_Aj.mean, fill=Height), size = 10, shape=21)+
@@ -444,99 +436,88 @@ leaf_ACI_processing <- function() {
               panel.grid.major=element_blank(),
               legend.position="bottom",
               plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-        ylim(200,300)+
+        ylim(200,400)+
         scale_x_discrete(breaks=c("up", "low"),
                          labels=c("Up", "Low"))+
         guides(fill = guide_legend(title.position = "top"))+
-        ggtitle("i")
+        ggtitle("g")
     
 
     pdf("output/leaf_parameter_summary_break_into_groups.pdf", width=12, height=14)
     plot_grid(p1, p2, p3, 
               p4, p5, p6, 
-              p7, p8, p9, 
+              #p7, p8, p9, 
               rel_heights=c(1,1,1.5),
               rel_widths=c(1.2, 1, 1),
-              labels="", ncol=3, align="h", axis = "l")
+              labels="", ncol=2, align="h", axis = "l")
     dev.off()
     
-    ### testing water by co2 interation
+    ### testing co2 by height, ignore date
     ## vcmax
-    mod1 <- lme(Vcmax ~ Water_treatment * CO2_treatment * Height, random=~1|chamber, 
-                data=subDF, 
+    mod1 <- lme(Vcmax ~ CO2_treatment * Height, random=~1|Chamber, 
+                data=outDF, 
                 method="REML")
     anova.lme(mod1, 
               type="sequential", 
               adjustSigma = FALSE)
-    ## there is no water effect and water interaction effect on Vcmax
-    lm1 <- lm(Vcmax ~ CO2_treatment * Water_treatment * Height, data = subDF)
-    summary(mod1)
-    
-    ### this result is essentially the same result as the three-way anova test,
-    ### i.e. there is a water by co2 interaction effect
-    library(car)
-    Anova(mod1)
     
     ## Jmax
-    mod2 <- lme(Jmax ~ Water_treatment * CO2_treatment * Height, random=~1|chamber, 
-                data=subDF, 
+    mod2 <- lme(Jmax ~ CO2_treatment * Height, random=~1|Chamber, 
+                data=outDF, 
                 method="REML")
     anova.lme(mod2, 
               type="sequential", 
               adjustSigma = FALSE)
-    ## there is no water effect and water interaction effect on Jmax
-    
+
     ## JV ratio
-    mod3 <- lme(JVratio ~ Water_treatment * CO2_treatment * Height, random=~1|chamber, 
-                data=subDF, 
+    mod3 <- lme(JVratio ~ CO2_treatment * Height, random=~1|Chamber, 
+                data=outDF, 
                 method="REML")
     anova.lme(mod3, 
               type="sequential", 
               adjustSigma = FALSE)
-    ## there is no water effect and water interaction effect on JV ratio
-    
+
     ## Ci point
-    mod4 <- lme(Ac_Aj ~ Water_treatment * CO2_treatment * Height, random=~1|chamber, 
-                data=subDF, 
+    mod4 <- lme(Ci_transition_Ac_Aj ~ CO2_treatment * Height, random=~1|Chamber, 
+                data=outDF, 
                 method="REML")
     anova.lme(mod4, 
               type="sequential", 
               adjustSigma = FALSE)
-    ## there is no water effect and water interaction effect on Ac_Aj
 
     
     #### compute statistics on each individual treatment factor
-    op <- par(mfrow = c(3, 1))
-    with(coefDF, {
-        interaction.plot(CO2_treatment, Water_treatment, Vcmax)
-        interaction.plot(CO2_treatment, Height, Vcmax)
-        interaction.plot(Height, Water_treatment, Vcmax)
-    }
-    )
-    par(op)
-    
-    interaction.plot(x.factor     = coefDF$CO2_treatment,
-                    trace.factor = coefDF$Height, 
-                    response     = coefDF$Vcmax, 
-                    fun = mean,
-                    type="b",
-                    col=c("black","red","green"),  ### Colors for levels of trace var.
-                    pch=c(19, 17, 15),             ### Symbols for levels of trace var.
-                    fixed=TRUE,                    ### Order by factor order in data
-                    leg.bty = "o")
+    #op <- par(mfrow = c(3, 1))
+    #with(coefDF, {
+    #    interaction.plot(CO2_treatment, Water_treatment, Vcmax)
+    #    interaction.plot(CO2_treatment, Height, Vcmax)
+    #    interaction.plot(Height, Water_treatment, Vcmax)
+    #}
+    #)
+    #par(op)
+    #
+    #interaction.plot(x.factor     = coefDF$CO2_treatment,
+    #                trace.factor = coefDF$Height, 
+    #                response     = coefDF$Vcmax, 
+    #                fun = mean,
+    #                type="b",
+    #                col=c("black","red","green"),  ### Colors for levels of trace var.
+    #                pch=c(19, 17, 15),             ### Symbols for levels of trace var.
+    #                fixed=TRUE,                    ### Order by factor order in data
+    #                leg.bty = "o")
     
     
     ###### check vcmax relationship
     #### 3-way anova 
-    #fm <- aov(Vcmax ~ CO2_treatment * Water_treatment * Height, data = subDF)
-    #summary(fm)
-    #
-    ### obtain r2 from the anova model
-    #lm <- lm(Vcmax ~ CO2_treatment * Water_treatment * Height, data = subDF)
-    #anova(lm)
-    #summary(lm)
-    #
-    #
+    fm <- aov(Vcmax ~ CO2_treatment * Height, data = outDF)
+    summary(fm)
+    
+    ## obtain r2 from the anova model
+    lm <- lm(Vcmax ~ CO2_treatment * Height, data = outDF)
+    anova(lm)
+    summary(lm)
+    
+    
     #### to obtain the model without 3-way interaction
     #fm1 <- update(fm, . ~ . -CO2_treatment:Water_treatment:Height)
     #summary(fm1)
@@ -551,11 +532,11 @@ leaf_ACI_processing <- function() {
     #### the table of effects from the model is:
     #model.tables(fm2,type="effects")
     #model.tables(fm2,type="means")
-    
+    #
     #test1 <- summaryBy(Vcmax~Water_treatment, data=subDF, FUN=c(mean,se), keep.names=T)
     #test2 <- summaryBy(Vcmax~CO2_treatment, data=subDF, FUN=c(mean,se), keep.names=T)
     #test3 <- summaryBy(Vcmax~Height, data=subDF, FUN=c(mean,se), keep.names=T)
-    
+    #
     ### we can remove the water effect
     #fm.vcmax <- aov(Vcmax ~ CO2_treatment + Height, data = subDF)
     #summary(fm.vcmax)
@@ -567,30 +548,30 @@ leaf_ACI_processing <- function() {
     #
     #subDF %>% group_by(CO2_treatment, Height) %>% summarise(mean(Vcmax))
     #model.tables(fm.vcmax, type="means")
-    #
-    #
-    ###### check jmax relationship
-    #### 3-way anova 
-    #fm <- aov(Jmax ~ CO2_treatment * Water_treatment * Height, data = subDF)
-    #summary(fm)
-    #
-    ### obtain r2 from the anova model
-    #lm <- lm(Jmax ~ CO2_treatment * Water_treatment * Height, data = subDF)
-    #anova(lm)
-    #summary(lm)
-    #
-    #
-    ###### check jv ratio relationship
-    #### 3-way anova 
-    #fm <- aov(JVratio ~ CO2_treatment * Water_treatment * Height, data = subDF)
-    #summary(fm)
-    #
-    ### obtain r2 from the anova model
-    #lm <- lm(JVratio ~ CO2_treatment * Water_treatment * Height, data = subDF)
-    #anova(lm)
-    #summary(lm)
-    #
-    #
+    
+    
+    ##### check jmax relationship
+    ### 2-way anova 
+    fm <- aov(Jmax ~ CO2_treatment * Height, data = outDF)
+    summary(fm)
+    
+    ## obtain r2 from the anova model
+    lm <- lm(Jmax ~ CO2_treatment * Height, data = outDF)
+    anova(lm)
+    summary(lm)
+    
+    
+    ##### check jv ratio relationship
+    ### 3-way anova 
+    fm <- aov(JVratio ~ CO2_treatment * Height, data = outDF)
+    summary(fm)
+    
+    ## obtain r2 from the anova model
+    lm <- lm(JVratio ~ CO2_treatment * Height, data = outDF)
+    anova(lm)
+    summary(lm)
+    
+    
     ##### we can't group anything together
     #myDF$Identity2 <- paste0(myDF$Height, "-", myDF$CO2_treatment, ".", myDF$Water_treatment)
     #fits.gp <- fitacis(myDF, group="Identity2", fitmethod="bilinear", Tcorrect=T)
@@ -712,39 +693,39 @@ leaf_ACI_processing <- function() {
     #dev.off()
     
     
-    ########### select well watered treatments to exclude droughted treatment for the following analysis
-    subDF2 <- subset(subDF, Water_treatment == "wet")
-    subDF2 <- subset(subDF, Identity != 80)
-    
-    
-    ### testing two-way anova between CO2 treatment and height
-    ## vcmax
-    fm1 <- aov(Vcmax ~ CO2_treatment * Height, data = subDF2)
-    summary(fm1)
-
-    lm <- lm(Vcmax ~ CO2_treatment * Height, data = subDF2)
-    summary(lm)
-
-    ## jmax
-    fm2 <- aov(Jmax ~ CO2_treatment * Height, data = subDF2)
-    summary(fm2)
-    
-    lm <- lm(Jmax ~ CO2_treatment * Height, data = subDF2)
-    summary(lm)
-    
-    ## jv ratio
-    fm3 <- aov(JVratio ~ CO2_treatment * Height, data = subDF2)
-    summary(fm3)
-    
-    lm <- lm(JVratio ~ CO2_treatment * Height, data = subDF2)
-    summary(lm)
-    
-    ## Ac_Aj
-    fm4 <- aov(Ac_Aj ~ CO2_treatment * Height, data = subDF2)
-    summary(fm4)
-    
-    lm <- lm(Ac_Aj ~ CO2_treatment * Height, data = subDF2)
-    summary(lm)
+    ############ select well watered treatments to exclude droughted treatment for the following analysis
+    #subDF2 <- subset(subDF, Water_treatment == "wet")
+    #subDF2 <- subset(subDF, Identity != 80)
+    #
+    #
+    #### testing two-way anova between CO2 treatment and height
+    ### vcmax
+    #fm1 <- aov(Vcmax ~ CO2_treatment * Height, data = subDF2)
+    #summary(fm1)
+#
+    #lm <- lm(Vcmax ~ CO2_treatment * Height, data = subDF2)
+    #summary(lm)
+#
+    ### jmax
+    #fm2 <- aov(Jmax ~ CO2_treatment * Height, data = subDF2)
+    #summary(fm2)
+    #
+    #lm <- lm(Jmax ~ CO2_treatment * Height, data = subDF2)
+    #summary(lm)
+    #
+    ### jv ratio
+    #fm3 <- aov(JVratio ~ CO2_treatment * Height, data = subDF2)
+    #summary(fm3)
+    #
+    #lm <- lm(JVratio ~ CO2_treatment * Height, data = subDF2)
+    #summary(lm)
+    #
+    ### Ac_Aj
+    #fm4 <- aov(Ac_Aj ~ CO2_treatment * Height, data = subDF2)
+    #summary(fm4)
+    #
+    #lm <- lm(Ac_Aj ~ CO2_treatment * Height, data = subDF2)
+    #summary(lm)
     
     
     
@@ -779,7 +760,7 @@ leaf_ACI_processing <- function() {
               panel.grid.major=element_blank(),
               legend.position="none",
               plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-        ylim(40,100)+
+        ylim(40,120)+
         ggtitle("a")
     
     p2 <- ggplot(sumDF) +
@@ -806,7 +787,7 @@ leaf_ACI_processing <- function() {
               panel.grid.major=element_blank(),
               legend.position="none",
               plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-        ylim(50,150)+
+        ylim(50,200)+
         ggtitle("b")
     
     p3 <- ggplot(sumDF) +
@@ -833,7 +814,7 @@ leaf_ACI_processing <- function() {
               panel.grid.major=element_blank(),
               legend.position="none",
               plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-        ylim(1,2)+
+        ylim(1.25,2)+
         ggtitle("c")
     
     p4 <- ggplot(sumDF) +
@@ -888,7 +869,7 @@ leaf_ACI_processing <- function() {
               panel.grid.major=element_blank(),
               legend.position="none",
               plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-        ylim(9,25)+
+        ylim(10,30)+
         scale_x_discrete(breaks=c("up", "low"),
                          labels=c("Up", "Low"))+
         guides(fill = guide_legend(title.position = "top"))+
@@ -918,7 +899,7 @@ leaf_ACI_processing <- function() {
               panel.grid.major=element_blank(),
               legend.position="none",
               plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-        ylim(9,25)+
+        ylim(10,30)+
         scale_x_discrete(breaks=c("up", "low"),
                          labels=c("Up", "Low"))+
         guides(fill = guide_legend(title.position = "top"))+
@@ -949,17 +930,14 @@ leaf_ACI_processing <- function() {
               panel.grid.major=element_blank(),
               legend.position="bottom",
               plot.title = element_text(size = 18, face = "bold", hjust=0.05))+
-        ylim(9,25)+
+        ylim(10,30)+
         scale_x_discrete(breaks=c("up", "low"),
                          labels=c("Up", "Low"))+
         guides(fill = guide_legend(title.position = "top"))+
         ggtitle("g")
     
     
-    #library("gridExtra")
-    
-    
-    pdf("output/leaf_parameter_summary_break_into_groups_exclude_water.pdf", width=12, height=14)
+    pdf("output/leaf_parameter_summary_break_into_groups.pdf", width=12, height=14)
     #plot_grid(p1, p2, 
     #          p3, p4, 
     #          p5, p6, 
@@ -978,5 +956,5 @@ leaf_ACI_processing <- function() {
     dev.off()
     
     
-}
+ }
 

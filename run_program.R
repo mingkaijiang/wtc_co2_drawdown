@@ -28,8 +28,8 @@ leaf_ACI_processing()
 ############################# processing canopy data #################################
 #### data explained
 #### column canopy: 12345 - full canopy present
-####                345 - middle canopy, top canopy missing, middle + bottom canopy present
-####                45 - lower canopy, top 2/3 canopy missing, bottom canopy present
+####                345 - middle + top canopy present
+####                45 - top canopy present
 ####                0 - no canopy present
 canopyDF <- processing_canopy_data()
 
