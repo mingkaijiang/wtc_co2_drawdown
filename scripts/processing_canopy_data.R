@@ -77,22 +77,47 @@ processing_canopy_data <- function() {
     ### plotting co2 flux at per second rate for different treatments
     canopy_data_per_second_check_and_plot2(myDF)
     
-    
-    ### exclude problematic data
-    myDF[myDF$Chamber == "2" && myDF$ncorrflux > 15] <- "NA"
-    myDF[myDF$Chamber == "2" && myDF$ncorrflux < 0] <- "NA"
-    myDF[myDF$Chamber == "3" && myDF$Canopy == "45" && myDF$datetime < "2009-03-19 09:18:40", "ncorrflux"] <- NA
-    myDF[myDF$Chamber == "4" && myDF$ncorrflux < 0] <- "NA"
-    myDF[myDF$Chamber == "4" && myDF$ncorrflux > 11] <- "NA"
-    myDF[myDF$Chamber == "7" && myDF$ncorrflux < 0] <- "NA"
-    myDF[myDF$Chamber == "7" && myDF$ncorrflux > 25] <- "NA"
-    myDF[myDF$Chamber == "8" && myDF$ncorrflux < -5] <- "NA"
-    myDF[myDF$Chamber == "11" && myDF$ncorrflux < 0] <- "NA"
-    myDF[myDF$Chamber == "12" && myDF$ncorrflux < 0] <- "NA"
+    myDF$ncorrflux <- as.numeric(myDF$ncorrflux)
     myDF <- myDF[complete.cases(myDF$ncorrflux), ]
     
-    #test <- subset(myDF, Chamber == "8" & Canopy == "45")
-    #with(test, plot(ncorrflux~time))
+    
+    ### exclude problematic data
+    myDF[myDF$Chamber == "2" & myDF$ncorrflux > 15, "ncorrflux"] <- NA
+    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
+    
+    myDF[myDF$Chamber == "2" & myDF$ncorrflux < 0, "ncorrflux"] <- NA
+    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
+    
+    myDF[myDF$Chamber == "3" & myDF$Canopy == 45 & myDF$datetime < "2009-03-19 09:18:40", "ncorrflux"] <- NA
+    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
+    
+    myDF[myDF$Chamber == "4" & myDF$ncorrflux < 0, "ncorrflux"] <- NA
+    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
+    
+    myDF[myDF$Chamber == "4" & myDF$ncorrflux > 12, "ncorrflux"] <- NA
+    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
+    
+    myDF[myDF$Chamber == "7" & myDF$ncorrflux < 0, "ncorrflux"] <- NA
+    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
+    
+    myDF[myDF$Chamber == "7" & myDF$ncorrflux > 25, "ncorrflux"] <- NA
+    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
+    
+    myDF[myDF$Chamber == "8" & myDF$ncorrflux < -5, "ncorrflux"] <- NA
+    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
+    
+    myDF[myDF$Chamber == "11" & myDF$ncorrflux < 0, "ncorrflux"] <- NA
+    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
+    
+    myDF[myDF$Chamber == "12" & myDF$ncorrflux < 0, "ncorrflux"] <- NA
+    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
+    
+    myDF[myDF$Chamber == "12" & myDF$ncorrflux > 10, "ncorrflux"] <- NA
+    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
+    
+    test <- subset(myDF, Chamber == "12" & Canopy == "345")
+    with(test, plot(ncorrflux~time))
+    with(test, plot(ncorrflux~vCo2))
     
     ### add VPD 
     ## Saturation Vapor Pressure (es) = 0.6108 * exp(17.27 * T / (T + 237.3))

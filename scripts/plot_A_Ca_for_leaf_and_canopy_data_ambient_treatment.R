@@ -37,9 +37,9 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
                        "transpiration")
     
     ### clean the dataset to exclude na, negative values
-    cDF[cDF$Chamber == 2 & cDF$Photo > 15, "Photo"] <- NA
-    cDF[cDF$Chamber == 12 & cDF$Photo > 25, "Photo"] <- NA
-    cDF[cDF$Chamber == 7 & cDF$Photo > 16, "Photo"] <- NA
+    #cDF[cDF$Chamber == 2 & cDF$Photo > 15, "Photo"] <- NA
+    #cDF[cDF$Chamber == 12 & cDF$Photo > 25, "Photo"] <- NA
+    #cDF[cDF$Chamber == 7 & cDF$Photo > 16, "Photo"] <- NA
     
     cDF <- cDF[complete.cases(cDF$Photo), ]
     cDF <- cDF[cDF$transpiration > 0, ]
@@ -423,20 +423,21 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     fits.ch11 <- fitacis(ch11DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
     
     fits.ch02 <- fitacis(ch02DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
-    ### 345 cannot be fitted with default method
     fits.ch04 <- fitacis(ch04DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
     fits.ch08 <- fitacis(ch08DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
     fits.ch12 <- fitacis(ch12DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
     
-    #plot(fits.ch01, how="oneplot")
-    #plot(fits.ch01[[1]], col=alpha("black",0.2), add=T)
-    #plot(fits.ch01[[2]], col=alpha("blue2", 0.2), add=T)
-    #plot(fits.ch01, how="oneplot", what="data", 
-    #     pch=c(21, 22, 23, 24, 25), col=T)
-    #plot(fits.ch01[[1]], how="oneplot", color="blue", 
-    #     add=T, what="model", lwd=3, lty=c(1,2,3,4,5))
-    #abline(v=410, add=T, lwd = 2)
-    #dev.off()
+    ### summary of problems:
+    ### chamber 07: 45, can't fit
+    ### chamber 12: 345, no data on 345, strange?
+    ### chamber 04: 345, 45   - Jmax too high for 45, can't fit 345
+    ### chamber 08: 345
+    ### chamber 11: 12345
+    ### to do next: 1. make sure all data are properly fitted
+    ### 2. plot individiual A-Ci curves
+    ### 3. summarize biochemical parameters and make statistical comparison
+    ### 4. look at Ci = 400 to 600 range, plot (A600-A400)/A400
+    ### 5. Plot LAI curve
 
     ##
     pdf("output/chamber_result_comparison_A_vs_Ci_flux_no_scaling_ambient.pdf", width=20, height=14)
