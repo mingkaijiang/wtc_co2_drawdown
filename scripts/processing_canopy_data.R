@@ -176,11 +176,18 @@ processing_canopy_data <- function() {
     
     myDF[myDF$Chamber == "12" & myDF$Canopy == "345" & myDF$vCo2 >= 300 & myDF$ncorrflux < 5, "ncorrflux"] <- NA
     myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-
     
-    #test <- subset(myDF, Chamber == "12" & Canopy == "345")
-    #with(test, plot(ncorrflux~time))
-    #with(test, plot(ncorrflux~vCo2))
+    myDF[myDF$Chamber == "12" & myDF$Canopy == "345" & myDF$vCo2 <= 450 & myDF$ncorrflux > 9, "ncorrflux"] <- NA
+    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
+
+    myDF[myDF$Chamber == "12" & myDF$Canopy == "345" & myDF$vCo2 >= 1200 & myDF$ncorrflux < 10, "ncorrflux"] <- NA
+    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
+    
+    test <- subset(myDF, Chamber == "12" & Canopy == "345")
+    with(test, plot(ncorrflux~time))
+    with(test, plot(ncorrflux~vCo2))
+    #test.fit <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU = T)
+    #coef(test.fit)
     
     ### add VPD 
     ## Saturation Vapor Pressure (es) = 0.6108 * exp(17.27 * T / (T + 237.3))

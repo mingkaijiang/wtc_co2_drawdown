@@ -81,31 +81,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     ch12DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF,
                                                       ch.l="ch12", ch.c="12")
     
-    #test <- subset(ch08DF, Position == "345")
-    #with(test, plot(Photo~Ca))
     
-    
-    #### clearly some data points are problematic, so removing them
-    #ch01DF[ch01DF$Source=="canopy"&ch01DF$Position=="345", "Photo"] <- ifelse(ch01DF[ch01DF$Source=="canopy"&ch01DF$Position=="345", "Photo"] > 12, 
-    #                                                                                    NA, ch01DF[ch01DF$Source=="canopy"&ch01DF$Position=="345", "Photo"])
-    #ch01DF[ch01DF$Source=="canopy"&ch01DF$Position=="12345", "Photo"] <- ifelse(ch01DF[ch01DF$Source=="canopy"&ch01DF$Position=="12345", "Photo"] > 18, 
-    #                                                                                    NA, ch01DF[ch01DF$Source=="canopy"&ch01DF$Position=="12345", "Photo"])
-    #ch01DF[ch01DF$Source=="canopy"&ch01DF$Position=="45", "Photo"] <- ifelse(ch01DF[ch01DF$Source=="canopy"&ch01DF$Position=="45", "Photo"] > 20, 
-    #                                                                            NA, ch01DF[ch01DF$Source=="canopy"&ch01DF$Position=="45", "Photo"])
-    #
-    #
-    #
-    #ch03DF[ch03DF$Source=="canopy"&ch03DF$Position=="345", "Photo"] <- ifelse(ch03DF[ch03DF$Source=="canopy"&ch03DF$Position=="345", "Photo"] > 12, 
-    #                                                                          NA, ch03DF[ch03DF$Source=="canopy"&ch03DF$Position=="345", "Photo"])
-    #ch03DF[ch03DF$Source=="canopy"&ch03DF$Position=="45", "Photo"] <- ifelse(ch03DF[ch03DF$Source=="canopy"&ch03DF$Position=="45", "Photo"] > 15, 
-    #                                                                         NA, ch03DF[ch03DF$Source=="canopy"&ch03DF$Position=="45", "Photo"])
-    #
-    #
-    #ch11DF[ch11DF$Source=="canopy", "Photo"] <- ifelse(ch11DF[ch11DF$Source=="canopy", "Photo"] > 16, 
-    #                                                                            NA, ch11DF[ch11DF$Source=="canopy", "Photo"])
-    
-    #ch11DF <- ch11DF[complete.cases(ch11DF$Photo),]
-    #ch03DF <- ch03DF[complete.cases(ch03DF$Photo),]
     
     ## plot
     p1 <- ggplot() +
@@ -428,28 +404,10 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     fits.ch08 <- fitacis(ch08DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
     fits.ch12 <- fitacis(ch12DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
     
-    #test <- subset(cDF, Chamber == "8" & Canopy == "45")
+    #test <- subset(cDF, Chamber == "12" & Canopy == "345")
     #with(test, plot(Photo~Ca))
-    #test2 <- subset(test, Ca <= 1400)
-    #with(test2, plot(Photo~Ca))
     #test.fit <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU = T)
     #coef(test.fit)
-    
-    ### summary of problems:
-    ### chamber 12: 345, Jmax too high. delete the downward A values at high Ca (> 1400)
-    ### chamber 04: 45 - Jmax too high for 45. delete the downward A values at high Ca (> 1200)
-    ### chamber 11: 12345 - can't fit. delete the downward A values at high Ca (> 1400)
-    
-    ### chamber 04: 345, can't fit, date merging issue. 
-    ### chamber 07: 45, can't fit
-    ### chamber 08: 345, can't fit
-    ### chamber 08: 45 data looks sparse
-    
-    ### to do next: 1. make sure all data are properly fitted
-    ### 2. plot individiual A-Ci curves
-    ### 3. summarize biochemical parameters and make statistical comparison
-    ### 4. look at Ci = 400 to 600 range, plot (A600-A400)/A400
-    ### 5. Plot LAI curve
     
 
     ##
@@ -635,56 +593,12 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     dev.off()
     
     
-    
-    
-    #### ggplot test
-    #plDF1 <- fits.ch01[[1]]$df
-    #
-    #p1 <- ggplot(plDF1)+
-    #  geom_point(aes(Ci, Ameas), alpha=0.2)+
-    #  geom_line(aes(Ci, Ac), col="red")+
-    #  geom_point(aes(Ci, Aj), col="blue")+
-    #  geom_smooth(aes(Ci, Ac), col="red",
-    #              method = "lm", formula = y ~ splines::bs(x, 4), se=FALSE)+
-    #  theme_linedraw() +
-    #  theme(panel.grid.minor=element_blank(),
-    #        axis.text.x=element_text(size=12),
-    #        axis.title.x=element_text(size=14),
-    #        axis.text.y=element_text(size=12),
-    #        axis.title.y=element_text(size=14),
-    #        legend.text=element_text(size=12),
-    #        legend.title=element_text(size=14),
-    #        panel.grid.major=element_blank(),
-    #        legend.position="none",
-    #        legend.box = 'vertical',
-    #        legend.box.just = 'left')+
-    #  xlab(expression(paste(C[i]* " (umol ", m^-2, " ", s^-1, ")")))+
-    #  ylab(expression(paste(A[n]* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
-    #  scale_fill_manual(name="Position",
-    #                    limits=c("12345", "345", "45", "up", "low"),
-    #                    values=c("blue2", "red3", "purple", "orange", "green"),
-    #                    labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-    #  scale_color_manual(name="Position",
-    #                     limits=c("12345", "345", "45", "up", "low"),
-    #                     values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-    #                     labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-    #  scale_shape_manual(name="Measurements",
-    #                     values=c(21, 24),
-    #                     labels=c("Canopy", "Leaf"))+
-    #  xlim(0,2000)+
-    #  ylim(-5,40)+
-    #  ggtitle("Chamber 01")+
-    #  guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
-    #
-    #plot(p1)
-    
-    
     #### export biochemical parameter summary table
     ### make a list of identify
     id.list <- rep(c("up", "low", "12345", "345", "45"), each=8)
     chamber.list <- rep(c(1, 3, 7, 11, 2, 4, 8, 12), by = 5)
     ### prepare an output df
-    outDF <- data.frame(id.list, chamber.list, NA, NA,
+    outDF <- data.frame(id.list, chamber.list, NA, 
                         NA, NA, NA, NA, NA, NA,
                         NA, NA, NA, NA, NA, NA,
                         NA, NA, NA, NA, NA, NA,
@@ -695,18 +609,8 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
                          "Tleaf", "Ca", "Cc", "PPFD", "Ci_transition_Ac_Aj",
                          "curve.fitting", "Patm", "GammaStar", "Km")
     
+    id.list <- unique(id.list)
     
-    ### problems here: 
-    ### canopy data has gaps and bad data points, so can't use default to fit aci curves.
-    ### for example, cannot fit ch01 12345, ch03 345, ch11 45.
-    ### Therefore have to use bilinear function,
-    ### but some biochemical parameters don't make sense. 
-    ### so I probably need to fill the data gaps with a gam function
-    ### or simply smooth all the canopy data with gam function.
-    ### but then it's not "data" any more, so plotting A-Ca is not real.
-    ### 
-    
- 
     ### the for loop
     ### ch01
     for (i in 1:length(id.list)) {
@@ -1030,63 +934,160 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     outDF$JV_ratio <- outDF$Jmax / outDF$Vcmax
     
     ### save
-    write.csv(outDF, "output/ambient_chambers_biochemical_parameter_summary_table.csv")
+    write.csv(outDF, "output/ambient_chambers_biochemical_parameter_summary_table.csv", row.names=F)
+    
+    
+    
+    ################################# Plot delta A at the Ca = 400 to 600 range and see the slope
+    #### export biochemical parameter summary table
+    ### make a list of identify
+    id.list <- rep(c("up", "low", "12345", "345", "45"), each=8)
+    chamber.list <- rep(c(1, 3, 7, 11, 2, 4, 8, 12), by = 5)
+    
+    ### prepare an output df
+    outDF2 <- data.frame(id.list, chamber.list, 
+                        NA, NA, NA, NA, NA, NA)
+    colnames(outDF2) <- c("Position", "Chamber", 
+                         "ALEAF_400","ALEAF_600",
+                         "Ac_400", "Ac_600",
+                         "Aj_400", "Aj_600")
+    
+    id.list <- unique(id.list)
+    
+    ### the for loop
+    ### ch01
+    for (i in 1:length(id.list)) {
+      ## subset each data
+      test <- subset(ch01DF, Position == id.list[i])
+      
+      ## fit
+      fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU = T)
+      
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "ALEAF_400"] <- fit1$Photosyn(Ci=400)$ALEAF
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "ALEAF_600"] <- fit1$Photosyn(Ci=600)$ALEAF
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "Ac_400"] <- fit1$Photosyn(Ci=400)$Ac
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "Ac_600"] <- fit1$Photosyn(Ci=600)$Ac
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "Aj_400"] <- fit1$Photosyn(Ci=400)$Aj
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "Aj_600"] <- fit1$Photosyn(Ci=600)$Aj
+    }
+    
+    ### ch02
+    for (i in 1:length(id.list)) {
+      ## subset each data
+      test <- subset(ch02DF, Position == id.list[i])
+      
+      ## fit
+      fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU = T)
+      
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "2", "ALEAF_400"] <- fit1$Photosyn(Ci=400)$ALEAF
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "2", "ALEAF_600"] <- fit1$Photosyn(Ci=600)$ALEAF
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "2", "Ac_400"] <- fit1$Photosyn(Ci=400)$Ac
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "2", "Ac_600"] <- fit1$Photosyn(Ci=600)$Ac
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "2", "Aj_400"] <- fit1$Photosyn(Ci=400)$Aj
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "2", "Aj_600"] <- fit1$Photosyn(Ci=600)$Aj
+    }
+    
+    ### ch03
+    for (i in 1:length(id.list)) {
+      ## subset each data
+      test <- subset(ch03DF, Position == id.list[i])
+      
+      ## fit
+      fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU = T)
+      
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "ALEAF_400"] <- fit1$Photosyn(Ci=400)$ALEAF
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "ALEAF_600"] <- fit1$Photosyn(Ci=600)$ALEAF
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "Ac_400"] <- fit1$Photosyn(Ci=400)$Ac
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "Ac_600"] <- fit1$Photosyn(Ci=600)$Ac
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "Aj_400"] <- fit1$Photosyn(Ci=400)$Aj
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "Aj_600"] <- fit1$Photosyn(Ci=600)$Aj
+    }
+    
+    ### ch04
+    for (i in 1:length(id.list)) {
+      ## subset each data
+      test <- subset(ch04DF, Position == id.list[i])
+      
+      ## fit
+      fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU = T)
+      
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "4", "ALEAF_400"] <- fit1$Photosyn(Ci=400)$ALEAF
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "4", "ALEAF_600"] <- fit1$Photosyn(Ci=600)$ALEAF
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "4", "Ac_400"] <- fit1$Photosyn(Ci=400)$Ac
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "4", "Ac_600"] <- fit1$Photosyn(Ci=600)$Ac
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "4", "Aj_400"] <- fit1$Photosyn(Ci=400)$Aj
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "4", "Aj_600"] <- fit1$Photosyn(Ci=600)$Aj
+    }
+    
+    ### ch07
+    for (i in 1:length(id.list)) {
+      ## subset each data
+      test <- subset(ch07DF, Position == id.list[i])
+      
+      ## fit
+      fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU = T)
+      
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "7", "ALEAF_400"] <- fit1$Photosyn(Ci=400)$ALEAF
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "7", "ALEAF_600"] <- fit1$Photosyn(Ci=600)$ALEAF
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "7", "Ac_400"] <- fit1$Photosyn(Ci=400)$Ac
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "7", "Ac_600"] <- fit1$Photosyn(Ci=600)$Ac
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "7", "Aj_400"] <- fit1$Photosyn(Ci=400)$Aj
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "7", "Aj_600"] <- fit1$Photosyn(Ci=600)$Aj
+    }
+    
+    ### ch08
+    for (i in 1:length(id.list)) {
+      ## subset each data
+      test <- subset(ch08DF, Position == id.list[i])
+      
+      ## fit
+      fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU = T)
+      
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "8", "ALEAF_400"] <- fit1$Photosyn(Ci=400)$ALEAF
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "8", "ALEAF_600"] <- fit1$Photosyn(Ci=600)$ALEAF
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "8", "Ac_400"] <- fit1$Photosyn(Ci=400)$Ac
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "8", "Ac_600"] <- fit1$Photosyn(Ci=600)$Ac
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "8", "Aj_400"] <- fit1$Photosyn(Ci=400)$Aj
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "8", "Aj_600"] <- fit1$Photosyn(Ci=600)$Aj
+    }
+    
+    ### ch11
+    for (i in 1:length(id.list)) {
+      ## subset each data
+      test <- subset(ch11DF, Position == id.list[i])
+      
+      ## fit
+      fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU = T)
+      
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "ALEAF_400"] <- fit1$Photosyn(Ci=400)$ALEAF
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "ALEAF_600"] <- fit1$Photosyn(Ci=600)$ALEAF
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "Ac_400"] <- fit1$Photosyn(Ci=400)$Ac
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "Ac_600"] <- fit1$Photosyn(Ci=600)$Ac
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "Aj_400"] <- fit1$Photosyn(Ci=400)$Aj
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "Aj_600"] <- fit1$Photosyn(Ci=600)$Aj
+    }
+    
+    ### ch12
+    for (i in 1:length(id.list)) {
+      ## subset each data
+      test <- subset(ch12DF, Position == id.list[i])
+      
+      ## fit
+      fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU = T)
+      
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "12", "ALEAF_400"] <- fit1$Photosyn(Ci=400)$ALEAF
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "12", "ALEAF_600"] <- fit1$Photosyn(Ci=600)$ALEAF
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "12", "Ac_400"] <- fit1$Photosyn(Ci=400)$Ac
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "12", "Ac_600"] <- fit1$Photosyn(Ci=600)$Ac
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "12", "Aj_400"] <- fit1$Photosyn(Ci=400)$Aj
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "12", "Aj_600"] <- fit1$Photosyn(Ci=600)$Aj
+    }
     
     
     
     
-    ##################3## fit the data as whole, i.e. ignore chamber
-    #combDF <- rbind(ch01DF, ch03DF, ch11DF)
-    #fits.all <- fitacis(combDF, group="Position", Tcorrect=T, fitTPU = T)
-    #
-    #
-    ###
-    #pdf("output/A_vs_Ci_flux_no_scaling_ambient_ignore_chamber.pdf", width=4, height=14)
-    #par(mfrow=c(5,1),mar=c(2,2,4,1),oma = c(4, 6, 0, 0))
-    #
-    #ymin <- -2
-    #ymax <- 30
-    #title.size <-2
-    #
-    #### first row
-    #plot(fits.all[[5]],lwd=3, col=alpha("black",0.6), pch=21, cex.main=title.size,
-    #     xlim=c(0, 1600), ylim=c(ymin, ymax), main="up leaves")
-    #abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    ##mtext("Up leaves", side = 2, line = 1, cex = 1.2)
-    #
-    #
-    #### second row
-    #plot(fits.all[[4]],lwd=3, col=alpha("black",0.6), pch=21, main="Low leaves", cex.main=title.size,addlegend=F, 
-    #     xlim=c(0, 1600), ylim=c(ymin, ymax))
-    #abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    #
-    #
-    #### third row
-    #plot(fits.all[[1]],lwd=3, col=alpha("black",0.6), pch=21, main="Whole canopy", cex.main=title.size,addlegend=F,
-    #     xlim=c(0, 1600), ylim=c(ymin, ymax))
-    #abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    #
-    #
-    #### fourth row
-    #plot(fits.all[[2]],lwd=3, col=alpha("black",0.6), pch=21, main="T+M canopy", cex.main=title.size,addlegend=F, 
-    #     xlim=c(0, 1600), ylim=c(ymin, ymax))
-    #abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    #
-    #### fifth row
-    #plot(fits.all[[3]],lwd=3, col=alpha("black",0.6), pch=21, main="Top canopy", cex.main=title.size,addlegend=F, 
-    #     xlim=c(0, 1600), ylim=c(ymin, ymax))
-    #abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    #
-    #
-    ## print the overall labels
-    #mtext(expression(C[i] * " (ppm)"), side = 1, outer = TRUE, line = 2, cex=2)
-    #mtext(expression(A[n] * " (" * mu * "mol " * m^-2 * " " * s^-1 * ")"), side = 2, outer = TRUE, line = 2, cex=2)
-    #
-    #dev.off()
-    #
-    #coefDF <- coef(fits.all)
-    #coefDF$JV_ratio <- coefDF$Jmax / coefDF$Vcmax
-  
+    
+    write.csv(outDF2, "output/predicted_A_values_at_Ci_in_400_600_ppm.csv", row.names=F)
     
     
     

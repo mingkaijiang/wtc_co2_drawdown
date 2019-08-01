@@ -38,10 +38,12 @@ canopyDF <- processing_canopy_data()
 cDF=canopyDF
 
 ### the full dataset
-plot_A_Ca_for_leaf_and_canopy_data(cDF=canopyDF)
+#plot_A_Ca_for_leaf_and_canopy_data(cDF=canopyDF)
 
-### a subset of dataset that is ambient CO2 and well-watered treatment
+### this is now the code to use
 plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment(cDF=canopyDF)
+
+summary_statistics_A_Ci_curves()
 
 
 ############################# fit A-CI curve  #################################
