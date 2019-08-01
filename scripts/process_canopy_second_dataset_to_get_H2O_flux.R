@@ -32,6 +32,9 @@ process_canopy_second_dataset_to_get_H2O_flux <- function() {
     ### convert to get total chamber water content in g/chamber
     myDF$rh_total <- myDF$rh_water * myDF$volume
     
+    #test2 <- subset(myDF, chamber == "4" & canopy == "345")
+    #with(test2, plot(rh~datetime))
+    
     ### convert H2O flux from unit of g per chamber per minute to umol H2O per leaf area per second
     ## average across 5 mins to compute a running mean difference at 5 min time interval
     ## the final value is quite sensitive to the size of bin, i.e. 5 min vs. 10 mins 
@@ -42,7 +45,8 @@ process_canopy_second_dataset_to_get_H2O_flux <- function() {
     
     #with(myDF2[myDF2$canopy=="12345" & myDF2$chamber == "1", ], plot(H2O_flux_normalized ~ datetime))
     
-    #test2 <- subset(myDF2, chamber == "12" & canopy == "345")
+    #test2 <- subset(myDF2, chamber == "4" & canopy == "345")
+    #with(test2, plot(rh~datetime))
     
     ## return selected columns
     

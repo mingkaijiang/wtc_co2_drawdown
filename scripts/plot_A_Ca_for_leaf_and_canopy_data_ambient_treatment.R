@@ -414,6 +414,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
     dev.off()    
     
+    #test <- subset(cDF, Chamber == "12" & Canopy == "345")
     
     ##### preparing acifit
     #### the fit TPU function makes it long to run!
@@ -427,12 +428,23 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     fits.ch08 <- fitacis(ch08DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
     fits.ch12 <- fitacis(ch12DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
     
+    #test <- subset(cDF, Chamber == "8" & Canopy == "45")
+    #with(test, plot(Photo~Ca))
+    #test2 <- subset(test, Ca <= 1400)
+    #with(test2, plot(Photo~Ca))
+    #test.fit <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU = T)
+    #coef(test.fit)
+    
     ### summary of problems:
+    ### chamber 12: 345, Jmax too high. delete the downward A values at high Ca (> 1400)
+    ### chamber 04: 45 - Jmax too high for 45. delete the downward A values at high Ca (> 1200)
+    ### chamber 11: 12345 - can't fit. delete the downward A values at high Ca (> 1400)
+    
+    ### chamber 04: 345, can't fit, date merging issue. 
     ### chamber 07: 45, can't fit
-    ### chamber 12: 345, no data on 345, strange?
-    ### chamber 04: 345, 45   - Jmax too high for 45, can't fit 345
-    ### chamber 08: 345
-    ### chamber 11: 12345
+    ### chamber 08: 345, can't fit
+    ### chamber 08: 45 data looks sparse
+    
     ### to do next: 1. make sure all data are properly fitted
     ### 2. plot individiual A-Ci curves
     ### 3. summarize biochemical parameters and make statistical comparison
