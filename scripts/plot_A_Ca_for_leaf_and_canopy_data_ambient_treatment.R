@@ -1083,7 +1083,9 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
       outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "12", "Aj_600"] <- fit1$Photosyn(Ci=600)$Aj
     }
     
-    
+    outDF2$A_sens <- with(outDF2, (ALEAF_600-ALEAF_400)/ALEAF_400)
+    outDF2$Aj_sens <- with(outDF2, (Aj_600-Aj_400)/Aj_400)
+    outDF2$Ac_sens <- with(outDF2, (Ac_600-Ac_400)/Ac_400)
     
     
     

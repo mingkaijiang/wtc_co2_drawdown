@@ -255,4 +255,141 @@ summary_statistics_A_Ci_curves <- function() {
     
     
     
+    
+    
+    ### 
+    inDF2 <- read.csv("output/predicted_A_values_at_Ci_in_400_600_ppm.csv")
+    
+
+    ### assign CO2 treatment factors
+    inDF2$CO2_trt[inDF2$Chamber%in%c(1,3,7,11)] <- "aCO2"
+    inDF2$CO2_trt[inDF2$Chamber%in%c(2,4,8,12)] <- "eCO2"
+    
+    inDF2$campaign[inDF2$Position%in%c("up", "low")] <- "Leaf"
+    inDF2$campaign[inDF2$Position%in%c("12345", "345", "45")] <- "Canopy"
+    
+    
+    ### testing co2 by position
+    ## 
+    mod1 <- lme(A_sens ~ CO2_trt * Position, random=~1|Chamber, 
+                data=inDF2, 
+                method="REML")
+    anova.lme(mod1, 
+              type="sequential", 
+              adjustSigma = FALSE)
+    
+    ## 
+    mod2 <- lme(Aj_sens ~ CO2_trt * Position, random=~1|Chamber, 
+                data=inDF2, 
+                method="REML")
+    anova.lme(mod2, 
+              type="sequential", 
+              adjustSigma = FALSE)
+    
+    ## 
+    mod3 <- lme(Ac_sens ~ CO2_trt * Position, random=~1|Chamber, 
+                data=inDF2, 
+                method="REML")
+    anova.lme(mod3, 
+              type="sequential", 
+              adjustSigma = FALSE)
+    
+    
+    ### plotting
+    
+    p1 <- ggplot(inDF2, aes(x=Position, y=A_sens, fill=CO2_trt)) +
+        geom_boxplot(outlier.size=0)+
+        geom_point(pch = 21, size = 3, position = position_jitterdodge())+
+        xlab("")+
+        ylab("A response sensitivity")+
+        scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
+                          limits=c("aCO2", "eCO2"),
+                          labels=c("ambient", "elevated"),
+                          values=c("white", "grey"))+
+        scale_color_manual(name=expression(paste(CO[2] * " treatment")),
+                           limits=c("aCO2", "eCO2"),
+                           labels=c("ambient", "elevated"),
+                           values=c("white", "grey"))+
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_blank(), 
+              axis.text.x = element_blank(),
+              axis.text.y=element_text(size=18),
+              axis.title.y=element_text(size=18),
+              legend.text=element_text(size=18),
+              legend.title=element_text(size=18),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+        ylim(0,0.5)+
+        ggtitle("a")
+    
+    plot(p1)
+    
+    p2 <- ggplot(inDF2, aes(x=Position, y=Aj_sens, fill=CO2_trt)) +
+        geom_boxplot(outlier.size=0)+
+        geom_point(pch = 21, size = 3, position = position_jitterdodge())+
+        xlab("")+
+        ylab("Aj sensitivity")+
+        scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
+                          limits=c("aCO2", "eCO2"),
+                          labels=c("ambient", "elevated"),
+                          values=c("white", "grey"))+
+        scale_color_manual(name=expression(paste(CO[2] * " treatment")),
+                           limits=c("aCO2", "eCO2"),
+                           labels=c("ambient", "elevated"),
+                           values=c("white", "grey"))+
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_blank(), 
+              axis.text.x = element_blank(),
+              axis.text.y=element_text(size=18),
+              axis.title.y=element_text(size=18),
+              legend.text=element_text(size=18),
+              legend.title=element_text(size=18),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+        ylim(0.075,0.15)+
+        ggtitle("b")
+    
+    plot(p2)
+    
+    p3 <- ggplot(inDF2, aes(x=Position, y=Ac_sens, fill=CO2_trt)) +
+        geom_boxplot(outlier.size=0)+
+        geom_point(pch = 21, size = 3, position = position_jitterdodge())+
+        xlab(" Canopy                Leaf")+
+        ylab("Ac sensitivity")+
+        scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
+                          limits=c("aCO2", "eCO2"),
+                          labels=c("ambient", "elevated"),
+                          values=c("white", "grey"))+
+        scale_color_manual(name=expression(paste(CO[2] * " treatment")),
+                           limits=c("aCO2", "eCO2"),
+                           labels=c("ambient", "elevated"),
+                           values=c("white", "grey"))+
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=20), 
+              axis.text.x = element_text(size=18),
+              axis.text.y=element_text(size=18),
+              axis.title.y=element_text(size=18),
+              legend.text=element_text(size=18),
+              legend.title=element_text(size=18),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+        ylim(0.25,0.45)+
+        scale_x_discrete(breaks=c("up", "low", "12345", "345", "45"),
+                         labels=c("Up", "Low", "Full", "T+M","Top"))+
+        ggtitle("c")
+    
+    plot(p3)
+    
+    
+    pdf("output/chamber_A_responsiveness.pdf", width=6, height=12)
+    
+    plot_grid(p1, p2, p3,
+              rel_heights=c(1,1,1.4),
+              labels=c(""), ncol=1, align="v", axis = "l")    
+    
+    dev.off()
+    
  }
