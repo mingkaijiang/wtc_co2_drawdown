@@ -13,7 +13,7 @@ source("prepare.R")
 
 ############################# conceptual figure #####################################
 #### Make conceptual figure based on data from Rogers et al. 2017 NP
-make_conceptual_figure()
+#make_conceptual_figure()
 
 
 ############################# fit A-CI curve  #################################
@@ -62,10 +62,11 @@ compare_ACI_results_with_canopy_and_leaf_data(cDF=canopyDF)
 #############################  two-leaf modeling met data generation ###################
 ### this script generate met data based on 2009 met data collected at WTC
 ### need to combine with canopy drawdown data from inside the chambers
-update VPD calculations !!!
-
+### this resulted in half hourly met data, which is probably too coarse
 generate_met_data_2009()
 
+### second method: to linearly interpolate hourly met data onto per minute basis, then run the simulation
+generate_met_data_2009_method_2()
 
 #### this script generate met data for period 2008.04.14 to 2009.03.06
 #### which is before the co2 drawdown experiment
@@ -81,7 +82,24 @@ compare_chamber_results_at_canopy_level()
 
 ########## End ############
 
+### to do:
+### 1. generate met data at per minute interval and re-run the models
+### 2. compare predicted canopy response at this time interval
+### 3. resolve the issue of canopy E: what unit in the predicted E in the model?
+###                                   what unit in the data?
+###                                   why such a large contrast?
+
+### to decide:
+### 1. what parameters to use to drive the model? Is it based on all data (i.e. 2008-2009) for each chamber?
+### 2. how to parameterize the two-leaf model? One using up canopy parameters, or use the averaged parameter?
+### 3. are the parameters currently used logical? Check, especially Rd. 
+### 
 
 
-
+### to do: compare WTC leaf A-CI with EucFACE A-CI to check the CO2 responsiveness (WTC only 10%, not right)
+### Plot Ci = 280, not Ca = 400 on individual A-CI plots
+### a subplot for the region of 400-600 ppm, to see the slope of the curve
+### Rd, take the average of all.
+### don't use Km. 
+### for leaf-scale A-CI, fit all dates, and average for each chamber and position. 
 

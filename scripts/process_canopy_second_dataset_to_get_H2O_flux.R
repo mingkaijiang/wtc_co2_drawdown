@@ -17,8 +17,8 @@ process_canopy_second_dataset_to_get_H2O_flux <- function() {
     
     ### calculate RH for each time point
     myDF$rh <- 100 - 5 * (myDF$Tair - myDF$DPLicorCh)
-    myDF$es <- 0.6106 * exp(17.27 * myDF$Tair / (myDF$Tair + 237.3))
-    myDF$ea <- myDF$rh / 100 * myDF$es
+    myDF$es <- 0.6106 * exp(17.27 * myDF$Tair / (myDF$Tair + 237.3)) # kPa
+    myDF$ea <- myDF$rh / 100 * myDF$es #kPa
     
     ### add volumn information - does not include the effect of cone top
     ## note that chamber 11 = 49800 L
@@ -27,7 +27,9 @@ process_canopy_second_dataset_to_get_H2O_flux <- function() {
     myDF$volume[myDF$chamber == "11"] <- 49800 / 1000
     
     ### calculate water fluxes - converting RH to water unit g/m3
+    ## convert ea from kPa to Pa
     myDF$rh_water <- 2.16679 * (myDF$ea * 1000) / (myDF$Tair + 273.2) 
+    #myDF$rh_water <- 2.16679 * (myDF$ea / 1000) / (myDF$Tair + 273.2) 
     
     ### convert to get total chamber water content in g/chamber
     myDF$rh_total <- myDF$rh_water * myDF$volume
