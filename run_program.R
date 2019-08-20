@@ -103,3 +103,8 @@ compare_chamber_results_at_canopy_level()
 ### don't use Km. 
 ### for leaf-scale A-CI, fit all dates, and average for each chamber and position. 
 
+### there is a unit issue in calculating water fluxes
+### which then affected stomatal conductance calculation, and eventually Ci calculation
+### will need to resolve this to get reasonable estimate of Ci. 
+
+
