@@ -1,4 +1,4 @@
-process_canopy_second_dataset_to_get_H2O_flux <- function() {
+process_canopy_second_dataset_to_get_H2O_flux_2 <- function() {
     ########################  using mergeall.text file ###########################
     ##### read in raw data - this dataset does not have PAR 
     myDF <- read.csv("data/canopy_drawdown/mergeall.csv")
@@ -32,7 +32,7 @@ process_canopy_second_dataset_to_get_H2O_flux <- function() {
     myDF$rh_water <- 2.16679 * (myDF$ea * 1000) / (myDF$Tair + 273.2) 
 
     ### convert to get total chamber water content in g/chamber
-    myDF$rh_total <- myDF$rh_water * myDF$volume
+    myDF$rh_total <- myDF$rh_water #* myDF$volume
     
     #test2 <- subset(myDF, chamber == "4" & canopy == "345")
     #with(test2, plot(rh~datetime))
@@ -41,14 +41,29 @@ process_canopy_second_dataset_to_get_H2O_flux <- function() {
     ## average across 5 mins to compute a running mean difference at 5 min time interval
     ## the final value is quite sensitive to the size of bin, i.e. 5 min vs. 10 mins 
     myDF2 <- calculate_h2o_flux_per_second2(myDF)
+    #myDF3 <- calculate_condensed_water_flux_per_second(myDF2)
     
+    ### convert from g of water per chamber per minute to umol H2O m-2 leaf area s-1
     myDF2$h2o_rh_normalized <- myDF2$h2o_rh / 60 / 18 * 1000000 / myDF2$SumOfarea_fully_exp
     
     ### convert unit, CondWater from mol h-1 chamber-1 to umol s-1 leaf area -1
-    myDF2$CondWater_normalized <- myDF2$CondWater * 1000000 / myDF2$SumOfarea_fully_exp / 3600
+    ### convert unit, CondWater from mmol h-1 chamber -1 to umol s-1 leaf area-1
+    #myDF2$CondWater_normalized <- myDF2$CondWater * 1000000 / myDF2$SumOfarea_fully_exp / 3600
+    myDF2$CondWater_normalized <- myDF2$CondWater * 1000 / myDF2$SumOfarea_fully_exp / 3600
     
     ### normalized to umol H2O m-2 leaf s-1
     myDF2$H2O_flux_normalized <-  rowSums(data.frame(myDF2$CondWater_normalized, myDF2$h2o_rh_normalized), na.rm=T)
+    
+    
+    #myDF3$h2o_rh_normalized <- myDF3$h2o_rh / 60 / 18 * 1000000 / myDF3$SumOfarea_fully_exp
+    
+    ### convert unit, CondWater from mol h-1 chamber-1 to umol s-1 leaf area -1
+    #myDF3$CondWater_normalized <- myDF3$CondWater_smooth * 1000000 / myDF3$SumOfarea_fully_exp / 3600
+    
+    ### normalized to umol H2O m-2 leaf s-1
+    #myDF3$H2O_flux_normalized <-  rowSums(data.frame(myDF3$CondWater_normalized, myDF3$h2o_rh_normalized), na.rm=T)
+    
+    #myDF2 <- myDF3
     
     #with(myDF2[myDF2$canopy=="12345" & myDF2$chamber == "1", ], plot(H2O_flux_normalized ~ datetime))
     #with(myDF2[myDF2$canopy=="12345" & myDF2$chamber == "1", ], plot(CondWater_normalized ~ datetime))

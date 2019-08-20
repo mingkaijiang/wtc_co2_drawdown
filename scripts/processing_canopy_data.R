@@ -191,21 +191,25 @@ processing_canopy_data <- function() {
     
     ### add VPD 
     ## Saturation Vapor Pressure (es) = 0.6108 * exp(17.27 * T / (T + 237.3))
+    ## kPa
     myDF$es <- 0.6106 * exp(17.27 * myDF$vT / (myDF$vT + 237.3))
     
     ## calculate RH
     myDF$rh <- 100 - 5 * (myDF$vT - myDF$DPLicorCh)
     
     ## Actual Vapor Pressure (ea) = RH / 100 * es 
+    ## kPa
     myDF$ea <- myDF$rh / 100 * myDF$es
     
     ##  VPD = ea - es
     #myDF$VPD <- myDF$ea - myDF$es
+    ## kPa
     myDF$VPD <- myDF$es * (100 - myDF$rh)/100
     
     
     ### add H2O flux
-    myDF2 <- process_canopy_second_dataset_to_get_H2O_flux()
+    #myDF2 <- process_canopy_second_dataset_to_get_H2O_flux()
+    myDF2 <- process_canopy_second_dataset_to_get_H2O_flux_2()
     
     
     ### reprocess time
@@ -234,9 +238,9 @@ processing_canopy_data <- function() {
     cDF <- cDF[complete.cases(cDF$ncorrflux), ]
     cDF <- cDF[complete.cases(cDF$H2O_flux_normalized), ]
     
-    test3 <- subset(cDF, Chamber == "8" & Canopy == "45")
-    with(test3, plot(ncorrflux~datetime))
-    with(test3, plot(ncorrflux~vCo2))
+    #test3 <- subset(cDF, Chamber == "8" & Canopy == "45")
+    #with(test3, plot(ncorrflux~datetime))
+    #with(test3, plot(ncorrflux~vCo2))
     
     ### return
     outDF <- cDF[,c("Chamber", "Canopy", "vCo2", 

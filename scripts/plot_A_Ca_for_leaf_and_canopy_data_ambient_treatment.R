@@ -51,6 +51,14 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     ### get Ci from gs, A and Ca
     cDF$Ci <- with(cDF, Ca - (Photo/gs))
     
+    #cDF$g1 <- with(cDF, ((Ca * (transpiration / 1000000) / Photo) - (VPD))/sqrt(VPD))
+    #cDF$g1 <- with(cDF, (((Ca * (transpiration / 1000000)) / (1.6 * Photo)) - 1.0) * sqrt(VPD))
+    
+    cDF$Ci <- with(cDF, Ca - (Photo/g1))
+    cDF$Ci_Ca <- with(cDF, Ci / Ca)
+    cDF$Ci_2 <- cDF$Ca * 0.7
+    cDF <- subset(cDF, Ci_Ca < 1 & Ci_Ca > 0)
+
     ### assign CO2, water treatment
     ## chambers 1, 3, 5, 7, 9, 11 are CO2 ambient
     ## chambers 1, 3, 4, 6, 8, 11 are wet 
