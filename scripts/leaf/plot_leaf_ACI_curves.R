@@ -1,135 +1,6 @@
+plot_leaf_ACI_curves <- function(plotDF) {
+    
 
-leaf_ACI_processing <- function() {
-    #### individual leaf ACi curve measurement processing
-    #### Fit A-CI curve for each chamber
-    #### datasets are two: the first is upper canopy, and the second is lower canopy
-    
-    ### read in datasets
-    myDF1 <- read.csv("data/ACi_curves/HFE_Aci_2008-2009.csv",stringsAsFactors=FALSE)
-    myDF2 <- read.csv("data/ACi_curves/HFE_Aci_lowcanopy_2008-2009.csv",stringsAsFactors=FALSE)
-    
-    ### combine the datasets
-    ### multiple factors: CO2 treatment
-    ###                   chamber
-    ###                   water treatment
-    ###                   canopy location
-    ###                   time
-    myDF <- rbind(myDF1, myDF2)
-    myDF <- subset(myDF, chamber %in% c("ch01", "ch02", "ch03", "ch04", #"ch05", "ch06",
-                                        "ch07", "ch08", #"ch09", "ch10", 
-                                        "ch11", "ch12"))
-    
-    myDF$year <- year(myDF$Date)
-    #myDF <- subset(myDF, year == 2009)
-    
-    ### I think we don't want to subset the dataset,
-    ### because summer 2008-9 has a drought treatment.
-    ### Plus, we would have less sample size. 
-    #myDF$Date <- as.Date(myDF$Date)
-    #myDF <- subset(myDF, Date >= "2008-10-01")
-    
-    #### Fitting ACI curve at the finest resolution
-    fits.all <- fitacis(myDF, group="Identity", fitmethod="bilinear",Tcorrect=T, fitTPU=T)
-    
-    ### plot all fittings on the same graph, looks messy
-    #plot(fits.all, how="oneplot")
-    #plot(fits.all[[1]], col="black", add=T)
-    
-    ### assign factors onto the dataframe
-    coefDF <- coef(fits.all)
-    id.list <- unique(coefDF$Identity)
-    
-    for (i in id.list) {
-        coefDF[coefDF$Identity==i, "Date"] <- unique(myDF[myDF$Identity==i, "Date"])
-        coefDF[coefDF$Identity==i, "chamber"] <- unique(myDF[myDF$Identity==i, "chamber"])
-        coefDF[coefDF$Identity==i, "Height"] <- unique(myDF[myDF$Identity==i, "Height"])
-        coefDF[coefDF$Identity==i, "CO2_treatment"] <- unique(myDF[myDF$Identity==i, "CO2_treatment"])
-        #coefDF[coefDF$Identity==i, "Water_treatment"] <- unique(myDF[myDF$Identity==i, "Water_treatment"])
-        #coefDF[coefDF$Identity==i, "inside_or_outside_WTC"] <- unique(myDF[myDF$Identity==i, "inside_or_outside_WTC"])
-    }
-    
-    
-    ### add vcmax to jmax ratio
-    coefDF$JVratio <- coefDF$Jmax/coefDF$Vcmax
-    
-    coefDF$Date <- as.Date(coefDF$Date)
-
-    ### calculate Ac_Aj transition Ci point
-    for (i in unique(coefDF$Identity)) {
-        testDF <- subset(myDF, Identity==i)
-        fit.i <- fitaci(testDF,Tcorrect=T, fitTPU=T)
-        out <- findCiTransition(fit.i)
-        coefDF[coefDF$Identity==i,"Ac_Aj"] <- out[1]
-    }
-    
-    ### exclude outliers
-    coefDF.sub <- coefDF[coefDF$JVratio <= 3, ]
-    
-    ### make a list of identify
-    id.list <- unique(coefDF.sub$Identity)
-    
-    ### prepare an output df
-    outDF <- data.frame(id.list, NA, NA, NA, NA, NA, NA, 
-                        NA, NA, NA, NA, NA, NA,
-                        NA, NA, NA, NA, NA, NA,
-                        NA, NA, NA, NA, NA, NA,
-                        NA, NA, NA, NA, NA)
-    colnames(outDF) <- c("Identity", "Chamber", "CO2_treatment", "Height", "Date",
-                         "RMSE", "Vcmax", "Vcmax.se", "Jmax", "Jmax.se", "Rd", "Rd.se",
-                         "Ci", "ALEAF", "GS", "ELEAF", "Ac", "Aj", "Ap", "Rd2", "VPD",
-                         "Tleaf", "Ca", "Cc", "PPFD", "Ci_transition_Ac_Aj",
-                         "curve.fitting", "Patm", "GammaStar", "Km")
-    
-    ### the for loop
-    for (i in 1:length(id.list)) {
-        ## subset each data
-        test <- subset(myDF, Identity == id.list[i])
-        
-        ## fit
-        fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU=T)
-        
-        ## get information on identity
-        outDF[outDF$Identity == id.list[i], "CO2_treatment"] <- unique(test$CO2_treatment)
-        outDF[outDF$Identity == id.list[i], "Chamber"] <- unique(test$chamber)
-        outDF[outDF$Identity == id.list[i], "Height"] <- unique(test$Height)
-        outDF[outDF$Identity == id.list[i], "curve.fitting"] <- fit1$fitmethod
-        outDF[outDF$Identity == id.list[i], "Date"] <- unique(test$Date)
-        
-        ## assign fitted values
-        outDF[outDF$Identity == id.list[i], "RMSE"] <- fit1$RMSE
-        outDF[outDF$Identity == id.list[i], "Vcmax"] <- fit1$pars[1,1]
-        outDF[outDF$Identity == id.list[i], "Vcmax.se"] <- fit1$pars[1,2]
-        outDF[outDF$Identity == id.list[i], "Jmax"] <- fit1$pars[2,1]
-        outDF[outDF$Identity == id.list[i], "Jmax.se"] <- fit1$pars[2,2]
-        outDF[outDF$Identity == id.list[i], "Rd"] <- fit1$pars[3,1]
-        outDF[outDF$Identity == id.list[i], "Rd.se"] <- fit1$pars[3,2]
-        
-        outDF[outDF$Identity == id.list[i], "Ci"] <- fit1$Photosyn()[1]
-        outDF[outDF$Identity == id.list[i], "ALEAF"] <- fit1$Photosyn()[2]
-        outDF[outDF$Identity == id.list[i], "GS"] <- fit1$Photosyn()[3]
-        outDF[outDF$Identity == id.list[i], "ELEAF"] <- fit1$Photosyn()[4]
-        outDF[outDF$Identity == id.list[i], "Ac"] <- fit1$Photosyn()[5]
-        outDF[outDF$Identity == id.list[i], "Aj"] <- fit1$Photosyn()[6]
-        outDF[outDF$Identity == id.list[i], "Ap"] <- fit1$Photosyn()[7]
-        outDF[outDF$Identity == id.list[i], "Rd2"] <- fit1$Photosyn()[8]
-        outDF[outDF$Identity == id.list[i], "VPD"] <- fit1$Photosyn()[9]
-        outDF[outDF$Identity == id.list[i], "Tleaf"] <- fit1$Photosyn()[10]
-        outDF[outDF$Identity == id.list[i], "Ca"] <- fit1$Photosyn()[11]
-        outDF[outDF$Identity == id.list[i], "Cc"] <- fit1$Photosyn()[12]
-        outDF[outDF$Identity == id.list[i], "PPFD"] <- fit1$Photosyn()[13]
-        outDF[outDF$Identity == id.list[i], "Patm"] <- fit1$Photosyn()[14]
-        
-        outDF[outDF$Identity == id.list[i], "Ci_transition_Ac_Aj"] <- fit1$Ci_transition
-        outDF[outDF$Identity == id.list[i], "GammaStar"] <- fit1$GammaStar
-        outDF[outDF$Identity == id.list[i], "Km"] <- fit1$Km
-    }
-    
-    outDF$JVratio <- outDF$Jmax / outDF$Vcmax
-    
-    ### save
-    write.csv(outDF, "output/leaf_scale_parameters.csv", row.names=F)
-    
-    
     ### create pdf
     #pdf("output/leaf_level_individual_chamber_result.pdf", height=24, width=20)
     #par(mfrow=c(6,4))
@@ -137,8 +8,8 @@ leaf_ACI_processing <- function() {
     ### make plot
     #plot.sequence <- c(1,9,12,15,2,11,14,17,6,4,21,19,10,24,16,13,5,8,20,22, 3,7,18)
     #for (i in 1:length(plot.sequence)) {
-    #    plot(outlist[[plot.sequence[i]]], main=paste0(outDF$Chamber[plot.sequence[i]], ", ", outDF$Height[plot.sequence[i]], ", ",
-    #                                                  outDF$CO2_treatment[plot.sequence[i]], ", ", outDF$Water_treatment[plot.sequence[i]]))
+    #    plot(outlist[[plot.sequence[i]]], main=paste0(plotDF$Chamber[plot.sequence[i]], ", ", plotDF$Height[plot.sequence[i]], ", ",
+    #                                                  plotDF$CO2_treatment[plot.sequence[i]], ", ", plotDF$Water_treatment[plot.sequence[i]]))
     #}
     #
     #dev.off()
@@ -218,13 +89,13 @@ leaf_ACI_processing <- function() {
     
     ##### make box plot
     sumDF.co2 <- summaryBy(Vcmax + Jmax + Rd + ALEAF + GS + ELEAF + Ac + Aj +Ci_transition_Ac_Aj + GammaStar + Km ~ CO2_treatment,
-                           data=outDF, FUN = c(mean, se), keep.names=T)
+                           data=plotDF, FUN = c(mean, se), keep.names=T)
     
     #sumDF.h2o <- summaryBy(Vcmax + Jmax + Rd + ALEAF + GS + ELEAF + Ac + Aj +Ci_transition_Ac_Aj + GammaStar + Km ~ Water_treatment,
-    #                       data=outDF, FUN = c(mean, se), keep.names=T)
+    #                       data=plotDF, FUN = c(mean, se), keep.names=T)
     
     sumDF.ht <- summaryBy(Vcmax + Jmax + Rd + ALEAF + GS + ELEAF + Ac + Aj +Ci_transition_Ac_Aj + GammaStar + Km ~ Height,
-                           data=outDF, FUN = c(mean, se), keep.names=T)
+                          data=plotDF, FUN = c(mean, se), keep.names=T)
     
     
     
@@ -235,8 +106,8 @@ leaf_ACI_processing <- function() {
         xlab("")+
         ylab(expression(V[cmax]*" (umol " * m^-2 * " " * s^-1 * ")"))+
         scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
-                           limits=c("ambient", "elevated"),
-                           values=c("grey", "black"))+
+                          limits=c("ambient", "elevated"),
+                          values=c("grey", "black"))+
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_blank(), 
               axis.text.x = element_blank(),
@@ -295,7 +166,7 @@ leaf_ACI_processing <- function() {
         ylim(40,100)+
         ggtitle("b")
     
-
+    
     p3 <- ggplot(sumDF.co2) +
         geom_errorbar(aes(x=CO2_treatment, ymin=(Jmax.mean - Jmax.se), 
                           ymax = (Jmax.mean+Jmax.se)), position = "dodge", width=0.2)+
@@ -386,7 +257,7 @@ leaf_ACI_processing <- function() {
               plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
         ylim(200,400)+
         scale_x_discrete(breaks=c("ambient", "elevated"),
-                           labels=c("ambient", "elevated"))+
+                         labels=c("ambient", "elevated"))+
         guides(fill = guide_legend(title.position = "top"))+
         ggtitle("e")
     
@@ -442,7 +313,7 @@ leaf_ACI_processing <- function() {
         guides(fill = guide_legend(title.position = "top"))+
         ggtitle("g")
     
-
+    
     pdf("output/leaf_parameter_summary_break_into_groups.pdf", width=12, height=14)
     plot_grid(p1, p2, p3, 
               p4, p5, p6, 
@@ -455,7 +326,7 @@ leaf_ACI_processing <- function() {
     ### testing co2 by height, ignore date
     ## vcmax
     mod1 <- lme(Vcmax ~ CO2_treatment * Height, random=~1|Chamber, 
-                data=outDF, 
+                data=plotDF, 
                 method="REML")
     anova.lme(mod1, 
               type="sequential", 
@@ -463,28 +334,28 @@ leaf_ACI_processing <- function() {
     
     ## Jmax
     mod2 <- lme(Jmax ~ CO2_treatment * Height, random=~1|Chamber, 
-                data=outDF, 
+                data=plotDF, 
                 method="REML")
     anova.lme(mod2, 
               type="sequential", 
               adjustSigma = FALSE)
-
+    
     ## JV ratio
     mod3 <- lme(JVratio ~ CO2_treatment * Height, random=~1|Chamber, 
-                data=outDF, 
+                data=plotDF, 
                 method="REML")
     anova.lme(mod3, 
               type="sequential", 
               adjustSigma = FALSE)
-
+    
     ## Ci point
     mod4 <- lme(Ci_transition_Ac_Aj ~ CO2_treatment * Height, random=~1|Chamber, 
-                data=outDF, 
+                data=plotDF, 
                 method="REML")
     anova.lme(mod4, 
               type="sequential", 
               adjustSigma = FALSE)
-
+    
     
     #### compute statistics on each individual treatment factor
     #op <- par(mfrow = c(3, 1))
@@ -509,11 +380,11 @@ leaf_ACI_processing <- function() {
     
     ###### check vcmax relationship
     #### 3-way anova 
-    fm <- aov(Vcmax ~ CO2_treatment * Height, data = outDF)
+    fm <- aov(Vcmax ~ CO2_treatment * Height, data = plotDF)
     summary(fm)
     
     ## obtain r2 from the anova model
-    lm <- lm(Vcmax ~ CO2_treatment * Height, data = outDF)
+    lm <- lm(Vcmax ~ CO2_treatment * Height, data = plotDF)
     anova(lm)
     summary(lm)
     
@@ -552,22 +423,22 @@ leaf_ACI_processing <- function() {
     
     ##### check jmax relationship
     ### 2-way anova 
-    fm <- aov(Jmax ~ CO2_treatment * Height, data = outDF)
+    fm <- aov(Jmax ~ CO2_treatment * Height, data = plotDF)
     summary(fm)
     
     ## obtain r2 from the anova model
-    lm <- lm(Jmax ~ CO2_treatment * Height, data = outDF)
+    lm <- lm(Jmax ~ CO2_treatment * Height, data = plotDF)
     anova(lm)
     summary(lm)
     
     
     ##### check jv ratio relationship
     ### 3-way anova 
-    fm <- aov(JVratio ~ CO2_treatment * Height, data = outDF)
+    fm <- aov(JVratio ~ CO2_treatment * Height, data = plotDF)
     summary(fm)
     
     ## obtain r2 from the anova model
-    lm <- lm(JVratio ~ CO2_treatment * Height, data = outDF)
+    lm <- lm(JVratio ~ CO2_treatment * Height, data = plotDF)
     anova(lm)
     summary(lm)
     
@@ -702,10 +573,10 @@ leaf_ACI_processing <- function() {
     ### vcmax
     #fm1 <- aov(Vcmax ~ CO2_treatment * Height, data = subDF2)
     #summary(fm1)
-#
+    #
     #lm <- lm(Vcmax ~ CO2_treatment * Height, data = subDF2)
     #summary(lm)
-#
+    #
     ### jmax
     #fm2 <- aov(Jmax ~ CO2_treatment * Height, data = subDF2)
     #summary(fm2)
@@ -730,9 +601,9 @@ leaf_ACI_processing <- function() {
     
     
     ##### make box plot
-    outDF$JVratio <- outDF$Jmax/outDF$Vcmax
+    plotDF$JVratio <- plotDF$Jmax/plotDF$Vcmax
     sumDF <- summaryBy(Vcmax + Jmax + Rd + ALEAF + GS + ELEAF + Ac + Aj +Ci_transition_Ac_Aj + GammaStar + Km + JVratio~ CO2_treatment+Height,
-                           data=outDF, FUN = c(mean, se), keep.names=T)
+                       data=plotDF, FUN = c(mean, se), keep.names=T)
     
     
     
@@ -748,8 +619,8 @@ leaf_ACI_processing <- function() {
                           limits=c("ambient", "elevated"),
                           values=c("grey", "black"))+
         scale_color_manual(name=expression(paste(CO[2] * " treatment")),
-                          limits=c("ambient", "elevated"),
-                          values=c("black", "black"))+
+                           limits=c("ambient", "elevated"),
+                           values=c("black", "black"))+
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_blank(), 
               axis.text.x = element_blank(),
@@ -843,7 +714,7 @@ leaf_ACI_processing <- function() {
               plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
         ylim(180,360)+
         ggtitle("d")
-
+    
     
     p5 <- ggplot(sumDF) +
         geom_errorbar(aes(x=Height, ymin=(Ac.mean - Ac.se), 
@@ -955,6 +826,4 @@ leaf_ACI_processing <- function() {
     
     dev.off()
     
-    
- }
-
+}

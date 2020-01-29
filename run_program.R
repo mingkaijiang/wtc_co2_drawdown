@@ -23,7 +23,9 @@ source("prepare.R")
 ###                                3. layer effect (i.e. top and bottom layers)
 ###                                4. save stats and figures
 ###                                5. output parameters for leaf and canopy comparison
-leaf_ACI_processing()
+leaf_aciDF <- leaf_ACI_processing()
+
+plot_leaf_ACI_curves(plotDF=leaf_aciDF)
 
 ############################# processing canopy data #################################
 #### data explained
