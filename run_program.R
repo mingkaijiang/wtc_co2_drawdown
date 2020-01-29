@@ -25,10 +25,18 @@ source("prepare.R")
 ###                                5. output parameters for leaf and canopy comparison
 leaf_aciDF <- leaf_ACI_processing()
 
+#### Make some plots
 plot_leaf_ACI_curves(plotDF=leaf_aciDF)
 
+#### results summary:
+###  there were statistically significant position effects on 
+###  key photosynthetic parameters (e.g. Vcmax, Jmax, transitional Ci),
+###  but there were no significant CO2 effects;
+###  And, there were no significant CO2 x position interaction effects.
+###  Detailed statistics available within the plot_leaf_ACI_curves function.
+
 ############################# processing canopy data #################################
-#### data explained
+#### data note:
 #### column canopy: 12345 - full canopy present
 ####                345 - middle + top canopy present
 ####                45 - top canopy present

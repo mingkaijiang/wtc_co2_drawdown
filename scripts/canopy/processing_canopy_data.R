@@ -10,7 +10,7 @@ processing_canopy_data <- function() {
     ### but codes for mergeall.txt is available, but commented out.
     
     
-    #                                    descriptions	
+    #                                    Descriptions	
     # values calculated using SAS prog 	
     # chamber	chamber number
     # canopy	canopy layers present during drawdown

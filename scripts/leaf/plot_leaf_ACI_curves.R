@@ -87,7 +87,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
     #dev.off()
     
     
-    ##### make box plot
+    ##### make box plot for long-term CO2 and position factors
     sumDF.co2 <- summaryBy(Vcmax + Jmax + Rd + ALEAF + GS + ELEAF + Ac + Aj +Ci_transition_Ac_Aj + GammaStar + Km ~ CO2_treatment,
                            data=plotDF, FUN = c(mean, se), keep.names=T)
     
@@ -314,7 +314,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
         ggtitle("g")
     
     
-    pdf("output/leaf_parameter_summary_break_into_groups.pdf", width=12, height=14)
+    pdf("output/leaf_parameter_co2_ht_comparison.pdf", width=12, height=14)
     plot_grid(p1, p2, p3, 
               p4, p5, p6, 
               #p7, p8, p9, 
@@ -331,6 +331,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
     anova.lme(mod1, 
               type="sequential", 
               adjustSigma = FALSE)
+    # no CO2 by height interaction on vcmax
     
     ## Jmax
     mod2 <- lme(Jmax ~ CO2_treatment * Height, random=~1|Chamber, 
@@ -339,6 +340,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
     anova.lme(mod2, 
               type="sequential", 
               adjustSigma = FALSE)
+    # no CO2 by height interaction on jmax
     
     ## JV ratio
     mod3 <- lme(JVratio ~ CO2_treatment * Height, random=~1|Chamber, 
@@ -347,6 +349,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
     anova.lme(mod3, 
               type="sequential", 
               adjustSigma = FALSE)
+    # no CO2 by height interaction on JV ratio
     
     ## Ci point
     mod4 <- lme(Ci_transition_Ac_Aj ~ CO2_treatment * Height, random=~1|Chamber, 
@@ -355,6 +358,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
     anova.lme(mod4, 
               type="sequential", 
               adjustSigma = FALSE)
+    # no CO2 by height interaction on Ci point
     
     
     #### compute statistics on each individual treatment factor
@@ -808,7 +812,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
         ggtitle("g")
     
     
-    pdf("output/leaf_parameter_summary_break_into_groups.pdf", width=12, height=14)
+    pdf("output/leaf_parameter_summary_detailed_breakdowns.pdf", width=12, height=14)
     #plot_grid(p1, p2, 
     #          p3, p4, 
     #          p5, p6, 
