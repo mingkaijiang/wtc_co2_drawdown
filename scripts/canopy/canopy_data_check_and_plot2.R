@@ -88,7 +88,7 @@ canopy_data_check_and_plot2 <- function(myDF) {
                            labels=c("full", "top + middle", "top"))
     
     ### output
-    pdf("output/overall_data2.pdf", width=12, height=6)
+    pdf("output/canopy_data_check_and_plot.pdf", width=12, height=6)
     plot(p1)
     plot(p2)
     plot(p3)

@@ -73,15 +73,17 @@ processing_canopy_data <- function() {
     ### check canopy data structure
     #canopy_data_check_and_plot2(myDF)
     
-    ### time series data correct to control for breaks in the dataseries
+    ### time series data correction to control for breaks in the dataseries
     myDF <- canopy_data_control2(myDF)
     
     ### Calculate CO2 flux for each minute and output in the unit of ppm CO2 min-1
+    ### also delete some unstable data points (mostly earlier period of the experiments)
     myDF <- calculate_co2_flux_per_second2(myDF)
     
-    ### plotting co2 flux at per second rate for different treatments
+    ### plotting co2 flux at per second rate for each chamber
     canopy_data_per_second_check_and_plot2(myDF)
     
+    ### remove missing data points
     myDF$ncorrflux <- as.numeric(myDF$ncorrflux)
     myDF <- myDF[complete.cases(myDF$ncorrflux), ]
     

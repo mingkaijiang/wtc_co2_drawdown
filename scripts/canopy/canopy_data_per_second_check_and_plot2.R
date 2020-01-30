@@ -206,7 +206,7 @@ canopy_data_per_second_check_and_plot2 <- function(myDF){
     
     
     ### output
-    pdf("output/overall_data_fluxes2_per_atm_co2_concentration.pdf", width=12, height=6)
+    pdf("output/canopy_data_chamber_CO2_drawdown_fluxes.pdf", width=12, height=6)
     plot(p1)
     plot(p2)
     plot(p3)
@@ -385,17 +385,17 @@ canopy_data_per_second_check_and_plot2 <- function(myDF){
     
     
     ### output
-    pdf("output/overall_data_fluxes2_per_co2_flux.pdf", width=12, height=6)
+    #pdf("output/canopy_data_chamber_CO2_drawdown_fluxes_over_time.pdf", width=12, height=6)
 
-    plot(p3)
-    plot(p4)
-    plot(p5)
-    plot(p6)
-    plot(p7)
-    plot(p8)
-    plot(p9)
-    plot(p10)
-    dev.off()
+    #plot(p3)
+    #plot(p4)
+    #plot(p5)
+    #plot(p6)
+    #plot(p7)
+    #plot(p8)
+    #plot(p9)
+    #plot(p10)
+    #dev.off()
     
     
     
@@ -563,7 +563,7 @@ canopy_data_per_second_check_and_plot2 <- function(myDF){
     
     
     ### output
-    pdf("output/overall_data_fluxes2_co2_flux_per_atm_co2.pdf", width=12, height=6)
+    pdf("output/canopy_data_chamber_CO2_drawdown_fluxes_over_Ca.pdf", width=12, height=6)
     
     plot(p3)
     plot(p4)
@@ -738,16 +738,16 @@ canopy_data_per_second_check_and_plot2 <- function(myDF){
         ggtitle("Chamber 12 example")
     
     ### output
-    pdf("output/overall_data_fluxes_co2_flux_per_atm_co2.pdf", width=12, height=6)
-    
-    plot(p3)
-    plot(p4)
-    plot(p5)
-    plot(p6)
-    plot(p7)
-    plot(p8)
-    plot(p9)
-    plot(p10)
-    dev.off()
+    #pdf("output/canopy_data_chamber_CO2_drawdown_fluxes_unnormalized.pdf", width=12, height=6)
+    #
+    #plot(p3)
+    #plot(p4)
+    #plot(p5)
+    #plot(p6)
+    #plot(p7)
+    #plot(p8)
+    #plot(p9)
+    #plot(p10)
+    #dev.off()
     
 }

@@ -36,11 +36,16 @@ plot_leaf_ACI_curves(plotDF=leaf_aciDF)
 ###  Detailed statistics available within the plot_leaf_ACI_curves function.
 
 ############################# processing canopy data #################################
-#### data note:
-#### column canopy: 12345 - full canopy present
-####                345 - middle + top canopy present
-####                45 - top canopy present
-####                0 - no canopy present
+#### Data note:
+#### 1. Column canopy: 12345 - full canopy present
+####                    345 - middle + top canopy present
+####                    45 - top canopy present
+####                    0 - no canopy present
+#### 2. Need to quality control the data because 
+####    there were time-series breaks in the measurements (more details in the code)
+#### 3. Need to correct for tree size, according to Drake's method
+####    i.e. normalized to per leaf area (more details in the code)
+
 canopyDF <- processing_canopy_data()
 
 ############################# plot leaf and canopy A-CA curves ######################
