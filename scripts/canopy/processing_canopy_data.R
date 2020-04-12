@@ -55,26 +55,42 @@ processing_canopy_data <- function() {
     myDF$time3 <- str_sub(myDF$time2, start=-3)
     myDF$time <- paste0(myDF$time1, myDF$time3)
     
-    #test2 <- subset(myDF, Chamber == "8" & Canopy == "45")
-    #with(test2, plot(ncorrflux~datetime))
-    
     myDF$datetime <- as.POSIXct(paste(as.character(myDF$date), myDF$time), format="%Y-%m-%d %H:%M:%S")
     myDF$time <- strftime(myDF$datetime, format="%H:%M:%S")
     myDF$time <- as.POSIXct(myDF$time, format="%H:%M:%S")
     
     myDF <- myDF[,!(colnames(myDF)%in% c("time1", "time2", "time3"))]
     
-    #test2 <- subset(myDF, Chamber == "8" & Canopy == "45")
-    #with(test2, plot(ncorrflux~datetime))
     
     ### only include the complete data where normalized flux is available
     myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-
+    
+    
+    ### update names to improve readability
+    names(myDF)[names(myDF) == "vCo2"] <- "WTC_CO2"
+    names(myDF)[names(myDF) == "vT"] <- "WTC_T"
+    names(myDF)[names(myDF) == "DPLicorCh"] <- "WTC_dew_point"
+    names(myDF)[names(myDF) == "PARi"] <- "WTC_PAR"
+    names(myDF)[names(myDF) == "slope2"] <- "CO2_flux"
+    names(myDF)[names(myDF) == "nslope2"] <- "Norm_CO2_flux"
+    names(myDF)[names(myDF) == "cmarea"] <- "Leaf_area"
+    names(myDF)[names(myDF) == "k"] <- "Leak_coef"
+    names(myDF)[names(myDF) == "leak"] <- "Leak"
+    names(myDF)[names(myDF) == "corrflux"] <- "Corr_CO2_flux"
+    names(myDF)[names(myDF) == "ncorrflux"] <- "Norm_corr_CO2_flux"
+    
+    myDF <- myDF[,c("Chamber", "Canopy", "datetime", "date", "time", 
+                    "WTC_CO2", "WTC_T", "WTC_dew_point", "WTC_PAR", 
+                    "Tair", "Leaf_area", "Leak_coef", "Leak", 
+                    "CO2_flux", "Norm_CO2_flux", "Corr_CO2_flux", 
+                    "Norm_corr_CO2_flux")]
+    
+    
     ### check canopy data structure
-    #canopy_data_check_and_plot2(myDF)
+    #canopy_data_check_and_plot(myDF)
     
     ### time series data correction to control for breaks in the dataseries
-    myDF <- canopy_data_control2(myDF)
+    myDF <- canopy_data_control(myDF)
     
     ### Calculate CO2 flux for each minute and output in the unit of ppm CO2 min-1
     ### also delete some unstable data points (mostly earlier period of the experiments)
@@ -194,20 +210,24 @@ processing_canopy_data <- function() {
     ### add VPD 
     ## Saturation Vapor Pressure (es) = 0.6108 * exp(17.27 * T / (T + 237.3))
     ## kPa
-    myDF$es <- 0.6106 * exp(17.27 * myDF$vT / (myDF$vT + 237.3))
+    myDF$es <- 0.6106 * exp(17.27 * myDF$Tair / (myDF$Tair + 237.3))
     
     ## calculate RH
-    myDF$rh <- 100 - 5 * (myDF$vT - myDF$DPLicorCh)
+    myDF$rh <- 100 - 5 * (myDF$Tair - myDF$DPLicorCh)
     
     ## Actual Vapor Pressure (ea) = RH / 100 * es 
     ## kPa
-    myDF$ea <- myDF$rh / 100 * myDF$es
+    myDF$ea <- myDF$es * myDF$rh / 100 
     
     ##  VPD = ea - es
     #myDF$VPD <- myDF$ea - myDF$es
     ## kPa
     myDF$VPD <- myDF$es * (100 - myDF$rh)/100
     
+    ## calculate based on planteophys
+    #require(plantecophys)
+    #myDF$VPD2 <- RHtoVPD(myDF$rh, myDF$Tair, Pa = 101)
+    # method 1 and 2 agree with each other, good!
     
     ### add H2O flux
     #myDF2 <- process_canopy_second_dataset_to_get_H2O_flux()

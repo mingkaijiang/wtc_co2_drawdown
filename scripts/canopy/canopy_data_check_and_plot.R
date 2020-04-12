@@ -1,4 +1,4 @@
-canopy_data_check_and_plot2 <- function(myDF) {
+canopy_data_check_and_plot <- function(myDF) {
     
     
     current.date <- Sys.Date()

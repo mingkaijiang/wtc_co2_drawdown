@@ -1,4 +1,4 @@
-canopy_data_control2 <- function(myDF) {
+canopy_data_control <- function(myDF) {
     ### smooth Canopy time series data 
     ### Chamber 2: top Canopy, link two periods together
     ### Chamber 4: top + middle
