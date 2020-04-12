@@ -65,6 +65,8 @@ processing_canopy_data <- function() {
     ### only include the complete data where normalized flux is available
     myDF <- myDF[complete.cases(myDF$ncorrflux), ]
     
+    ### ignore unreasonable data
+    myDF <- subset(myDF, ncorrflux >= -2)
     
     ### update names to improve readability
     names(myDF)[names(myDF) == "vCo2"] <- "WTC_CO2"
@@ -95,111 +97,26 @@ processing_canopy_data <- function() {
     ### Calculate CO2 flux for each minute and output in the unit of ppm CO2 min-1
     ### also delete some unstable data points (mostly earlier period of the experiments)
     myDF <- calculate_co2_flux_per_second(myDF)
+
+    ### continue cleaning data
+    ### remove missing data points
+    myDF$Norm_corr_CO2_flux <- as.numeric(myDF$Norm_corr_CO2_flux)
+    myDF <- myDF[complete.cases(myDF$Norm_corr_CO2_flux), ]
+    
+    myDF <- manually_delete_unreasonable_data(myDF)
+    
     
     ### plotting co2 flux at per second rate for each chamber
     canopy_data_per_second_check_and_plot(myDF)
     
-    ### remove missing data points
-    myDF$ncorrflux <- as.numeric(myDF$ncorrflux)
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
     
     
-    ### exclude problematic data
-    myDF[myDF$Chamber == "1" & myDF$Canopy == "45" & myDF$vCo2 > 1500 & myDF$ncorrflux < 8, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
     
-    myDF[myDF$Chamber == "2" & myDF$ncorrflux > 15, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
     
-    myDF[myDF$Chamber == "2" & myDF$ncorrflux < -1, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
     
-    myDF[myDF$Chamber == "3" & myDF$Canopy == 45 & myDF$datetime < "2009-03-19 09:18:40", "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
     
-    myDF[myDF$Chamber == "4" & myDF$Canopy == "12345" & myDF$vCo2 > 1200 & myDF$ncorrflux < 6, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
     
-    myDF[myDF$Chamber == "4" & myDF$ncorrflux < 0, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
     
-    myDF[myDF$Chamber == "4" & myDF$ncorrflux > 12, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "4" & myDF$Canopy == "345" & myDF$ncorrflux > 10, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "4" & myDF$Canopy == "45" & myDF$vCo2 >= 1200, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "7" & myDF$ncorrflux < -2, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "7" & myDF$ncorrflux > 20, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "7" & myDF$Canopy == "345" & myDF$ncorrflux > 16, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "7" & myDF$Canopy == "45" & myDF$vCo2 > 1000 & myDF$ncorrflux < 12, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "8" & myDF$ncorrflux < 0, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "8" & myDF$Canopy == "12345" & myDF$vCo2 > 300 & myDF$ncorrflux < 3, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "8" & myDF$Canopy == "345" & myDF$vCo2 > 200 & myDF$ncorrflux < 3, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "8" & myDF$Canopy == "345" & myDF$ncorrflux > 8, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "8" & myDF$Canopy == "345" & myDF$vCo2 > 300 & myDF$ncorrflux < 4, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "8" & myDF$Canopy == "345" & myDF$vCo2 > 420 & myDF$ncorrflux < 4.5, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "8" & myDF$Canopy == "345" & myDF$vCo2 > 380 & myDF$ncorrflux < 4.3, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "8" & myDF$Canopy == "45" & myDF$ncorrflux > 10, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "8" & myDF$Canopy == "45" & myDF$vCo2 > 1200, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "8" & myDF$Canopy == "45" & myDF$vCo2 > 400 & myDF$ncorrflux < 5, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "11" & myDF$ncorrflux < 0, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "11" & myDF$Canopy == "12345" & myDF$vCo2 >= 1400, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "12" & myDF$ncorrflux < 0, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "12" & myDF$ncorrflux > 15, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "12" & myDF$Canopy == "45" & myDF$vCo2 >= 1200 & myDF$ncorrflux < 4, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "12" & myDF$Canopy == "345" & myDF$vCo2 >= 1400, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "12" & myDF$Canopy == "345" & myDF$vCo2 >= 300 & myDF$ncorrflux < 5, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    myDF[myDF$Chamber == "12" & myDF$Canopy == "345" & myDF$vCo2 <= 450 & myDF$ncorrflux > 9, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-
-    myDF[myDF$Chamber == "12" & myDF$Canopy == "345" & myDF$vCo2 >= 1200 & myDF$ncorrflux < 10, "ncorrflux"] <- NA
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
     
     #test <- subset(myDF, Chamber == "12" & Canopy == "345")
     #with(test, plot(ncorrflux~time))
