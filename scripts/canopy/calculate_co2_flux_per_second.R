@@ -1,4 +1,4 @@
-calculate_co2_flux_per_second2 <- function(myDF) {
+calculate_co2_flux_per_second <- function(myDF) {
     ### This function fit individual Chamber and Canopy data 
     ### to obtain the flux of co2 per second based on minute data
     
@@ -6,7 +6,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF1 <- subset(myDF, Chamber == "1" & Canopy == "12345")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF1$vCo2)
+    r.n <- which.max(tDF1$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF1$Chamber[r.n:dim(tDF1)[1]])
@@ -24,7 +24,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF2 <- subset(myDF, Chamber == "1" & Canopy == "345")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF2$vCo2)
+    r.n <- which.max(tDF2$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF2$Chamber[r.n:dim(tDF2)[1]])
@@ -38,7 +38,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF3 <- subset(myDF, Chamber == "1" & Canopy == "45")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF3$vCo2)
+    r.n <- which.max(tDF3$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF3$Chamber[r.n:dim(tDF3)[1]])
@@ -53,7 +53,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF4 <- subset(myDF, Chamber == "2" & Canopy == "12345")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF4$vCo2)
+    r.n <- which.max(tDF4$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF4$Chamber[r.n:dim(tDF4)[1]])
@@ -68,7 +68,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF5 <- subset(myDF, Chamber == "2" & Canopy == "345")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF5$vCo2)
+    r.n <- which.max(tDF5$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF5$Chamber[r.n:dim(tDF5)[1]])
@@ -84,7 +84,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF6 <- subset(myDF, Chamber == "2" & Canopy == "45")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF6$vCo2)
+    r.n <- which.max(tDF6$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF6$Chamber[r.n:dim(tDF6)[1]])
@@ -99,7 +99,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF7 <- subset(myDF, Chamber == "3" & Canopy == "12345")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF7$vCo2)
+    r.n <- which.max(tDF7$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF7$Chamber[r.n:dim(tDF7)[1]])
@@ -114,7 +114,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF8 <- subset(myDF, Chamber == "3" & Canopy == "345")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF8$vCo2)
+    r.n <- which.max(tDF8$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF8$Chamber[r.n:dim(tDF8)[1]])
@@ -129,7 +129,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF9 <- subset(myDF, Chamber == "3" & Canopy == "45")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF9$vCo2)
+    r.n <- which.max(tDF9$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF9$Chamber[r.n:dim(tDF9)[1]])
@@ -144,7 +144,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF10 <- subset(myDF, Chamber == "4" & Canopy == "12345")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF10$vCo2)
+    r.n <- which.max(tDF10$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF10$Chamber[r.n:dim(tDF10)[1]])
@@ -159,7 +159,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF11 <- subset(myDF, Chamber == "4" & Canopy == "345")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF11$vCo2)
+    r.n <- which.max(tDF11$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF11$Chamber[r.n:dim(tDF11)[1]])
@@ -174,7 +174,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF12 <- subset(myDF, Chamber == "4" & Canopy == "45")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF12$vCo2)
+    r.n <- which.max(tDF12$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF12$Chamber[r.n:dim(tDF12)[1]])
@@ -189,7 +189,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF13 <- subset(myDF, Chamber == "7" & Canopy == "12345")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF13$vCo2)
+    r.n <- which.max(tDF13$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF13$Chamber[r.n:dim(tDF13)[1]])
@@ -204,7 +204,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF14 <- subset(myDF, Chamber == "7" & Canopy == "345")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF14$vCo2)
+    r.n <- which.max(tDF14$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF14$Chamber[r.n:dim(tDF14)[1]])
@@ -219,7 +219,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF15 <- subset(myDF, Chamber == "7" & Canopy == "45")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF15$vCo2)
+    r.n <- which.max(tDF15$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF15$Chamber[r.n:dim(tDF15)[1]])
@@ -234,7 +234,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF16 <- subset(myDF, Chamber == "8" & Canopy == "12345")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF16$vCo2)
+    r.n <- which.max(tDF16$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF16$Chamber[r.n:dim(tDF16)[1]])
@@ -249,7 +249,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF17 <- subset(myDF, Chamber == "8" & Canopy == "345")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF17$vCo2)
+    r.n <- which.max(tDF17$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF17$Chamber[r.n:dim(tDF17)[1]])
@@ -264,7 +264,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF18 <- subset(myDF, Chamber == "8" & Canopy == "45")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF18$vCo2)
+    r.n <- which.max(tDF18$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF18$Chamber[r.n:dim(tDF18)[1]])
@@ -279,7 +279,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF19 <- subset(myDF, Chamber == "11" & Canopy == "12345")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF19$vCo2)
+    r.n <- which.max(tDF19$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF19$Chamber[r.n:dim(tDF19)[1]])
@@ -294,7 +294,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF20 <- subset(myDF, Chamber == "11" & Canopy == "345")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF20$vCo2)
+    r.n <- which.max(tDF20$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF20$Chamber[r.n:dim(tDF20)[1]])
@@ -309,7 +309,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF21 <- subset(myDF, Chamber == "11" & Canopy == "45")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF21$vCo2)
+    r.n <- which.max(tDF21$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF21$Chamber[r.n:dim(tDF21)[1]])
@@ -324,7 +324,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF22 <- subset(myDF, Chamber == "12" & Canopy == "12345")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF22$vCo2)
+    r.n <- which.max(tDF22$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF22$Chamber[r.n:dim(tDF22)[1]])
@@ -339,7 +339,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF23 <- subset(myDF, Chamber == "12" & Canopy == "345")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF23$vCo2)
+    r.n <- which.max(tDF23$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF23$Chamber[r.n:dim(tDF23)[1]])
@@ -354,7 +354,7 @@ calculate_co2_flux_per_second2 <- function(myDF) {
     tDF24 <- subset(myDF, Chamber == "12" & Canopy == "45")
     
     ### find row number with maximum CO2 concentration
-    r.n <- which.max(tDF24$vCo2)
+    r.n <- which.max(tDF24$WTC_CO2)
     
     ### fine total row numbers (excluding pre-treatment rows)
     r.t <- length(tDF24$Chamber[r.n:dim(tDF24)[1]])
@@ -383,8 +383,8 @@ calculate_co2_flux_per_second2 <- function(myDF) {
             #t.elapsed <- t.elapsed[t.elapsed!=0]
             
             for (k in 5:length(t.elapsed)) {
-                myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$Chamber==i&myDF.out$Canopy==j, "co2_flux"] <- (myDF.out[myDF.out$time_elapsed==t.elapsed[k-4]&myDF.out$Chamber==i&myDF.out$Canopy==j,"vCo2"]-
-                                                               myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$Chamber==i&myDF.out$Canopy==j,"vCo2"])/
+                myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$Chamber==i&myDF.out$Canopy==j, "co2_flux"] <- (myDF.out[myDF.out$time_elapsed==t.elapsed[k-4]&myDF.out$Chamber==i&myDF.out$Canopy==j,"WTC_CO2"]-
+                                                               myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$Chamber==i&myDF.out$Canopy==j,"WTC_CO2"])/
                     as.numeric(difftime(myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$Chamber==i&myDF.out$Canopy==j,"time"],myDF.out[myDF.out$time_elapsed==t.elapsed[k-4]&myDF.out$Chamber==i&myDF.out$Canopy==j,"time"],unit="mins"))
             }
         }

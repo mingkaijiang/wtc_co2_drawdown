@@ -1,4 +1,4 @@
-calculate_co2_flux_per_second <- function(myDF) {
+calculate_co2_flux_per_second_old <- function(myDF) {
     ### This function fit individual Chamber and Canopy data 
     ### to obtain the flux of co2 per second based on minute data
     

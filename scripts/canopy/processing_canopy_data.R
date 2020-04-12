@@ -94,10 +94,10 @@ processing_canopy_data <- function() {
     
     ### Calculate CO2 flux for each minute and output in the unit of ppm CO2 min-1
     ### also delete some unstable data points (mostly earlier period of the experiments)
-    myDF <- calculate_co2_flux_per_second2(myDF)
+    myDF <- calculate_co2_flux_per_second(myDF)
     
     ### plotting co2 flux at per second rate for each chamber
-    canopy_data_per_second_check_and_plot2(myDF)
+    canopy_data_per_second_check_and_plot(myDF)
     
     ### remove missing data points
     myDF$ncorrflux <- as.numeric(myDF$ncorrflux)

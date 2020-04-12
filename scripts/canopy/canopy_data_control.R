@@ -18,12 +18,12 @@ canopy_data_control <- function(myDF) {
     #tDF1 <- subset(myDF, Chamber=="8"&Canopy=="12345"&date=="2009-03-18")
     #tDF2 <- subset(myDF, Chamber=="8"&Canopy=="12345"&date=="2009-03-19")
     #
-    #with(tDF1, plot(vCo2~vtime))
-    #with(tDF2, plot(vCo2~vtime))
+    #with(tDF1, plot(WTC_CO2~time))
+    #with(tDF2, plot(WTC_CO2~time))
     
     ### Chamber 2, 45
-    tDF1 <- subset(myDF, Chamber=="2"&Canopy=="45"&date=="2009-03-18"&vCo2>=700)
-    tDF2 <- subset(myDF, Chamber=="2"&Canopy=="45"&date=="2009-03-20"&vCo2<=700)
+    tDF1 <- subset(myDF, Chamber=="2"&Canopy=="45"&date=="2009-03-18"&WTC_CO2>=700)
+    tDF2 <- subset(myDF, Chamber=="2"&Canopy=="45"&date=="2009-03-20"&WTC_CO2<=700)
     tDF3 <- rbind(tDF1, tDF2)
     
     # new date starts on nd row
@@ -44,8 +44,8 @@ canopy_data_control <- function(myDF) {
     ### Chamber 4, 345
     myDF.p2 <- myDF.p1[!c(myDF.p1$Chamber=="4"&myDF.p1$Canopy=="345"&myDF.p1$date=="2009-03-19"),] 
     
-    tDF1 <- subset(myDF, Chamber=="4"&Canopy=="345"&date=="2009-03-18"&vCo2>=500)
-    tDF2 <- subset(myDF, Chamber=="4"&Canopy=="345"&date=="2009-03-19"&vCo2<=500)
+    tDF1 <- subset(myDF, Chamber=="4"&Canopy=="345"&date=="2009-03-18"&WTC_CO2>=500)
+    tDF2 <- subset(myDF, Chamber=="4"&Canopy=="345"&date=="2009-03-19"&WTC_CO2<=500)
     tDF2 <- tDF2[7:length(tDF2$Chamber),]
     tDF3 <- rbind(tDF1, tDF2)
     
@@ -70,8 +70,8 @@ canopy_data_control <- function(myDF) {
     #
     #
     #### Chamber 8, 45
-    #tDF1 <- subset(myDF, Chamber=="8"&Canopy=="45"&date=="2009-03-20"&vCo2>=1400)
-    #tDF2 <- subset(myDF, Chamber=="8"&Canopy=="45"&date=="2009-03-23"&vCo2<=1400)
+    #tDF1 <- subset(myDF, Chamber=="8"&Canopy=="45"&date=="2009-03-20"&WTC_CO2>=1400)
+    #tDF2 <- subset(myDF, Chamber=="8"&Canopy=="45"&date=="2009-03-23"&WTC_CO2<=1400)
     #tDF2 <- tDF2[4:length(tDF2$Chamber),]
     #tDF3 <- rbind(tDF1, tDF2)
     #
@@ -93,8 +93,8 @@ canopy_data_control <- function(myDF) {
     #
     #
     #### combine 1st and 2nd half for Chamber 8, 345
-    #tDF1 <- subset(myDF, Chamber=="8"&Canopy=="345"&date=="2009-03-19"&vCo2>=700)
-    #tDF2 <- subset(myDF, Chamber=="8"&Canopy=="345"&date=="2009-03-20"&vCo2<=700)
+    #tDF1 <- subset(myDF, Chamber=="8"&Canopy=="345"&date=="2009-03-19"&WTC_CO2>=700)
+    #tDF2 <- subset(myDF, Chamber=="8"&Canopy=="345"&date=="2009-03-20"&WTC_CO2<=700)
     #tDF3 <- rbind(tDF1, tDF2)
     #
     ## new date starts on nd row
@@ -116,8 +116,8 @@ canopy_data_control <- function(myDF) {
     
     #### Chamber 8, 12345
     myDF.p5 <- myDF.p2
-    tDF1 <- subset(myDF, Chamber=="8"&Canopy=="12345"&date=="2009-03-18"&vCo2>=350)
-    tDF2 <- subset(myDF, Chamber=="8"&Canopy=="12345"&date=="2009-03-19"&vCo2<=350)
+    tDF1 <- subset(myDF, Chamber=="8"&Canopy=="12345"&date=="2009-03-18"&WTC_CO2>=350)
+    tDF2 <- subset(myDF, Chamber=="8"&Canopy=="12345"&date=="2009-03-19"&WTC_CO2<=350)
     tDF3 <- rbind(tDF1, tDF2)
     
     # new date starts on nd row
@@ -137,8 +137,8 @@ canopy_data_control <- function(myDF) {
     
     
     #### Chamber 7, 45
-    #tDF1 <- subset(myDF, Chamber=="7"&Canopy=="45"&date=="2009-03-24"&vCo2>=1450)
-    #tDF2 <- subset(myDF, Chamber=="7"&Canopy=="45"&date=="2009-03-25"&vCo2<=1450)
+    #tDF1 <- subset(myDF, Chamber=="7"&Canopy=="45"&date=="2009-03-24"&WTC_CO2>=1450)
+    #tDF2 <- subset(myDF, Chamber=="7"&Canopy=="45"&date=="2009-03-25"&WTC_CO2<=1450)
     #tDF3 <- rbind(tDF1, tDF2)
     #
     ## new date starts on nd row

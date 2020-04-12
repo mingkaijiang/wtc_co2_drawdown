@@ -1,4 +1,4 @@
-canopy_data_per_second_check_and_plot2 <- function(myDF){
+canopy_data_per_second_check_and_plot <- function(myDF){
     
     ### plot CO2 flux over CO2 concentration
     p1 <- ggplot(myDF, aes(vCo2))+
