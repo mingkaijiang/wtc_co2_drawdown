@@ -31,21 +31,8 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     ### note the Tleaf definition is not real!
     names(cDF)[names(cDF) == "WTC_CO2"] <- "Ca"
     
-
-    ### get gs from transpiration
-    cDF$gs <- cDF$transpiration / cDF$VPD
-    
-    ### get Ci from gs, A and Ca
-    cDF$Ci <- with(cDF, Ca - (Photo/gs))
-    
-    #cDF$g1 <- with(cDF, ((Ca * (transpiration / 1000000) / Photo) - (VPD))/sqrt(VPD))
-    #cDF$g1 <- with(cDF, (((Ca * (transpiration / 1000000)) / (1.6 * Photo)) - 1.0) * sqrt(VPD))
-    
-    cDF$Ci <- with(cDF, Ca - (Photo/g1))
     cDF$Ci_Ca <- with(cDF, Ci / Ca)
-    cDF$Ci_2 <- cDF$Ca * 0.7
-    cDF <- subset(cDF, Ci_Ca < 1 & Ci_Ca > 0)
-
+    
     ### assign CO2, water treatment
     ## chambers 1, 3, 5, 7, 9, 11 are CO2 ambient
     ## chambers 1, 3, 4, 6, 8, 11 are wet 
@@ -57,11 +44,11 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     ch03DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
                                                       ch.l="ch03", ch.c="3")
     
-    ch07DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
-                                                      ch.l="ch07", ch.c="7")
-    
     ch11DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
                                                       ch.l="ch11", ch.c="11")
+    
+    ch07DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
+                                                      ch.l="ch07", ch.c="7")
     
     ### elevated CO2
     ch02DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
@@ -77,15 +64,17 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
                                                       ch.l="ch12", ch.c="12")
     
     
+    ### combine only aCO2 and wet treatment
+    plotDF <- rbind(ch01DF, ch03DF, ch11DF)
     
     ## plot
     p1 <- ggplot() +
-      geom_point(data=ch01DF, aes(Ca, Photo, 
-                                  fill=as.factor(ch01DF$Position), 
-                                  pch = as.factor(ch01DF$Source)), alpha=0.9)+
-      #geom_smooth(data=ch01DF, aes(Ca, Photo, group=ch01DF$Position,
-      #                             col=as.factor(ch01DF$Position)),
-      #            method = "lm", formula = y ~ splines::bs(x, 4), se=FALSE)+
+      geom_point(data=plotDF, aes(Ca, Photo, 
+                                  fill=as.factor(Position), 
+                                  pch = as.factor(Source)), alpha=0.6)+
+      geom_smooth(data=plotDF, aes(Ca, Photo, group=Position,
+                                   col=as.factor(Position)),
+                  method = "lm", formula = y ~ splines::bs(x, 4), se=T)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -95,7 +84,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
-            legend.position="none",
+            legend.position="bottom",
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab(expression(paste(C[a]* " (umol ", m^-2, " ", s^-1, ")")))+
@@ -111,302 +100,28 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
       scale_shape_manual(name="Measurements",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"))+
-      xlim(0,2000)+
+      xlim(0,1800)+
       ylim(-5,40)+
-      ggtitle("Chamber 01")+
       guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
     
+    plot(p1)
     
-    p2 <- ggplot() +
-      geom_point(data=ch02DF, aes(Ca, Photo, 
-                                  fill=as.factor(ch02DF$Position), 
-                                  pch = as.factor(ch02DF$Source)), alpha=0.9)+
-      theme_linedraw() +
-      theme(panel.grid.minor=element_blank(),
-            axis.text.x=element_text(size=12),
-            axis.title.x=element_text(size=14),
-            axis.text.y=element_text(size=12),
-            axis.title.y=element_text(size=14),
-            legend.text=element_text(size=12),
-            legend.title=element_text(size=14),
-            panel.grid.major=element_blank(),
-            legend.position="none",
-            legend.box = 'vertical',
-            legend.box.just = 'left')+
-      xlab(expression(paste(C[a]* " (umol ", m^-2, " ", s^-1, ")")))+
-      ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
-      scale_fill_manual(name="Position",
-                        limits=c("12345", "345", "45", "up", "low"),
-                        values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      scale_color_manual(name="Position",
-                         limits=c("12345", "345", "45", "up", "low"),
-                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Measurements",
-                         values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
-      xlim(0,2000)+
-      ylim(-5,40)+
-      ggtitle("Chamber 02")+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
-    
-    
-    p3 <- ggplot() +
-      geom_point(data=ch03DF, aes(Ca, Photo, 
-                                  fill=as.factor(ch03DF$Position), 
-                                  pch = as.factor(ch03DF$Source)), alpha=0.9)+
-      #geom_smooth(data=ch03DF, aes(Ca, Photo, group=ch03DF$Position,
-      #                             col=as.factor(ch03DF$Position)),
-      #            method = "lm", formula = y ~ splines::bs(x, 5), se=F)+
-      theme_linedraw() +
-      theme(panel.grid.minor=element_blank(),
-            axis.text.x=element_text(size=12),
-            axis.title.x=element_text(size=14),
-            axis.text.y=element_text(size=12),
-            axis.title.y=element_text(size=14),
-            legend.text=element_text(size=12),
-            legend.title=element_text(size=14),
-            panel.grid.major=element_blank(),
-            legend.position="none",
-            legend.box = 'vertical',
-            legend.box.just = 'left')+
-      xlab(expression(paste(C[a]* " (umol ", m^-2," ", s^-1, ")")))+
-      ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
-      scale_fill_manual(name="Position",
-                        limits=c("12345", "345", "45", "up", "low"),
-                        values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      scale_color_manual(name="Position",
-                         limits=c("12345", "345", "45", "up", "low"),
-                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Measurements",
-                         values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
-      xlim(0,2000)+
-      ylim(-5,40)+
-      ggtitle("Chamber 03")+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
-    
-    
-    p4 <- ggplot() +
-      geom_point(data=ch04DF, aes(Ca, Photo, 
-                                  fill=as.factor(ch04DF$Position), 
-                                  pch = as.factor(ch04DF$Source)), alpha=0.9)+
-      theme_linedraw() +
-      theme(panel.grid.minor=element_blank(),
-            axis.text.x=element_text(size=12),
-            axis.title.x=element_text(size=14),
-            axis.text.y=element_text(size=12),
-            axis.title.y=element_text(size=14),
-            legend.text=element_text(size=12),
-            legend.title=element_text(size=14),
-            panel.grid.major=element_blank(),
-            legend.position="none",
-            legend.box = 'vertical',
-            legend.box.just = 'left')+
-      xlab(expression(paste(C[a]* " (umol ", m^-2," ", s^-1, ")")))+
-      ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
-      scale_fill_manual(name="Position",
-                        limits=c("12345", "345", "45", "up", "low"),
-                        values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      scale_color_manual(name="Position",
-                         limits=c("12345", "345", "45", "up", "low"),
-                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Measurements",
-                         values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
-      xlim(0,2000)+
-      ylim(-5,40)+
-      ggtitle("Chamber 04")+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
-    
-    
-    p5 <- ggplot() +
-      geom_point(data=ch07DF, aes(Ca, Photo, 
-                                  fill=as.factor(ch07DF$Position), 
-                                  pch = as.factor(ch07DF$Source)), alpha=0.9)+
-      theme_linedraw() +
-      theme(panel.grid.minor=element_blank(),
-            axis.text.x=element_text(size=12),
-            axis.title.x=element_text(size=14),
-            axis.text.y=element_text(size=12),
-            axis.title.y=element_text(size=14),
-            legend.text=element_text(size=12),
-            legend.title=element_text(size=14),
-            panel.grid.major=element_blank(),
-            legend.position="none",
-            legend.box = 'vertical',
-            legend.box.just = 'left')+
-      xlab(expression(paste(C[a]* " (umol ", m^-2," ", s^-1, ")")))+
-      ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
-      scale_fill_manual(name="Position",
-                        limits=c("12345", "345", "45", "up", "low"),
-                        values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      scale_color_manual(name="Position",
-                         limits=c("12345", "345", "45", "up", "low"),
-                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Measurements",
-                         values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
-      xlim(0,2000)+
-      ylim(-5,40)+
-      ggtitle("Chamber 07")+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
-    
-    
-    p6 <- ggplot() +
-      geom_point(data=ch08DF, aes(Ca, Photo, 
-                                  fill=as.factor(ch08DF$Position), 
-                                  pch = as.factor(ch08DF$Source)), alpha=0.9)+
-      theme_linedraw() +
-      theme(panel.grid.minor=element_blank(),
-            axis.text.x=element_text(size=12),
-            axis.title.x=element_text(size=14),
-            axis.text.y=element_text(size=12),
-            axis.title.y=element_text(size=14),
-            legend.text=element_text(size=12),
-            legend.title=element_text(size=14),
-            panel.grid.major=element_blank(),
-            legend.position="none",
-            legend.box = 'vertical',
-            legend.box.just = 'left')+
-      xlab(expression(paste(C[a]* " (umol ", m^-2," ", s^-1, ")")))+
-      ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
-      scale_fill_manual(name="Position",
-                        limits=c("12345", "345", "45", "up", "low"),
-                        values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      scale_color_manual(name="Position",
-                         limits=c("12345", "345", "45", "up", "low"),
-                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Measurements",
-                         values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
-      xlim(0,2000)+
-      ylim(-5,40)+
-      ggtitle("Chamber 08")+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
-    
-
-    p7 <- ggplot() +
-      geom_point(data=ch11DF, aes(Ca, Photo, 
-                                  fill=as.factor(ch11DF$Position), 
-                                  pch = as.factor(ch11DF$Source)), alpha=0.9)+
-      #geom_smooth(data=ch11DF, aes(Ca, Photo, group=ch11DF$Position,
-      #                             col=as.factor(ch11DF$Position)),
-      #            method = "lm", formula = y ~ splines::bs(x, 5), se=F)+
-      theme_linedraw() +
-      theme(panel.grid.minor=element_blank(),
-            axis.text.x=element_text(size=12),
-            axis.title.x=element_text(size=14),
-            axis.text.y=element_text(size=12),
-            axis.title.y=element_text(size=14),
-            legend.text=element_text(size=12),
-            legend.title=element_text(size=14),
-            panel.grid.major=element_blank(),
-            legend.position="none",
-            legend.box = 'vertical',
-            legend.box.just = 'left')+
-      xlab(expression(paste(C[a]* " (umol ", m^-2, " ",  s^-1, ")")))+
-      ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
-      scale_fill_manual(name="Position",
-                        limits=c("12345", "345", "45", "up", "low"),
-                        values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      scale_color_manual(name="Position",
-                         limits=c("12345", "345", "45", "up", "low"),
-                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Measurements",
-                         values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
-      xlim(0,2000)+
-      ylim(-5,40)+
-      ggtitle("Chamber 11")+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
-    
-    
-    p8 <- ggplot() +
-      geom_point(data=ch12DF, aes(Ca, Photo, 
-                                  fill=as.factor(ch12DF$Position), 
-                                  pch = as.factor(ch12DF$Source)), alpha=0.9)+
-      #geom_smooth(data=ch12DF, aes(Ca, Photo, group=ch12DF$Position,
-      #                             col=as.factor(ch12DF$Position)),
-      #            method = "lm", formula = y ~ splines::bs(x, 5), se=F)+
-      theme_linedraw() +
-      theme(panel.grid.minor=element_blank(),
-            axis.text.x=element_text(size=12),
-            axis.title.x=element_text(size=14),
-            axis.text.y=element_text(size=12),
-            axis.title.y=element_text(size=14),
-            legend.text=element_text(size=12),
-            legend.title=element_text(size=14),
-            panel.grid.major=element_blank(),
-            legend.position="none",
-            legend.box = 'vertical',
-            legend.box.just = 'left')+
-      xlab(expression(paste(C[a]* " (umol ", m^-2, " ",  s^-1, ")")))+
-      ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
-      scale_fill_manual(name="Position",
-                        limits=c("12345", "345", "45", "up", "low"),
-                        values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      scale_color_manual(name="Position",
-                         limits=c("12345", "345", "45", "up", "low"),
-                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Measurements",
-                         values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
-      xlim(0,2000)+
-      ylim(-5,40)+
-      ggtitle("Chamber 12")+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
-    
-    
-    ### combined plots + shared legend
-    legend_shared <- get_legend(p1 + theme(legend.position="bottom",
-                                           legend.box = 'vertical',
-                                           legend.box.just = 'left'))
-    
-    combined_plots <- plot_grid(p1, p2, p3, p4, p5, p6, p7, p8, 
-                                labels="AUTO", ncol=2, align="vh", axis = "l")
-    
-
+  
     ### output
-    pdf("output/chamber_result_comparison_A_vs_Ca_flux_no_scaling_ambient.pdf", width=6, height=14)
-    plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
+    pdf("output/A-Ca/ambient_A-Ca_plot.pdf", width=8, height=8)
+    plot(p1)
     dev.off()    
     
-    #test <- subset(cDF, Chamber == "12" & Canopy == "345")
     
     ##### preparing acifit
     #### the fit TPU function makes it long to run!
     fits.ch01 <- fitacis(ch01DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
     fits.ch03 <- fitacis(ch03DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
-    fits.ch07 <- fitacis(ch07DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
     fits.ch11 <- fitacis(ch11DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
-    
-    fits.ch02 <- fitacis(ch02DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
-    fits.ch04 <- fitacis(ch04DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
-    fits.ch08 <- fitacis(ch08DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
-    fits.ch12 <- fitacis(ch12DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
-    
-    #test <- subset(cDF, Chamber == "12" & Canopy == "345")
-    #with(test, plot(Photo~Ca))
-    #test.fit <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU = T)
-    #coef(test.fit)
-    
+
 
     ##
-    pdf("output/chamber_result_comparison_A_vs_Ci_flux_no_scaling_ambient.pdf", width=20, height=14)
+    pdf("output/ambient_A-Ci_plots.pdf", width=20, height=14)
     par(mfrow=c(5,8),mar=c(2,2,4,1),oma = c(4, 6, 0, 0))
     
     ymin <- -2
