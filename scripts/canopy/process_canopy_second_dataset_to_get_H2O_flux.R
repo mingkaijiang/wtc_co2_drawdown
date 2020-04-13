@@ -1,4 +1,4 @@
-process_canopy_second_dataset_to_get_H2O_flux_2 <- function() {
+process_canopy_second_dataset_to_get_H2O_flux <- function() {
     ########################  using mergeall.text file ###########################
     ##### read in raw data - this dataset does not have PAR 
     myDF <- read.csv("data/canopy_drawdown/mergeall.csv")

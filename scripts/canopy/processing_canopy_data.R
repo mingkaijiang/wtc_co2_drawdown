@@ -34,7 +34,7 @@ processing_canopy_data <- function() {
     ####       i.e. express raw canopy flux on a leaf area basis by dividing by total canopy leaf area
     
 
-    ########################  using drawdownanalysis9Sepb.csv file ###########################
+    ########################  set-up variable names ###########################
     ### read in raw data
     myDF <- read.csv("data/canopy_drawdown/drawdownanalysis9Sepb.csv")
     
@@ -87,6 +87,7 @@ processing_canopy_data <- function() {
                     "CO2_flux", "Norm_CO2_flux", "Corr_CO2_flux", 
                     "Norm_corr_CO2_flux")]
     
+    ########################  quality control ###########################
     
     ### check canopy data structure
     #canopy_data_check_and_plot(myDF)
@@ -109,20 +110,7 @@ processing_canopy_data <- function() {
     canopy_data_per_second_check_and_plot(myDF)
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    #test <- subset(myDF, Chamber == "12" & Canopy == "345")
-    #with(test, plot(ncorrflux~time))
-    #with(test, plot(ncorrflux~vCo2))
-    #test.fit <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU = T)
-    #coef(test.fit)
-    
+    ########################  add H2O flux ###########################
     ### add VPD 
     ## Saturation Vapor Pressure (es) = 0.6108 * exp(17.27 * T / (T + 237.3))
     ## kPa
@@ -146,8 +134,7 @@ processing_canopy_data <- function() {
     # method 1 and 2 agree with each other, good!
     
     ### add H2O flux
-    #myDF2 <- process_canopy_second_dataset_to_get_H2O_flux()
-    myDF2 <- process_canopy_second_dataset_to_get_H2O_flux_2()
+    myDF2 <- process_canopy_second_dataset_to_get_H2O_flux()
     
     
     ### reprocess time
