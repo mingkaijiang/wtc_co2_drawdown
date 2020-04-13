@@ -29,21 +29,8 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     
     ### rename canopy DF
     ### note the Tleaf definition is not real!
-    colnames(cDF) <- c("Chamber", "Canopy","Ca", "Tair", 
-                       "date", "time", "datetime", "Tleaf",
-                       "VPD", "DPLicorCh", "PARi", "slope2", 
-                       "cmarea", "nslope2","k", "leak", 
-                       "corrflux", "Photo", "rh", "my_co2_flux",
-                       "transpiration")
+    names(cDF)[names(cDF) == "WTC_CO2"] <- "Ca"
     
-    ### clean the dataset to exclude na, negative values
-    #cDF[cDF$Chamber == 2 & cDF$Photo > 15, "Photo"] <- NA
-    #cDF[cDF$Chamber == 12 & cDF$Photo > 25, "Photo"] <- NA
-    #cDF[cDF$Chamber == 7 & cDF$Photo > 16, "Photo"] <- NA
-    
-    cDF <- cDF[complete.cases(cDF$Photo), ]
-    cDF <- cDF[cDF$transpiration > 0, ]
-    cDF <- cDF[cDF$Photo > 0, ]
 
     ### get gs from transpiration
     cDF$gs <- cDF$transpiration / cDF$VPD
@@ -942,7 +929,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     outDF$JV_ratio <- outDF$Jmax / outDF$Vcmax
     
     ### save
-    write.csv(outDF, "output/ambient_chambers_biochemical_parameter_summary_table.csv", row.names=F)
+    write.csv(outDF, "output/A-Ca/ambient_chambers_biochemical_parameter_summary_table.csv", row.names=F)
     
     
     
@@ -1097,7 +1084,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     
     
     
-    write.csv(outDF2, "output/predicted_A_values_at_Ci_in_400_600_ppm.csv", row.names=F)
+    write.csv(outDF2, "output/A-Ca/predicted_A_values_at_Ci_in_400_600_ppm.csv", row.names=F)
     
     
     

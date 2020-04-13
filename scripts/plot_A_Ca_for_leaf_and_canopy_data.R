@@ -360,7 +360,7 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
     
     #plot(p1)
     
-    pdf("output/chamber_result_comparison_A_vs_Ca_flux_no_scaling.pdf", width=10, height=20)
+    pdf("output/A-Ca/individual_A-Ca_plots.pdf", width=10, height=20)
     plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
     dev.off()    
     

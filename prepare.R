@@ -12,6 +12,10 @@ if(!dir.exists("output/canopy")) {
     dir.create("output/canopy", showWarnings = FALSE)
 }
 
+if(!dir.exists("output/A-Ca")) {
+    dir.create("output/A-Ca", showWarnings = FALSE)
+}
+
 #### Install packages
 if(!require(pacman))install.packages("pacman")
 pacman::p_load(dplyr, 

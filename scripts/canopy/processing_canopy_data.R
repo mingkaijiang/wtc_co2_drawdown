@@ -146,8 +146,7 @@ processing_canopy_data <- function(leafDF) {
     outDF <- add_leaf_g1_to_canopy_data(leafDF=leafDF, canopyDF=outDF)
     
     ### calculate Ci
-    outDF$Ci <- outDF$WTC_CO2 - (outDF$Norm_corr_CO2_flux/outDF$gs)
-    
+    outDF$Ci <- outDF$WTC_CO2 - (outDF$Norm_corr_CO2_flux/outDF$G1)
     
     ### plotting CO2 and H2O flux at per second rate for each chamber
     canopy_data_per_second_check_and_plot(inDF=outDF)

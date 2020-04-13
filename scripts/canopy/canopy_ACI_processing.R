@@ -3,12 +3,7 @@
 
 canopy_ACI_processing <- function(cDF) {
     
-    ### rename
-    #names(cDF)[names(cDF) == "WTC_CO2"] <- "Ca"
-    #names(cDF)[names(cDF) == "WTC_PAR"] <- "PAR"
-    #names(cDF)[names(cDF) == "WTC_CO2"] <- "Ca"
     
-
     ### create an identity list for each chamber and canopy
     cDF$Identity <- paste0(cDF$Chamber, "-", cDF$Canopy)
     
