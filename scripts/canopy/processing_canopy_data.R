@@ -130,60 +130,14 @@ processing_canopy_data <- function() {
     myDF <- manually_delete_unreasonable_data(myDF)
     
     
-    ### plotting co2 flux at per second rate for each chamber
-    canopy_data_per_second_check_and_plot(myDF)
-    
-    
-    
     ########################  add transpiration to get Ci ###########################
     ### add H2O flux
-    myDF2 <- process_canopy_second_dataset_to_get_H2O_flux()
+    outDF <- calculate_transpiration_flux(myDF)
     
     
-    ### reprocess time
-    myDF$time1 <- sub(".+? ", "", myDF$datetime)
-    myDF$time2 <- substr(myDF$time1,1,nchar(myDF$time1)-3)
-    myDF$time <- paste0(myDF$time2, ":00")
+    ### plotting CO2 and H2O flux at per second rate for each chamber
+    canopy_data_per_second_check_and_plot(inDF=outDF)
     
-    #test <- subset(myDF, Chamber == "4" & Canopy == "345")
-    #with(test, plot(ncorrflux~datetime))
-    
-    myDF$date <- gsub( " .*$", "", myDF$datetime)
-    myDF$datetime <- as.POSIXct(paste(myDF$date, myDF$time), format="%Y-%m-%d %H:%M:%S")
-    myDF <- myDF[,!(colnames(myDF)%in% c("time1", "time2"))]
-    
-    #test <- subset(myDF, Chamber == "8" & Canopy == "45")
-    #with(test, plot(ncorrflux~datetime))
-    
-    #test2 <- subset(myDF2, Chamber == "8" & Canopy == "45")
-    #with(test2, plot(H2O_flux_normalized~datetime))
-    
-    ### combine both datasets
-    cDF <- merge(myDF, myDF2, by.x=c("Chamber", "Canopy", "datetime"), 
-                 by.y=c("Chamber", "Canopy", "datetime"))
-
-    ### only include the complete data where normalized flux is available
-    cDF <- cDF[complete.cases(cDF$ncorrflux), ]
-    cDF <- cDF[complete.cases(cDF$H2O_flux_normalized), ]
-    
-    #test3 <- subset(cDF, Chamber == "8" & Canopy == "45")
-    #with(test3, plot(ncorrflux~datetime))
-    #with(test3, plot(ncorrflux~vCo2))
-    
-    ### return
-    outDF <- cDF[,c("Chamber", "Canopy", "vCo2", 
-                     "vT", "date", "time",  "datetime", 
-                    "Tair", "VPD", 
-                     "DPLicorCh", "PARi", "slope2", 
-                     "cmarea", "nslope2","k", 
-                     "leak", "corrflux", "ncorrflux", "rh", "co2_flux", "H2O_flux_normalized")]
-    
-    colnames(outDF) <- c("Chamber", "Canopy", "vCo2", 
-                         "vT", "date", "time",  "datetime", 
-                         "Tair", "VPD", 
-                         "DPLicorCh", "PARi", "slope2", 
-                         "cmarea", "nslope2","k", 
-                         "leak", "corrflux", "co2_flux", "rh", "my_co2_flux", "H2O_flux_normalized")
     return(outDF)
 
     
