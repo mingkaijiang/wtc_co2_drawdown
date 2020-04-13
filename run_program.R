@@ -52,8 +52,13 @@ canopyDF <- processing_canopy_data()
 #### compares leaf and canopy level A-CA curves and the shape of the curves
 cDF=canopyDF
 
-### the full dataset
-#plot_A_Ca_for_leaf_and_canopy_data(cDF=canopyDF)
+### A~CA plots at each chamber
+### need to go into function to plot
+plot_A_Ca_for_leaf_and_canopy_data(cDF=canopyDF)
+
+
+
+
 
 ### this is now the code to use
 plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment(cDF=canopyDF)

@@ -17,7 +17,7 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
         ch01.c <- subset(cDF, Chamber==ch.c)
         
         ch01.l <- ch01.l[,c("Photo", "CO2S", "Height")]
-        ch01.c <- ch01.c[,c("co2_flux", "vCo2", "Canopy")]
+        ch01.c <- ch01.c[,c("Norm_corr_CO2_flux", "WTC_CO2", "Canopy")]
         colnames(ch01.l) <- colnames(ch01.c) <- c("Photo", "Ca", "Position")
         ch01.l$Source <- "leaf"
         ch01.c$Source <- "canopy"

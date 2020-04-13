@@ -83,10 +83,12 @@ processing_canopy_data <- function() {
     ### add VPD 
     ## Saturation Vapor Pressure (es) = 0.6108 * exp(17.27 * T / (T + 237.3))
     ## kPa
-    myDF$ES <- 0.6106 * exp(17.27 * myDF$Tair / (myDF$Tair + 237.3))
+    myDF$ES <- 0.6106 * exp(17.27 * myDF$WTC_T / (myDF$WTC_T + 237.3))
     
     ## calculate RH
-    myDF$RH <- 100 - 5 * (myDF$Tair - myDF$WTC_dew_point)
+    myDF$RH <- 100 - 5 * (myDF$WTC_T - myDF$WTC_dew_point)
+    
+    myDF$RH <- ifelse(myDF$RH > 100, 100, myDF$RH)
     
     ## Actual Vapor Pressure (ea) = RH / 100 * es 
     ## kPa
@@ -97,16 +99,16 @@ processing_canopy_data <- function() {
     ## kPa
     myDF$VPD <- myDF$ES * (100 - myDF$RH)/100
     
+    ### ignore VPD = 0 and NA
+    myDF <- subset(myDF, VPD > 0)
+    myDF <- myDF[complete.cases(myDF$VPD), ]
+    
     ## calculate based on planteophys
     #require(plantecophys)
     #myDF$VPD2 <- RHtoVPD(myDF$RH, myDF$Tair, Pa = 101)
     
     ### merge with H2O flux dataset
     myDF <- merge_with_H2O_flux_dataset(myDF)
-    
-    
-    ### only include the complete data where normalized flux is available
-    #myDF <- myDF[complete.cases(myDF$Norm_corr_CO2_flux), ]
     
     ### ignore unreasonable data
     myDF <- subset(myDF, Norm_corr_CO2_flux >= -2)
@@ -133,11 +135,24 @@ processing_canopy_data <- function() {
     ########################  add transpiration to get Ci ###########################
     ### add H2O flux
     outDF <- calculate_transpiration_flux(myDF)
+
+    ### calculate gs
+    outDF$gs <- outDF$Norm_H2O_flux / outDF$VPD
+    
+    test <- subset(outDF, Chamber==1&Canopy==12345)
+    out <- fitBB(test, varnames=list(ALEAF="Norm_corr_CO2_flux",
+                                           GS="gs",
+                                           VPD="VPD", 
+                                           Ca="WTC_CO2",
+                                           RH="RH"),
+                      gsmodel="BBOpti", fitg0=T)
     
     
     ### plotting CO2 and H2O flux at per second rate for each chamber
     canopy_data_per_second_check_and_plot(inDF=outDF)
     
+    
+    ### return output
     return(outDF)
 
     

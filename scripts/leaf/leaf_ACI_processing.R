@@ -31,6 +31,10 @@ leaf_ACI_processing <- function() {
     #### Fitting ACI curve at the finest resolution
     fits.all <- fitacis(myDF, group="Identity", fitmethod="bilinear",Tcorrect=T, fitTPU=T)
     
+    ### fit g1 value
+    names(myDF)[names(myDF) == "RH_S"] <- "RH"
+    fits.bb <- fitBBs(myDF, group="Identity")
+    
     ### plot all fittings on the same graph, looks messy
     #plot(fits.all, how="oneplot")
     #plot(fits.all[[1]], col="black", add=T)
@@ -73,12 +77,12 @@ leaf_ACI_processing <- function() {
                         NA, NA, NA, NA, NA, NA,
                         NA, NA, NA, NA, NA, NA,
                         NA, NA, NA, NA, NA, NA,
-                        NA, NA, NA, NA, NA)
+                        NA, NA, NA, NA, NA, NA)
     colnames(outDF) <- c("Identity", "Chamber", "CO2_treatment", "Height", "Date",
                          "RMSE", "Vcmax", "Vcmax.se", "Jmax", "Jmax.se", "Rd", "Rd.se",
                          "Ci", "ALEAF", "GS", "ELEAF", "Ac", "Aj", "Ap", "Rd2", "VPD",
                          "Tleaf", "Ca", "Cc", "PPFD", "Ci_transition_Ac_Aj",
-                         "curve.fitting", "Patm", "GammaStar", "Km")
+                         "curve.fitting", "Patm", "GammaStar", "Km", "G1")
     
     ### the for loop
     for (i in 1:length(id.list)) {
@@ -87,6 +91,8 @@ leaf_ACI_processing <- function() {
         
         ## fit
         fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU=T)
+        fit2 <- fitBB(test, gsmodel="BBOpti")
+        
         
         ## get information on identity
         outDF[outDF$Identity == id.list[i], "CO2_treatment"] <- unique(test$CO2_treatment)
@@ -122,6 +128,9 @@ leaf_ACI_processing <- function() {
         outDF[outDF$Identity == id.list[i], "Ci_transition_Ac_Aj"] <- fit1$Ci_transition
         outDF[outDF$Identity == id.list[i], "GammaStar"] <- fit1$GammaStar
         outDF[outDF$Identity == id.list[i], "Km"] <- fit1$Km
+        # G1
+        outDF[outDF$Identity == id.list[i], "G1"] <- fit2$coef[2]
+        
     }
     
     outDF$JVratio <- outDF$Jmax / outDF$Vcmax
