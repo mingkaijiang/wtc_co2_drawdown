@@ -206,7 +206,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     
     
     ### output
-    pdf("output/canopy_data_chamber_CO2_drawdown_fluxes.pdf", width=12, height=6)
+    pdf("output/canopy/canopy_data_chamber_CO2_drawdown_fluxes.pdf", width=12, height=6)
     plot(p1)
     plot(p2)
     plot(p3)
@@ -385,7 +385,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     
     
     ### output
-    #pdf("output/canopy_data_chamber_CO2_drawdown_fluxes_over_time.pdf", width=12, height=6)
+    #pdf("output/canopy/canopy_data_chamber_CO2_drawdown_fluxes_over_time.pdf", width=12, height=6)
 
     #plot(p3)
     #plot(p4)
@@ -563,7 +563,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     
     
     ### output
-    pdf("output/canopy_data_chamber_CO2_drawdown_fluxes_over_Ca.pdf", width=12, height=6)
+    pdf("output/canopy/canopy_data_chamber_CO2_drawdown_fluxes_over_Ca.pdf", width=12, height=6)
     
     plot(p3)
     plot(p4)
@@ -782,7 +782,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     
     
     ### output
-    #pdf("output/canopy_data_chamber_revised_CO2_drawdown_fluxes.pdf", width=12, height=6)
+    #pdf("output/canopy/canopy_data_chamber_revised_CO2_drawdown_fluxes.pdf", width=12, height=6)
     #plot(p1)
     #plot(p2)
     #plot(p3)
@@ -1006,7 +1006,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     
     
     ### output
-    pdf("output/canopy_data_chamber_H2O_drawdown_fluxes.pdf", width=12, height=6)
+    pdf("output//canopy/canopy_data_chamber_H2O_drawdown_fluxes.pdf", width=12, height=6)
     plot(p1)
     plot(p2)
     plot(p3)
@@ -1192,7 +1192,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     
     
     ### output
-    pdf("output/canopy_data_chamber_H2O_drawdown_fluxes_over_Ca.pdf", width=12, height=6)
+    pdf("output/canopy/canopy_data_chamber_H2O_drawdown_fluxes_over_Ca.pdf", width=12, height=6)
     
     plot(p3)
     plot(p4)

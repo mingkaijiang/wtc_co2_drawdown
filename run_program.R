@@ -59,17 +59,26 @@ canopy_aciDF <- canopy_ACI_processing(cDF=canopyDF)
 
 
 ############################# leaf & canopy result comparison ######################
-### Plot A-CA
+####### Plot A-CA at each chamber, compare the shape of the curves
+### need to go into function to plot
+cDF=canopyDF
 
-### Plot A-CI
+### all data
+plot_A_Ca_for_leaf_and_canopy_data(cDF=canopyDF)
 
-### Statistics leaf vs. canopy
+### ambient CO2 and well-watered treatment
+plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment(cDF=canopyDF)
 
 
-### Statistics CO2 and water treatment
+####### Plot A-CI
+
+####### Statistics leaf vs. canopy
 
 
-### Plot key parameter summary figure & add stats
+####### Statistics CO2 and water treatment
+
+
+####### Plot key parameter summary figure & add stats
 
 
 
@@ -79,19 +88,6 @@ canopy_aciDF <- canopy_ACI_processing(cDF=canopyDF)
 compare_ACI_results_with_canopy_and_leaf_data(cDF=canopyDF)
 
 
-#### compares leaf and canopy level A-CA curves and the shape of the curves
-cDF=canopyDF
-
-### A~CA plots at each chamber
-### need to go into function to plot
-plot_A_Ca_for_leaf_and_canopy_data(cDF=canopyDF)
-
-
-
-
-
-### this is now the code to use
-plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment(cDF=canopyDF)
 
 summary_statistics_A_Ci_curves()
 

@@ -4,6 +4,14 @@ if(!dir.exists("output")) {
     dir.create("output", showWarnings = FALSE)
 }
 
+if(!dir.exists("output/leaf")) {
+    dir.create("output/leaf", showWarnings = FALSE)
+}
+
+if(!dir.exists("output/canopy")) {
+    dir.create("output/canopy", showWarnings = FALSE)
+}
+
 #### Install packages
 if(!require(pacman))install.packages("pacman")
 pacman::p_load(dplyr, 

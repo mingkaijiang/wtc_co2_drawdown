@@ -136,7 +136,7 @@ leaf_ACI_processing <- function() {
     outDF$JVratio <- outDF$Jmax / outDF$Vcmax
     
     ### save
-    write.csv(outDF, "output/leaf_scale_parameters.csv", row.names=F)
+    write.csv(outDF, "output/leaf/leaf_scale_parameters.csv", row.names=F)
     
     
     ### return 

@@ -2,7 +2,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
     
 
     ### create pdf
-    #pdf("output/leaf_level_individual_chamber_result.pdf", height=24, width=20)
+    #pdf("output/leaf/leaf_level_individual_chamber_result.pdf", height=24, width=20)
     #par(mfrow=c(6,4))
     #
     ### make plot
@@ -81,7 +81,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
     #    scale_shape_discrete(name="Water treatment")+
     #    theme(legend.direction = "vertical", legend.box = "horizontal")
     #
-    #pdf("output/leaf_flux_all_treatment_time_series_parameters.pdf", width=6, height=12)
+    #pdf("output/leaf/leaf_flux_all_treatment_time_series_parameters.pdf", width=6, height=12)
     #plot_grid(p1, p2, p3, rel_heights=c(1,1,1.5),
     #          labels="AUTO", ncol=1, align="v", axis = "l")
     #dev.off()
@@ -314,7 +314,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
         ggtitle("g")
     
     
-    pdf("output/leaf_parameter_co2_ht_comparison.pdf", width=12, height=14)
+    pdf("output/leaf/leaf_parameter_co2_ht_comparison.pdf", width=12, height=14)
     plot_grid(p1, p2, p3, 
               p4, p5, p6, 
               #p7, p8, p9, 
@@ -562,7 +562,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
     #
     #plot(p6)
     #
-    #pdf("output/leaf_parameter_summary.pdf", width=8, height=14)
+    #pdf("output/leaf/leaf_parameter_summary.pdf", width=8, height=14)
     #plot_grid(p4, p5, p6, rel_heights=c(1,1,1.5),
     #          labels="AUTO", ncol=1, align="v", axis = "l")
     #dev.off()
@@ -812,7 +812,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
         ggtitle("g")
     
     
-    pdf("output/leaf_parameter_summary_detailed_breakdowns.pdf", width=12, height=14)
+    pdf("output/leaf/leaf_parameter_summary_detailed_breakdowns.pdf", width=12, height=14)
     #plot_grid(p1, p2, 
     #          p3, p4, 
     #          p5, p6, 
