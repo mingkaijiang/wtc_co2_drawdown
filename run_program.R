@@ -57,12 +57,28 @@ canopyDF <- processing_canopy_data(leafDF=leaf_aciDF)
 ###                                5. output parameters for leaf and canopy comparison
 canopy_aciDF <- canopy_ACI_processing(cDF=canopyDF)
 
+
+############################# leaf & canopy result comparison ######################
+### Plot A-CA
+
+### Plot A-CI
+
+### Statistics leaf vs. canopy
+
+
+### Statistics CO2 and water treatment
+
+
+### Plot key parameter summary figure & add stats
+
+
+
+
+
 #### compare canopy scaled down data with leaf data 
 compare_ACI_results_with_canopy_and_leaf_data(cDF=canopyDF)
 
 
-
-############################# plot leaf and canopy A-CA curves ######################
 #### compares leaf and canopy level A-CA curves and the shape of the curves
 cDF=canopyDF
 
