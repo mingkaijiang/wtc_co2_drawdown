@@ -129,7 +129,7 @@ leaf_ACI_processing <- function() {
         outDF[outDF$Identity == id.list[i], "GammaStar"] <- fit1$GammaStar
         outDF[outDF$Identity == id.list[i], "Km"] <- fit1$Km
         # G1
-        outDF[outDF$Identity == id.list[i], "G1"] <- fit2$coef[2]
+        outDF[outDF$Identity == id.list[i], "G1"] <- coef(fit2)[2]
         
     }
     

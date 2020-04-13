@@ -16,7 +16,7 @@ source("prepare.R")
 #make_conceptual_figure()
 
 
-############################# fit A-CI curve  #################################
+############################# fit leaf A-CI curve  #################################
 #### Fit leaf level A-Ci curves to:
 ###                                1. generate parameters for two-leaf modeling
 ###                                2. compare treatment effect (i.e. group by treatment, chamber as random variable)
@@ -48,6 +48,20 @@ plot_leaf_ACI_curves(plotDF=leaf_aciDF)
 
 canopyDF <- processing_canopy_data(leafDF=leaf_aciDF)
 
+############################# fit canopy A-CI curve  #################################
+#### Fit canopy level A-Ci curves to:
+###                                1. generate parameters to compare against leaf scale A-Ci
+###                                2. compare treatment effect (reduced sample size)
+###                                3. layer effect (whole, top, middle and bottom)
+###                                4. save stats and figures
+###                                5. output parameters for leaf and canopy comparison
+canopy_ACI_processing(cDF=canopyDF)
+
+#### compare canopy scaled down data with leaf data 
+compare_ACI_results_with_canopy_and_leaf_data(cDF=canopyDF)
+
+
+
 ############################# plot leaf and canopy A-CA curves ######################
 #### compares leaf and canopy level A-CA curves and the shape of the curves
 cDF=canopyDF
@@ -65,18 +79,6 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment(cDF=canopyDF)
 
 summary_statistics_A_Ci_curves()
 
-
-############################# fit A-CI curve  #################################
-#### Fit canopy level A-Ci curves to:
-###                                1. generate parameters to compare against leaf scale A-Ci
-###                                2. compare treatment effect (reduced sample size)
-###                                3. layer effect (whole, top, middle and bottom)
-###                                4. save stats and figures
-###                                5. output parameters for leaf and canopy comparison
-canopy_ACI_processing(cDF=canopyDF)
-
-#### compare canopy scaled down data with leaf data 
-compare_ACI_results_with_canopy_and_leaf_data(cDF=canopyDF)
 
 
 #############################  two-leaf modeling met data generation ###################
