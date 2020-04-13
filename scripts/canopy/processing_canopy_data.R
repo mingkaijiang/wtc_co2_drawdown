@@ -1,4 +1,4 @@
-processing_canopy_data <- function() {
+processing_canopy_data <- function(leafDF) {
     #### There are two possible datasets,
     #### they should be almost identical.
     #### The dataset "mergeall.text" is a potentially processed file,
@@ -139,13 +139,12 @@ processing_canopy_data <- function() {
     ### calculate gs
     outDF$gs <- outDF$Norm_H2O_flux / outDF$VPD
     
-    test <- subset(outDF, Chamber==1&Canopy==12345)
-    out <- fitBB(test, varnames=list(ALEAF="Norm_corr_CO2_flux",
-                                           GS="gs",
-                                           VPD="VPD", 
-                                           Ca="WTC_CO2",
-                                           RH="RH"),
-                      gsmodel="BBOpti", fitg0=T)
+    ### read in leaf-scale g1 value to represent canopy g1
+    ### i.e. assuming same g1 value for leaf and canopy
+    outDF <- add_leaf_g1_to_canopy_data(leafDF=leafDF, canopyDF=outDF)
+    
+    ### calculate Ci
+    outDF$Ci <- outDF$WTC_CO2 - (outDF$Norm_corr_CO2_flux/outDF$gs)
     
     
     ### plotting CO2 and H2O flux at per second rate for each chamber

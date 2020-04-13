@@ -46,7 +46,7 @@ plot_leaf_ACI_curves(plotDF=leaf_aciDF)
 #### 3. Need to correct for tree size, according to Drake's method
 ####    i.e. normalized to per leaf area (more details in the code)
 
-canopyDF <- processing_canopy_data()
+canopyDF <- processing_canopy_data(leafDF=leaf_aciDF)
 
 ############################# plot leaf and canopy A-CA curves ######################
 #### compares leaf and canopy level A-CA curves and the shape of the curves
