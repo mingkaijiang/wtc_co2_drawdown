@@ -102,7 +102,6 @@ processing_canopy_data <- function() {
     ### remove missing data points
     myDF$Norm_corr_CO2_flux <- as.numeric(myDF$Norm_corr_CO2_flux)
     myDF <- myDF[complete.cases(myDF$Norm_corr_CO2_flux), ]
-    
     myDF <- manually_delete_unreasonable_data(myDF)
     
     
