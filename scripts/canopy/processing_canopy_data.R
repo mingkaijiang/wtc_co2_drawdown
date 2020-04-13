@@ -53,20 +53,13 @@ processing_canopy_data <- function() {
     myDF$time1 <- sub(".+? ", "", myDF$datetime)
     myDF$time2 <- sub(" .*", "", myDF$time)
     myDF$time3 <- str_sub(myDF$time2, start=-3)
-    myDF$time <- paste0(myDF$time1, myDF$time3)
+    myDF$time <- paste0(myDF$time1, ":00")#myDF$time3)
     
     myDF$datetime <- as.POSIXct(paste(as.character(myDF$date), myDF$time), format="%Y-%m-%d %H:%M:%S")
     myDF$time <- strftime(myDF$datetime, format="%H:%M:%S")
     myDF$time <- as.POSIXct(myDF$time, format="%H:%M:%S")
     
     myDF <- myDF[,!(colnames(myDF)%in% c("time1", "time2", "time3"))]
-    
-    
-    ### only include the complete data where normalized flux is available
-    myDF <- myDF[complete.cases(myDF$ncorrflux), ]
-    
-    ### ignore unreasonable data
-    myDF <- subset(myDF, ncorrflux >= -2)
     
     ### update names to improve readability
     names(myDF)[names(myDF) == "vCo2"] <- "WTC_CO2"
@@ -87,6 +80,37 @@ processing_canopy_data <- function() {
                     "CO2_flux", "Norm_CO2_flux", "Corr_CO2_flux", 
                     "Norm_corr_CO2_flux")]
     
+    ### add VPD 
+    ## Saturation Vapor Pressure (es) = 0.6108 * exp(17.27 * T / (T + 237.3))
+    ## kPa
+    myDF$ES <- 0.6106 * exp(17.27 * myDF$Tair / (myDF$Tair + 237.3))
+    
+    ## calculate RH
+    myDF$RH <- 100 - 5 * (myDF$Tair - myDF$WTC_dew_point)
+    
+    ## Actual Vapor Pressure (ea) = RH / 100 * es 
+    ## kPa
+    myDF$EA <- myDF$ES * myDF$RH / 100 
+    
+    ##  VPD = ea - es
+    #myDF$VPD <- myDF$ea - myDF$es
+    ## kPa
+    myDF$VPD <- myDF$ES * (100 - myDF$RH)/100
+    
+    ## calculate based on planteophys
+    #require(plantecophys)
+    #myDF$VPD2 <- RHtoVPD(myDF$RH, myDF$Tair, Pa = 101)
+    
+    ### merge with H2O flux dataset
+    myDF <- merge_with_H2O_flux_dataset(myDF)
+    
+    
+    ### only include the complete data where normalized flux is available
+    #myDF <- myDF[complete.cases(myDF$Norm_corr_CO2_flux), ]
+    
+    ### ignore unreasonable data
+    myDF <- subset(myDF, Norm_corr_CO2_flux >= -2)
+    
     ########################  quality control ###########################
     
     ### check canopy data structure
@@ -102,7 +126,7 @@ processing_canopy_data <- function() {
     ### continue cleaning data
     ### remove missing data points
     myDF$Norm_corr_CO2_flux <- as.numeric(myDF$Norm_corr_CO2_flux)
-    myDF <- myDF[complete.cases(myDF$Norm_corr_CO2_flux), ]
+    #myDF <- myDF[complete.cases(myDF$Norm_corr_CO2_flux), ]
     myDF <- manually_delete_unreasonable_data(myDF)
     
     
@@ -110,29 +134,8 @@ processing_canopy_data <- function() {
     canopy_data_per_second_check_and_plot(myDF)
     
     
-    ########################  add H2O flux ###########################
-    ### add VPD 
-    ## Saturation Vapor Pressure (es) = 0.6108 * exp(17.27 * T / (T + 237.3))
-    ## kPa
-    myDF$es <- 0.6106 * exp(17.27 * myDF$Tair / (myDF$Tair + 237.3))
     
-    ## calculate RH
-    myDF$rh <- 100 - 5 * (myDF$Tair - myDF$DPLicorCh)
-    
-    ## Actual Vapor Pressure (ea) = RH / 100 * es 
-    ## kPa
-    myDF$ea <- myDF$es * myDF$rh / 100 
-    
-    ##  VPD = ea - es
-    #myDF$VPD <- myDF$ea - myDF$es
-    ## kPa
-    myDF$VPD <- myDF$es * (100 - myDF$rh)/100
-    
-    ## calculate based on planteophys
-    #require(plantecophys)
-    #myDF$VPD2 <- RHtoVPD(myDF$rh, myDF$Tair, Pa = 101)
-    # method 1 and 2 agree with each other, good!
-    
+    ########################  add transpiration to get Ci ###########################
     ### add H2O flux
     myDF2 <- process_canopy_second_dataset_to_get_H2O_flux()
     

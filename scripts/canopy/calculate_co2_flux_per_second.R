@@ -383,7 +383,7 @@ calculate_co2_flux_per_second <- function(myDF) {
             #t.elapsed <- t.elapsed[t.elapsed!=0]
             
             for (k in 5:length(t.elapsed)) {
-                myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$Chamber==i&myDF.out$Canopy==j, "co2_flux"] <- (myDF.out[myDF.out$time_elapsed==t.elapsed[k-4]&myDF.out$Chamber==i&myDF.out$Canopy==j,"WTC_CO2"]-
+                myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$Chamber==i&myDF.out$Canopy==j, "Revised_CO2_flux"] <- (myDF.out[myDF.out$time_elapsed==t.elapsed[k-4]&myDF.out$Chamber==i&myDF.out$Canopy==j,"WTC_CO2"]-
                                                                myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$Chamber==i&myDF.out$Canopy==j,"WTC_CO2"])/
                     as.numeric(difftime(myDF.out[myDF.out$time_elapsed==t.elapsed[k]&myDF.out$Chamber==i&myDF.out$Canopy==j,"time"],myDF.out[myDF.out$time_elapsed==t.elapsed[k-4]&myDF.out$Chamber==i&myDF.out$Canopy==j,"time"],unit="mins"))
             }
