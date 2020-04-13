@@ -55,7 +55,7 @@ canopyDF <- processing_canopy_data(leafDF=leaf_aciDF)
 ###                                3. layer effect (whole, top, middle and bottom)
 ###                                4. save stats and figures
 ###                                5. output parameters for leaf and canopy comparison
-canopy_ACI_processing(cDF=canopyDF)
+canopy_aciDF <- canopy_ACI_processing(cDF=canopyDF)
 
 #### compare canopy scaled down data with leaf data 
 compare_ACI_results_with_canopy_and_leaf_data(cDF=canopyDF)

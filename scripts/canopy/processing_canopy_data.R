@@ -139,6 +139,8 @@ processing_canopy_data <- function(leafDF) {
     ### calculate gs
     outDF$gs <- outDF$Norm_H2O_flux / outDF$VPD
     
+    outDF <- subset(outDF, gs > 0)
+    
     ### read in leaf-scale g1 value to represent canopy g1
     ### i.e. assuming same g1 value for leaf and canopy
     outDF <- add_leaf_g1_to_canopy_data(leafDF=leafDF, canopyDF=outDF)

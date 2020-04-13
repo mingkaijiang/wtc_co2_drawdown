@@ -4,9 +4,9 @@
 canopy_ACI_processing <- function(cDF) {
     
     ### rename
-    names(cDF)[names(cDF) == "WTC_CO2"] <- "Ca"
-    names(cDF)[names(cDF) == "WTC_PAR"] <- "PAR"
-    names(cDF)[names(cDF) == "WTC_CO2"] <- "Ca"
+    #names(cDF)[names(cDF) == "WTC_CO2"] <- "Ca"
+    #names(cDF)[names(cDF) == "WTC_PAR"] <- "PAR"
+    #names(cDF)[names(cDF) == "WTC_CO2"] <- "Ca"
     
 
     ### create an identity list for each chamber and canopy
@@ -56,7 +56,7 @@ canopy_ACI_processing <- function(cDF) {
     ### the for loop
     for (i in 1:length(id.list)) {
         ## subset each data
-        test <- subset(cDF, identity == id.list[i])
+        test <- subset(cDF, Identity == id.list[i])
         
         ## fit
         fit1 <- fitaci(test, varnames = list(ALEAF = "Norm_corr_CO2_flux",
@@ -124,73 +124,6 @@ canopy_ACI_processing <- function(cDF) {
     write.csv(outDF, "output/canopy_scale_parameters.csv")
     
     
-    
-    #### remove 7-45 because can't be fitted
-    #myDFnew <- myDF[myDF$identity!="7-45",]
-    #
-    #
-    ##### Fitting ACI curve
-    #fits <- fitacis(myDFnew, group="identity", fitmethod="bilinear", Tcorrect=T)
-    #
-    #### summary table between vcmax and jmax
-    #coefDF <- coef(fits)
-    #coefDF$Canopy <- sub(".*-", "", coefDF$identity)
-    #coefDF$Chamber <- sub("-.*", "", coefDF$identity)
-    #
-    #### assign CO2, water treatment
-    ### chambers 1, 3, 5, 7, 9, 11 are CO2 ambient
-    ### chambers 1, 3, 4, 6, 8, 11 are wet 
-    #
-    #for (i in c(1, 3, 5, 7, 9, 11)) {
-    #    coefDF[coefDF$Chamber == i, "CO2_treatment"] <- "ambient"
-    #}
-    #
-    #for (i in c(2, 4, 6, 8, 10, 12)) {
-    #    coefDF[coefDF$Chamber == i, "CO2_treatment"] <- "elevated"
-    #}
-    #
-    #for (i in c(1, 3, 4, 6, 8, 11)) {
-    #    coefDF[coefDF$Chamber == i, "Water_treatment"] <- "wet"
-    #}
-    #
-    #for (i in c(2, 5, 7, 9, 10, 12)) {
-    #    coefDF[coefDF$Chamber == i, "Water_treatment"] <- "dry"
-    #}
-    #
-    #### add vcmax to jmax ratio
-    #coefDF$JVratio <- coefDF$Jmax/coefDF$Vcmax
-    #
-    #
-    #### plot some broad summary
-    #pdf("output/canopy_scale_aci_fitting.pdf")
-    #
-    #par(mfrow=c(2, 2))
-    #
-    #### plot individual fitted data
-    #plot(fits, how="oneplot")
-    #plot(fits[[1]], col="black", add=T)
-    #
-    #### plot more individual level data
-    #plot(fits, how="oneplot", what="data")
-    #plot(fits, how="oneplot", add=T, what="model", lwd=c(1,1))
-#
-    #### look at other elements
-    #rmses <- sapply(fits, "[[", "RMSE")
-    #plot(rmses, type='h', ylab="RMSE", xlab="Curve nr", xaxt="n")
-    #
-    #dev.off()
-    #
-#
-    ##### compute statistics on each individual treatment factor
-    #op <- par(mfrow = c(3, 1))
-    #with(coefDF, {
-    #    interaction.plot(CO2_treatment, Water_treatment, Vcmax)
-    #    interaction.plot(CO2_treatment, Canopy, Vcmax)
-    #    interaction.plot(Canopy, Water_treatment, Vcmax)
-    #}
-    #)
-    #par(op)
-    #
     ###### check vcmax relationship
     #### 3-way anova 
     #fm <- aov(Vcmax ~ CO2_treatment * Water_treatment * Canopy, data = coefDF)
