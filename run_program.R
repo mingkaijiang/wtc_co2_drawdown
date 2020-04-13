@@ -67,10 +67,10 @@ cDF=canopyDF
 plot_A_Ca_for_leaf_and_canopy_data(cDF=canopyDF)
 
 ### ambient CO2 and well-watered treatment
+### include both A-Ca and A-Ci plots
+### including statistics
 plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment(cDF=canopyDF)
 
-
-####### Plot A-CI
 
 ####### Statistics leaf vs. canopy
 

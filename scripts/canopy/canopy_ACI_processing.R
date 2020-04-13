@@ -116,7 +116,7 @@ canopy_ACI_processing <- function(cDF) {
     outDF$JVratio <- outDF$Jmax/outDF$Vcmax
     
     ### save
-    write.csv(outDF, "output/canopy/canopy_scale_parameters.csv")
+    write.csv(outDF, "output/canopy/canopy_scale_parameters.csv", row.names=F)
     
     
     ###### check vcmax relationship

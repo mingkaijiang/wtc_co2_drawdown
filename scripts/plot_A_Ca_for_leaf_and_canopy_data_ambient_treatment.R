@@ -18,14 +18,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     lDF <- subset(lDF, Identity %in% c("90", "91", "92", "93", "96", "97", "100", "101", ### low
                                      "78", "104", "103", "87", "81", "82", "84", "86"))  ### high
     
-    #lDF <- subset(lDF, Date >= "2008-10-01")
-    #lDF <- subset(lDF, Identity !="69")
-    #lDF <- subset(lDF, Identity !="65")
-    #lDF <- subset(lDF, Identity !="63")
-    #lDF <- subset(lDF, Identity !="64")
-    
-    ### remove duplicated ch03 measurements
-    #lDF <- subset(lDF, Date!="2009-01-10")
+    lDF <- subset(lDF, Date>=as.Date("2009-01-01")&Date<=as.Date("2009-03-01"))
     
     ### rename canopy DF
     ### note the Tleaf definition is not real!
@@ -104,8 +97,6 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
       ylim(-5,40)+
       guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
     
-    plot(p1)
-    
   
     ### output
     pdf("output/A-Ca/ambient_A-Ca_plot.pdf", width=8, height=8)
@@ -115,537 +106,109 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     
     ##### preparing acifit
     #### the fit TPU function makes it long to run!
-    fits.ch01 <- fitacis(ch01DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
-    fits.ch03 <- fitacis(ch03DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
-    fits.ch11 <- fitacis(ch11DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=T)
+    fits.ch01 <- fitacis(ch01DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=F)
+    fits.ch03 <- fitacis(ch03DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=F)
+    fits.ch11 <- fitacis(ch11DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=F)
 
 
     ##
-    pdf("output/ambient_A-Ci_plots.pdf", width=20, height=14)
-    par(mfrow=c(5,8),mar=c(2,2,4,1),oma = c(4, 6, 0, 0))
+    pdf("output/A-Ca/ambient_A-Ci_plots.pdf", width=14, height=14)
+    par(mfrow=c(5,3),mar=c(2,2,4,1),oma = c(4, 6, 0, 0))
     
     ymin <- -2
     ymax <- 40
-    title.size <-2
+    title.size <- 1.5
     
     ### first row
-    plot(fits.ch01[[5]],lwd=3, col=alpha("black",0.6), pch=21, main="Up leaves", cex.main=title.size,
+    plot(fits.ch01[[5]],lwd=3, col=alpha("black",0.6), pch=21, main="Leaves: up", cex.main=title.size,
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    #mtext("Up leaves", side = 2, line = 1, cex = 1.2)
-    
+    abline(v=c(380), lwd=2, lty=c(3))
+
     plot(fits.ch03[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
          xlim=c(0, 1600), ylim=c(ymin, ymax), addlegend=F)
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    abline(v=c(380), lwd=2, lty=c(3))
     
-    plot(fits.ch07[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
-         xlim=c(0, 1600), ylim=c(ymin, ymax), addlegend=F)
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
     
     plot(fits.ch11[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
          xlim=c(0, 1600), ylim=c(ymin, ymax), addlegend=F)
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    abline(v=c(380), lwd=2, lty=c(3))
     
-    plot(fits.ch02[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
-         xlim=c(0, 1600), ylim=c(ymin, ymax), addlegend=F)
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    
-    plot(fits.ch04[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
-         xlim=c(0, 1600), ylim=c(ymin, ymax), addlegend=F)
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    
-    plot(fits.ch08[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
-         xlim=c(0, 1600), ylim=c(ymin, ymax), addlegend=F)
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    
-    plot(fits.ch12[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
-         xlim=c(0, 1600), ylim=c(ymin, ymax), addlegend=F)
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
     
     ### second row
-    plot(fits.ch01[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, main="Low leaves", cex.main=title.size,
+    plot(fits.ch01[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, main="Leaves: low", cex.main=title.size,
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    abline(v=c(380), lwd=2, lty=c(3))
     
     plot(fits.ch03[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    
-    plot(fits.ch07[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-         xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    abline(v=c(380), lwd=2, lty=c(3))
     
     plot(fits.ch11[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    abline(v=c(380), lwd=2, lty=c(3))
     
-    plot(fits.ch02[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-         xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    
-    plot(fits.ch04[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-         xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    
-    plot(fits.ch08[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-         xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    
-    plot(fits.ch12[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-         xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    
-    
+
     ### third row
-    plot(fits.ch01[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, main="Whole canopy", cex.main=title.size,
+    ymax <- 20
+    
+    plot(fits.ch01[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, main="Canopy: whole", cex.main=title.size,
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    abline(v=c(380), lwd=2, lty=c(3))
     
     plot(fits.ch03[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    
-    plot(fits.ch07[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
-         xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    abline(v=c(380), lwd=2, lty=c(3))
     
     plot(fits.ch11[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    
-    plot(fits.ch02[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
-         xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    
-    plot(fits.ch04[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
-         xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    
-    plot(fits.ch08[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
-         xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    
-    plot(fits.ch12[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
-         xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    abline(v=c(380), lwd=2, lty=c(3))
     
     
     ### fourth row
-    plot(fits.ch01[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,main="T+M canopy", cex.main=title.size,
+    plot(fits.ch01[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,main="Canopy: T+M", cex.main=title.size,
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    abline(v=c(380), lwd=2, lty=c(3))
     
     plot(fits.ch03[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    
-    plot(fits.ch07[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-         xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    abline(v=c(380), lwd=2, lty=c(3))
     
     plot(fits.ch11[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    abline(v=c(380), lwd=2, lty=c(3))
     
-    plot(fits.ch02[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-         xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    
-    plot(fits.ch04[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-         xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    
-    plot(fits.ch08[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-         xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    
-    plot(fits.ch12[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-         xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
     
     ### fifth row
-    plot(fits.ch01[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, main="Top canopy", cex.main=title.size,
+    plot(fits.ch01[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, main="Canopy: top", cex.main=title.size,
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    abline(v=c(380), lwd=2, lty=c(3))
 
     plot(fits.ch03[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    abline(v=c(380), lwd=2, lty=c(3))
     
-    plot(fits.ch07[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-         xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
     
     plot(fits.ch11[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    
-    plot(fits.ch02[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-         xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    
-    plot(fits.ch04[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-         xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    
-    plot(fits.ch08[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-         xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
-    
-    plot(fits.ch12[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-         xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(380, 620), lwd=2, lty=c(3,1))
+    abline(v=c(380), lwd=2, lty=c(3))
     
     # print the overall labels
     mtext(expression(C[i] * " (ppm)"), side = 1, outer = TRUE, line = 2, cex=2)
-    mtext(expression(A[n] * " (" * mu * "mol " * m^-2 * " " * s^-1 * ")"), side = 2, outer = TRUE, line = 2, cex=2)
+    mtext(expression(A[n] * " (" * mu * "mol " * m^-2 * " " * s^-1 * ")"), 
+          side = 2, outer = TRUE, line = 2, cex=2)
     
     dev.off()
     
     
-    #### export biochemical parameter summary table
-    ### make a list of identify
-    id.list <- rep(c("up", "low", "12345", "345", "45"), each=8)
-    chamber.list <- rep(c(1, 3, 7, 11, 2, 4, 8, 12), by = 5)
-    ### prepare an output df
-    outDF <- data.frame(id.list, chamber.list, NA, 
-                        NA, NA, NA, NA, NA, NA,
-                        NA, NA, NA, NA, NA, NA,
-                        NA, NA, NA, NA, NA, NA,
-                        NA, NA, NA, NA, NA)
-    colnames(outDF) <- c("Position", "Chamber", 
-                         "RMSE", "Vcmax", "Vcmax.se", "Jmax", "Jmax.se", "Rd", "Rd.se",
-                         "Ci", "ALEAF", "GS", "ELEAF", "Ac", "Aj", "Ap", "VPD",
-                         "Tleaf", "Ca", "Cc", "PPFD", "Ci_transition_Ac_Aj",
-                         "curve.fitting", "Patm", "GammaStar", "Km")
+    #### read biochemical parameter summary table
+    ### we have multiple dates in leaf-scale measurements
     
-    id.list <- unique(id.list)
+    stDF.c <- read.csv("output/canopy/canopy_scale_parameters.csv", header=T)
+    stDF.l <- read.csv("output/leaf/leaf_scale_parameters.csv", header=T)
     
-    ### the for loop
-    ### ch01
-    for (i in 1:length(id.list)) {
-      ## subset each data
-      test <- subset(ch01DF, Position == id.list[i])
-      
-      ## fit
-      fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU = T)
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "curve.fitting"] <- fit1$fitmethod
-      
-      ## assign fitted values
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "RMSE"] <- fit1$RMSE
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "Vcmax"] <- fit1$pars[1,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "Vcmax.se"] <- fit1$pars[1,2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "Jmax"] <- fit1$pars[2,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "Jmax.se"] <- fit1$pars[2,2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "Rd"] <- fit1$pars[3,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "Rd.se"] <- fit1$pars[3,2]
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "Ci"] <- fit1$Photosyn()[1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "ALEAF"] <- fit1$Photosyn()[2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "GS"] <- fit1$Photosyn()[3]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "ELEAF"] <- fit1$Photosyn()[4]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "Ac"] <- fit1$Photosyn()[5]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "Aj"] <- fit1$Photosyn()[6]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "Ap"] <- fit1$Photosyn()[7]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "VPD"] <- fit1$Photosyn()[9]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "Tleaf"] <- fit1$Photosyn()[10]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "Ca"] <- fit1$Photosyn()[11]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "Cc"] <- fit1$Photosyn()[12]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "PPFD"] <- fit1$Photosyn()[13]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "Patm"] <- fit1$Photosyn()[14]
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "Ci_transition_Ac_Aj"] <- fit1$Ci_transition
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "GammaStar"] <- fit1$GammaStar
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "1", "Km"] <- fit1$Km   
-         
-    }
-    
-    ### ch03
-    for (i in 1:length(id.list)) {
-      ## subset each data
-      test <- subset(ch03DF, Position == id.list[i])
-      
-      ## fit
-      fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T)
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "curve.fitting"] <- fit1$fitmethod
-      
-      ## assign fitted values
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "RMSE"] <- fit1$RMSE
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "Vcmax"] <- fit1$pars[1,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "Vcmax.se"] <- fit1$pars[1,2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "Jmax"] <- fit1$pars[2,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "Jmax.se"] <- fit1$pars[2,2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "Rd"] <- fit1$pars[3,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "Rd.se"] <- fit1$pars[3,2]
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "Ci"] <- fit1$Photosyn()[1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "ALEAF"] <- fit1$Photosyn()[2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "GS"] <- fit1$Photosyn()[3]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "ELEAF"] <- fit1$Photosyn()[4]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "Ac"] <- fit1$Photosyn()[5]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "Aj"] <- fit1$Photosyn()[6]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "Ap"] <- fit1$Photosyn()[7]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "Rd2"] <- fit1$Photosyn()[8]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "VPD"] <- fit1$Photosyn()[9]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "Tleaf"] <- fit1$Photosyn()[10]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "Ca"] <- fit1$Photosyn()[11]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "Cc"] <- fit1$Photosyn()[12]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "PPFD"] <- fit1$Photosyn()[13]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "Patm"] <- fit1$Photosyn()[14]
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "Ci_transition_Ac_Aj"] <- fit1$Ci_transition
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "GammaStar"] <- fit1$GammaStar
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "3", "Km"] <- fit1$Km   
-      
-    }
-    
-    ### ch07
-    for (i in 1:length(id.list)) {
-      ## subset each data
-      test <- subset(ch07DF, Position == id.list[i])
-      
-      ## fit
-      fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T)
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "curve.fitting"] <- fit1$fitmethod
-      
-      ## assign fitted values
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "RMSE"] <- fit1$RMSE
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "Vcmax"] <- fit1$pars[1,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "Vcmax.se"] <- fit1$pars[1,2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "Jmax"] <- fit1$pars[2,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "Jmax.se"] <- fit1$pars[2,2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "Rd"] <- fit1$pars[3,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "Rd.se"] <- fit1$pars[3,2]
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "Ci"] <- fit1$Photosyn()[1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "ALEAF"] <- fit1$Photosyn()[2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "GS"] <- fit1$Photosyn()[3]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "ELEAF"] <- fit1$Photosyn()[4]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "Ac"] <- fit1$Photosyn()[5]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "Aj"] <- fit1$Photosyn()[6]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "Ap"] <- fit1$Photosyn()[7]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "Rd2"] <- fit1$Photosyn()[8]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "VPD"] <- fit1$Photosyn()[9]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "Tleaf"] <- fit1$Photosyn()[10]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "Ca"] <- fit1$Photosyn()[11]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "Cc"] <- fit1$Photosyn()[12]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "PPFD"] <- fit1$Photosyn()[13]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "Patm"] <- fit1$Photosyn()[14]
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "Ci_transition_Ac_Aj"] <- fit1$Ci_transition
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "GammaStar"] <- fit1$GammaStar
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "7", "Km"] <- fit1$Km   
-      
-    }
-    
-    ### ch11
-    for (i in 1:length(id.list)) {
-      ## subset each data
-      test <- subset(ch11DF, Position == id.list[i])
-      
-      ## fit
-      fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T)
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "curve.fitting"] <- fit1$fitmethod
-      
-      ## assign fitted values
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "RMSE"] <- fit1$RMSE
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "Vcmax"] <- fit1$pars[1,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "Vcmax.se"] <- fit1$pars[1,2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "Jmax"] <- fit1$pars[2,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "Jmax.se"] <- fit1$pars[2,2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "Rd"] <- fit1$pars[3,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "Rd.se"] <- fit1$pars[3,2]
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "Ci"] <- fit1$Photosyn()[1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "ALEAF"] <- fit1$Photosyn()[2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "GS"] <- fit1$Photosyn()[3]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "ELEAF"] <- fit1$Photosyn()[4]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "Ac"] <- fit1$Photosyn()[5]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "Aj"] <- fit1$Photosyn()[6]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "Ap"] <- fit1$Photosyn()[7]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "Rd2"] <- fit1$Photosyn()[8]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "VPD"] <- fit1$Photosyn()[9]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "Tleaf"] <- fit1$Photosyn()[10]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "Ca"] <- fit1$Photosyn()[11]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "Cc"] <- fit1$Photosyn()[12]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "PPFD"] <- fit1$Photosyn()[13]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "Patm"] <- fit1$Photosyn()[14]
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "Ci_transition_Ac_Aj"] <- fit1$Ci_transition
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "GammaStar"] <- fit1$GammaStar
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "11", "Km"] <- fit1$Km   
-      
-    }
-    
-    
-    ### ch02
-    for (i in 1:length(id.list)) {
-      ## subset each data
-      test <- subset(ch02DF, Position == id.list[i])
-      
-      ## fit
-      fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU = T)
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "curve.fitting"] <- fit1$fitmethod
-      
-      ## assign fitted values
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "RMSE"] <- fit1$RMSE
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "Vcmax"] <- fit1$pars[1,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "Vcmax.se"] <- fit1$pars[1,2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "Jmax"] <- fit1$pars[2,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "Jmax.se"] <- fit1$pars[2,2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "Rd"] <- fit1$pars[3,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "Rd.se"] <- fit1$pars[3,2]
-    
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "Ci"] <- fit1$Photosyn()[1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "ALEAF"] <- fit1$Photosyn()[2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "GS"] <- fit1$Photosyn()[3]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "ELEAF"] <- fit1$Photosyn()[4]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "Ac"] <- fit1$Photosyn()[5]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "Aj"] <- fit1$Photosyn()[6]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "Ap"] <- fit1$Photosyn()[7]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "VPD"] <- fit1$Photosyn()[9]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "Tleaf"] <- fit1$Photosyn()[10]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "Ca"] <- fit1$Photosyn()[11]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "Cc"] <- fit1$Photosyn()[12]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "PPFD"] <- fit1$Photosyn()[13]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "Patm"] <- fit1$Photosyn()[14]
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "Ci_transition_Ac_Aj"] <- fit1$Ci_transition
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "GammaStar"] <- fit1$GammaStar
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "2", "Km"] <- fit1$Km   
-      
-    }
-    
-    ### ch04
-    for (i in 1:length(id.list)) {
-      ## subset each data
-      test <- subset(ch04DF, Position == id.list[i])
-      
-      ## fit
-      fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T)
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "curve.fitting"] <- fit1$fitmethod
-      
-      ## assign fitted values
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "RMSE"] <- fit1$RMSE
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "Vcmax"] <- fit1$pars[1,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "Vcmax.se"] <- fit1$pars[1,2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "Jmax"] <- fit1$pars[2,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "Jmax.se"] <- fit1$pars[2,2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "Rd"] <- fit1$pars[3,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "Rd.se"] <- fit1$pars[3,2]
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "Ci"] <- fit1$Photosyn()[1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "ALEAF"] <- fit1$Photosyn()[2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "GS"] <- fit1$Photosyn()[3]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "ELEAF"] <- fit1$Photosyn()[4]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "Ac"] <- fit1$Photosyn()[5]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "Aj"] <- fit1$Photosyn()[6]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "Ap"] <- fit1$Photosyn()[7]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "Rd2"] <- fit1$Photosyn()[8]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "VPD"] <- fit1$Photosyn()[9]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "Tleaf"] <- fit1$Photosyn()[10]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "Ca"] <- fit1$Photosyn()[11]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "Cc"] <- fit1$Photosyn()[12]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "PPFD"] <- fit1$Photosyn()[13]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "Patm"] <- fit1$Photosyn()[14]
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "Ci_transition_Ac_Aj"] <- fit1$Ci_transition
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "GammaStar"] <- fit1$GammaStar
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "4", "Km"] <- fit1$Km   
-      
-    }
-    
-    ### ch08
-    for (i in 1:length(id.list)) {
-      ## subset each data
-      test <- subset(ch08DF, Position == id.list[i])
-      
-      ## fit
-      fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T)
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "curve.fitting"] <- fit1$fitmethod
-      
-      ## assign fitted values
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "RMSE"] <- fit1$RMSE
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "Vcmax"] <- fit1$pars[1,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "Vcmax.se"] <- fit1$pars[1,2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "Jmax"] <- fit1$pars[2,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "Jmax.se"] <- fit1$pars[2,2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "Rd"] <- fit1$pars[3,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "Rd.se"] <- fit1$pars[3,2]
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "Ci"] <- fit1$Photosyn()[1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "ALEAF"] <- fit1$Photosyn()[2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "GS"] <- fit1$Photosyn()[3]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "ELEAF"] <- fit1$Photosyn()[4]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "Ac"] <- fit1$Photosyn()[5]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "Aj"] <- fit1$Photosyn()[6]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "Ap"] <- fit1$Photosyn()[7]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "Rd2"] <- fit1$Photosyn()[8]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "VPD"] <- fit1$Photosyn()[9]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "Tleaf"] <- fit1$Photosyn()[10]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "Ca"] <- fit1$Photosyn()[11]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "Cc"] <- fit1$Photosyn()[12]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "PPFD"] <- fit1$Photosyn()[13]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "Patm"] <- fit1$Photosyn()[14]
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "Ci_transition_Ac_Aj"] <- fit1$Ci_transition
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "GammaStar"] <- fit1$GammaStar
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "8", "Km"] <- fit1$Km   
-      
-    }
-    
-    ### ch12
-    for (i in 1:length(id.list)) {
-      ## subset each data
-      test <- subset(ch12DF, Position == id.list[i])
-      
-      ## fit
-      fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T)
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "curve.fitting"] <- fit1$fitmethod
-      
-      ## assign fitted values
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "RMSE"] <- fit1$RMSE
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "Vcmax"] <- fit1$pars[1,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "Vcmax.se"] <- fit1$pars[1,2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "Jmax"] <- fit1$pars[2,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "Jmax.se"] <- fit1$pars[2,2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "Rd"] <- fit1$pars[3,1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "Rd.se"] <- fit1$pars[3,2]
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "Ci"] <- fit1$Photosyn()[1]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "ALEAF"] <- fit1$Photosyn()[2]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "GS"] <- fit1$Photosyn()[3]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "ELEAF"] <- fit1$Photosyn()[4]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "Ac"] <- fit1$Photosyn()[5]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "Aj"] <- fit1$Photosyn()[6]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "Ap"] <- fit1$Photosyn()[7]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "Rd2"] <- fit1$Photosyn()[8]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "VPD"] <- fit1$Photosyn()[9]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "Tleaf"] <- fit1$Photosyn()[10]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "Ca"] <- fit1$Photosyn()[11]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "Cc"] <- fit1$Photosyn()[12]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "PPFD"] <- fit1$Photosyn()[13]
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "Patm"] <- fit1$Photosyn()[14]
-      
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "Ci_transition_Ac_Aj"] <- fit1$Ci_transition
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "GammaStar"] <- fit1$GammaStar
-      outDF[outDF$Position == id.list[i] & outDF$Chamber == "12", "Km"] <- fit1$Km   
-      
-    }
-    
-    outDF$JV_ratio <- outDF$Jmax / outDF$Vcmax
-    
-    ### save
-    write.csv(outDF, "output/A-Ca/ambient_chambers_biochemical_parameter_summary_table.csv", row.names=F)
-    
+    subDF.l <- subset(stDF.l, Chamber%in%c("ch01", "ch03", "ch11"))
+    subDF.l$Date <- as.Date(as.character(subDF.l$Date))
+    subDF.l <- subset(subDF.l, Date>=as.Date("2009-01-01")&Date<=as.Date("2009-03-01"))
     
     
     ################################# Plot delta A at the Ca = 400 to 600 range and see the slope
@@ -713,21 +276,6 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
       outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "Aj_600"] <- fit1$Photosyn(Ci=600)$Aj
     }
     
-    ### ch04
-    for (i in 1:length(id.list)) {
-      ## subset each data
-      test <- subset(ch04DF, Position == id.list[i])
-      
-      ## fit
-      fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU = T)
-      
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "4", "ALEAF_400"] <- fit1$Photosyn(Ci=400)$ALEAF
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "4", "ALEAF_600"] <- fit1$Photosyn(Ci=600)$ALEAF
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "4", "Ac_400"] <- fit1$Photosyn(Ci=400)$Ac
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "4", "Ac_600"] <- fit1$Photosyn(Ci=600)$Ac
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "4", "Aj_400"] <- fit1$Photosyn(Ci=400)$Aj
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "4", "Aj_600"] <- fit1$Photosyn(Ci=600)$Aj
-    }
     
     ### ch07
     for (i in 1:length(id.list)) {
@@ -745,22 +293,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
       outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "7", "Aj_600"] <- fit1$Photosyn(Ci=600)$Aj
     }
     
-    ### ch08
-    for (i in 1:length(id.list)) {
-      ## subset each data
-      test <- subset(ch08DF, Position == id.list[i])
-      
-      ## fit
-      fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU = T)
-      
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "8", "ALEAF_400"] <- fit1$Photosyn(Ci=400)$ALEAF
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "8", "ALEAF_600"] <- fit1$Photosyn(Ci=600)$ALEAF
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "8", "Ac_400"] <- fit1$Photosyn(Ci=400)$Ac
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "8", "Ac_600"] <- fit1$Photosyn(Ci=600)$Ac
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "8", "Aj_400"] <- fit1$Photosyn(Ci=400)$Aj
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "8", "Aj_600"] <- fit1$Photosyn(Ci=600)$Aj
-    }
-    
+
     ### ch11
     for (i in 1:length(id.list)) {
       ## subset each data
@@ -777,21 +310,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
       outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "Aj_600"] <- fit1$Photosyn(Ci=600)$Aj
     }
     
-    ### ch12
-    for (i in 1:length(id.list)) {
-      ## subset each data
-      test <- subset(ch12DF, Position == id.list[i])
-      
-      ## fit
-      fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU = T)
-      
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "12", "ALEAF_400"] <- fit1$Photosyn(Ci=400)$ALEAF
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "12", "ALEAF_600"] <- fit1$Photosyn(Ci=600)$ALEAF
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "12", "Ac_400"] <- fit1$Photosyn(Ci=400)$Ac
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "12", "Ac_600"] <- fit1$Photosyn(Ci=600)$Ac
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "12", "Aj_400"] <- fit1$Photosyn(Ci=400)$Aj
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "12", "Aj_600"] <- fit1$Photosyn(Ci=600)$Aj
-    }
+
     
     outDF2$A_sens <- with(outDF2, (ALEAF_600-ALEAF_400)/ALEAF_400)
     outDF2$Aj_sens <- with(outDF2, (Aj_600-Aj_400)/Aj_400)

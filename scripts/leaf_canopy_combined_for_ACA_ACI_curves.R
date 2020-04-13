@@ -8,7 +8,7 @@ leaf_canopy_combined_for_ACA_ACI_curves <- function(lDF, cDF, ch.l, ch.c) {
     
     ### get columns
     ch01.l <- ch01.l[,c("Photo", "CO2S", "Height", "Cond", "Ci", "Tair", "Tleaf", "PARi", "VpdL")]
-    ch01.c <- ch01.c[,c("Norm_corr_CO2_flux", "WTC_CO2", "Canopy", "Norm_H2O_flux", "Ci", "WTC_T", "WTC_T", "WTC_PAR", "VPD")]
+    ch01.c <- ch01.c[,c("Norm_corr_CO2_flux", "Ca", "Canopy", "Norm_H2O_flux", "Ci", "WTC_T", "WTC_T", "WTC_PAR", "VPD")]
     
     
     ### merge
