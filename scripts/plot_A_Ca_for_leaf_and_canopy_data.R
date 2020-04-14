@@ -89,7 +89,7 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
                           values=c("slateblue", "yellowgreen"),
                           labels=c("Canopy", "Leaf"))
     
-    plot(p1)
+    #plot(p1)
     
     p2 <- ggplot() +
         geom_smooth(data=ch02DF, aes(Ca, Photo, group=ch02DF$Source,

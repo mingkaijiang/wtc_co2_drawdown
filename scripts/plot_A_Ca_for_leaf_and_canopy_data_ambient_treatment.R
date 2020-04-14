@@ -4,6 +4,8 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     #### which can be related to Rogers et al. 2017 conceptual figure
     #### Only based on a subset of data that is amient CO2 and well-watered treatment
     
+  
+    ################################# plot A-Ca for ambient #################################
     #### read in leaf-scale data
     lDF1 <- read.csv("data/ACi_curves/HFE_Aci_2008-2009.csv",stringsAsFactors=FALSE)
     lDF2  <- read.csv("data/ACi_curves/HFE_Aci_lowcanopy_2008-2009.csv",stringsAsFactors=FALSE)
@@ -104,6 +106,8 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     dev.off()    
     
     
+    
+    ################################# plot A-Ci for ambient #################################
     ##### preparing acifit
     #### the fit TPU function makes it long to run!
     fits.ch01 <- fitacis(ch01DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=F)
@@ -111,7 +115,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     fits.ch11 <- fitacis(ch11DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=F)
 
 
-    ##
+    ## pdf
     pdf("output/A-Ca/ambient_A-Ci_plots.pdf", width=14, height=14)
     par(mfrow=c(5,3),mar=c(2,2,4,1),oma = c(4, 6, 0, 0))
     
@@ -200,18 +204,293 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     dev.off()
     
     
+    ################################# plot statistics for ambient #################################
     #### read biochemical parameter summary table
     ### we have multiple dates in leaf-scale measurements
-    
     stDF.c <- read.csv("output/canopy/canopy_scale_parameters.csv", header=T)
     stDF.l <- read.csv("output/leaf/leaf_scale_parameters.csv", header=T)
     
+    ### subset leaf
     subDF.l <- subset(stDF.l, Chamber%in%c("ch01", "ch03", "ch11"))
     subDF.l$Date <- as.Date(as.character(subDF.l$Date))
     subDF.l <- subset(subDF.l, Date>=as.Date("2009-01-01")&Date<=as.Date("2009-03-01"))
     
+    subDF.l <- subDF.l[,c("Chamber", "Height", "RMSE", "Vcmax", "Vcmax.se", "Jmax",
+                          "Jmax.se", "Rd", "Rd.se", "Ci", "ALEAF", "GS", "ELEAF", "Ac",
+                          "Aj", "Ap", "VPD", "Tleaf", "Ca", "Cc", "PPFD", 
+                          "Ci_transition_Ac_Aj", "GammaStar", "Km", "G1", "JVratio")]
     
-    ################################# Plot delta A at the Ca = 400 to 600 range and see the slope
+    subDF.l$Chamber <- as.character(subDF.l$Chamber)
+    subDF.l$Chamber <- as.numeric(gsub("ch", "", subDF.l$Chamber))
+    subDF.l$Height <- as.character(subDF.l$Height)
+    subDF.l$Source <- "Leaf"
+    
+    ### subset canopy
+    subDF.c <- subset(stDF.c, Chamber%in%c("1", "3", "11"))
+    
+    subDF.c <- subDF.c[,c("Chamber", "Canopy", "RMSE", "Vcmax", "Vcmax.se", "Jmax",
+                          "Jmax.se", "Rd", "Rd.se", "Ci", "ALEAF", "GS", "ELEAF", "Ac",
+                          "Aj", "Ap", "VPD", "Tleaf", "Ca", "Cc", "PPFD", 
+                          "Ci_transition_Ac_Aj", "GammaStar", "Km", "G1", "JVratio")]
+    
+    ### change col names
+    names(subDF.c)[names(subDF.c) == "Canopy"] <- "Height"
+    
+    subDF.c$Source <- "Canopy"
+
+    ### combine    
+    plotDF <- rbind(subDF.l, subDF.c)
+    plotDF$Chamber <- as.factor(as.character(plotDF$Chamber))
+    plotDF$Source <- as.factor(as.character(plotDF$Source))
+    plotDF$Height <- as.factor(as.character(plotDF$Height))
+    
+    
+    ### plotting
+    p1 <- ggplot() +
+      geom_point(data=plotDF, aes(Height, Vcmax, 
+                                  fill=as.factor(Height), 
+                                  pch = as.factor(Source)), alpha=1.0, size=4)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="bone",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab("")+
+      ylab(expression(paste(V[cmax]* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      scale_fill_manual(name="Position",
+                        limits=c("12345", "345", "45", "up", "low"),
+                        values=c("blue2", "red3", "purple", "orange", "green"),
+                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_color_manual(name="Position",
+                         limits=c("12345", "345", "45", "up", "low"),
+                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
+                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_shape_manual(name="Measurements",
+                         values=c(21, 24),
+                         labels=c("Canopy", "Leaf"))+
+      scale_x_discrete(name="", 
+                       breaks=c("12345", "345", "45", "up", "low"), 
+                       labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+    
+    
+    p2 <- ggplot() +
+      geom_point(data=plotDF, aes(Height, Jmax, 
+                                  fill=as.factor(Height), 
+                                  pch = as.factor(Source)), alpha=1.0, size=4)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="bone",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab("")+
+      ylab(expression(paste(J[max]* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      scale_fill_manual(name="Position",
+                        limits=c("12345", "345", "45", "up", "low"),
+                        values=c("blue2", "red3", "purple", "orange", "green"),
+                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_color_manual(name="Position",
+                         limits=c("12345", "345", "45", "up", "low"),
+                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
+                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_shape_manual(name="Measurements",
+                         values=c(21, 24),
+                         labels=c("Canopy", "Leaf"))+
+      scale_x_discrete(name="", 
+                       breaks=c("12345", "345", "45", "up", "low"), 
+                       labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+    
+    
+    p3 <- ggplot() +
+      geom_point(data=plotDF, aes(Height, JVratio, 
+                                  fill=as.factor(Height), 
+                                  pch = as.factor(Source)), alpha=1.0, size=4)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="bone",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab("")+
+      ylab("JV ratio")+
+      scale_fill_manual(name="Position",
+                        limits=c("12345", "345", "45", "up", "low"),
+                        values=c("blue2", "red3", "purple", "orange", "green"),
+                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_color_manual(name="Position",
+                         limits=c("12345", "345", "45", "up", "low"),
+                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
+                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_shape_manual(name="Measurements",
+                         values=c(21, 24),
+                         labels=c("Canopy", "Leaf"))+
+      scale_x_discrete(name="", 
+                       breaks=c("12345", "345", "45", "up", "low"), 
+                       labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+    
+    
+    p4 <- ggplot() +
+      geom_point(data=plotDF, aes(Height, Ci_transition_Ac_Aj, 
+                                  fill=as.factor(Height), 
+                                  pch = as.factor(Source)), alpha=1.0, size=4)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="bone",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab("")+
+      ylab("Transition Ci (ppm)")+
+      scale_fill_manual(name="Position",
+                        limits=c("12345", "345", "45", "up", "low"),
+                        values=c("blue2", "red3", "purple", "orange", "green"),
+                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_color_manual(name="Position",
+                         limits=c("12345", "345", "45", "up", "low"),
+                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
+                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_shape_manual(name="Measurements",
+                         values=c(21, 24),
+                         labels=c("Canopy", "Leaf"))+
+      scale_x_discrete(name="", 
+                       breaks=c("12345", "345", "45", "up", "low"), 
+                       labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+    
+    p5 <- ggplot() +
+      geom_point(data=plotDF, aes(Height, Ac, 
+                                  fill=as.factor(Height), 
+                                  pch = as.factor(Source)), alpha=1.0, size=4)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="bone",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab("")+
+      ylab(expression(paste(A[c]* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      scale_fill_manual(name="Position",
+                        limits=c("12345", "345", "45", "up", "low"),
+                        values=c("blue2", "red3", "purple", "orange", "green"),
+                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_color_manual(name="Position",
+                         limits=c("12345", "345", "45", "up", "low"),
+                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
+                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_shape_manual(name="Measurements",
+                         values=c(21, 24),
+                         labels=c("Canopy", "Leaf"))+
+      scale_x_discrete(name="", 
+                       breaks=c("12345", "345", "45", "up", "low"), 
+                       labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+    
+    
+    p6 <- ggplot() +
+      geom_point(data=plotDF, aes(Height, Aj, 
+                                  fill=as.factor(Height), 
+                                  pch = as.factor(Source)), alpha=1.0, size=4)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="bone",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab("")+
+      ylab(expression(paste(A[j]* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      scale_fill_manual(name="Position",
+                        limits=c("12345", "345", "45", "up", "low"),
+                        values=c("blue2", "red3", "purple", "orange", "green"),
+                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_color_manual(name="Position",
+                         limits=c("12345", "345", "45", "up", "low"),
+                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
+                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_shape_manual(name="Measurements",
+                         values=c(21, 24),
+                         labels=c("Canopy", "Leaf"))+
+      scale_x_discrete(name="", 
+                       breaks=c("12345", "345", "45", "up", "low"), 
+                       labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+    
+    
+    legend_shared <- get_legend(p1 + theme(legend.position="bottom",
+                                           legend.box = 'vertical',
+                                           legend.box.just = 'left'))
+    
+    combined_plots <- plot_grid(p1, p2, p3, p4, p5, p6, 
+                                labels="AUTO", ncol=2, align="vh", axis = "l")
+    
+    #plot(p1)
+    
+    pdf("output/A-Ca/biochemical_parameter_stats_plot.pdf", width=10, height=16)
+    plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
+    dev.off()  
+    
+    
+    
+    #### perform statistics
+    require(nlme)
+    require(lme4)
+    require(lmerTest)
+    fit = aov(Vcmax ~ Source + Error(Height), data=plotDF)
+    summary(fit)
+    
+    pf(q=13057/805,
+       df1=1,
+       df2=3,
+       lower.tail=FALSE)
+    
+    pf(q=805/142.6,
+       df1=3,
+       df2=10,
+       lower.tail=F)
+    
+    
+    
+    ################################# plot delta A #################################
+    ###### Plot delta A at the Ca = 400 to 600 range and see the slope
     #### export biochemical parameter summary table
     ### make a list of identify
     id.list <- rep(c("up", "low", "12345", "345", "45"), each=8)
