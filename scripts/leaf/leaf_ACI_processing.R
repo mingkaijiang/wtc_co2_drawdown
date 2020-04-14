@@ -67,7 +67,8 @@ leaf_ACI_processing <- function() {
     }
     
     ### exclude outliers
-    coefDF.sub <- coefDF[coefDF$JVratio <= 3, ]
+    #coefDF.sub <- coefDF[coefDF$JVratio <= 3, ]
+    coefDF.sub <- coefDF
     
     ### make a list of identify
     id.list <- unique(coefDF.sub$Identity)
