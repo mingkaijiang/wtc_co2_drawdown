@@ -60,7 +60,8 @@ canopy_ACI_processing <- function(cDF) {
                                              PPFD = "WTC_PAR",
                                              Rd = "Rd"),
                        fitmethod="bilinear", 
-                       Tcorrect=T)
+                       Tcorrect=T,
+                       fitTPU=F)
         
         fit2 <- fitBB(test, varnames = list(ALEAF = "Norm_corr_CO2_flux", 
                                             GS = "gs", 
@@ -118,54 +119,6 @@ canopy_ACI_processing <- function(cDF) {
     ### save
     write.csv(outDF, "output/canopy/canopy_scale_parameters.csv", row.names=F)
     
-    
-    ###### check vcmax relationship
-    #### 3-way anova 
-    #fm <- aov(Vcmax ~ CO2_treatment * Water_treatment * Canopy, data = coefDF)
-    #summary(fm)
-    #
-    ### obtain r2 from the anova model
-    #lm <- lm(Vcmax ~ CO2_treatment * Water_treatment * Canopy, data = coefDF)
-    #anova(lm)
-    #summary(lm)
-    #
-    #
-    ###### check jmax relationship
-    #### 3-way anova 
-    #fm <- aov(Jmax ~ CO2_treatment * Water_treatment * Canopy, data = coefDF)
-    #summary(fm)
-    #
-    ### obtain r2 from the anova model
-    #lm <- lm(Jmax ~ CO2_treatment * Water_treatment * Canopy, data = coefDF)
-    #anova(lm)
-    #summary(lm)
-    #
-    #
-    ###### check jv ratio relationship
-    #### 3-way anova 
-    #fm <- aov(JVratio ~ CO2_treatment * Water_treatment * Canopy, data = coefDF)
-    #summary(fm)
-    #
-    ### obtain r2 from the anova model
-    #lm <- lm(JVratio ~ CO2_treatment * Water_treatment * Canopy, data = coefDF)
-    #anova(lm)
-    #summary(lm)
-    
-    
-    #### because the water treatment was unbalanced 
-    #### i.e. wet = chambers 1, 3, 4, 8, 11, and dry = 2, 7, 12,
-    #### it is possible that the experimental design intentionally ignored water treatment.
-    #### This is partially proven by leaf-scale data (including all time points), 
-    #### as there was no water treatment effect
-    #### hence, below I can ignore water treatment and group data with CO2 treatment and canopy positions
-    #### and check the fit ACI results thereafter. 
-    #for (i in c(1, 3, 5, 7, 9, 11)) {
-    #    myDF[myDF$Chamber == i, "CO2_treatment"] <- "ambient"
-    #}
-    #
-    #for (i in c(2, 4, 6, 8, 10, 12)) {
-    #    myDF[myDF$Chamber == i, "CO2_treatment"] <- "elevated"
-    #}
     
     return(outDF)
 }
