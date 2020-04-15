@@ -63,13 +63,18 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     plotDF <- rbind(ch01DF, ch03DF, ch11DF)
     
     ## plot
-    p1 <- ggplot() +
-      geom_point(data=plotDF, aes(Ca, Photo, 
-                                  fill=as.factor(Position), 
+    p1 <- ggplot(data=plotDF, aes(Ca, Photo, group=Position)) +
+      geom_point(data=plotDF, aes(fill=as.factor(Position), 
                                   pch = as.factor(Source)), alpha=0.6)+
-      geom_smooth(data=plotDF, aes(Ca, Photo, group=Position,
-                                   col=as.factor(Position)),
-                  method = "lm", formula = y ~ splines::bs(x, 4), se=T)+
+      #geom_smooth(data=plotDF, aes(Ca, Photo, group=Position,
+      #                             col=as.factor(Position)),
+      #            method = "lm", formula = y ~ splines::bs(x, 4), se=T)+
+      geom_smooth(aes(col=as.factor(Position)), 
+                  method="nls", 
+                  formula=y~a*exp(b/x),
+                  fullrange=T,
+                  method.args = list(start=c(a=1,b=0.1)), 
+                  se=F)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -82,8 +87,8 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.position="bottom",
             legend.box = 'vertical',
             legend.box.just = 'left')+
-      xlab(expression(paste(C[a]* " (umol ", m^-2, " ", s^-1, ")")))+
-      ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      xlab(expression(paste(C[a], " (", mu, "mol ", m^-2, " ", s^-1, ")")))+
+      ylab(expression(paste(A, " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
@@ -99,6 +104,16 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
       ylim(-5,40)+
       guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
     
+    ## testing fitting outside geom_smooth
+    #subDF <- as.data.frame(subset(plotDF, Position=="up"))
+    #myModel <- nls(Photo~a*exp(b/Ca), data=subDF, start=list(a=1, b=0.1))
+    #myPredict <- expand.grid(Ca = seq(10, 1600, by =10))  
+    #myPredict$fit <- predict(myModel, newdata= myPredict) 
+    #p1 <- ggplot(data=subDF, 
+    #             aes(Ca, Photo)) +
+    #  geom_point()+
+    #  geom_line(data = myPredict, aes(x=Ca, y= fit))
+    #plot(p1)
   
     ### output
     pdf("output/A-Ca/ambient_A-Ca_plot.pdf", width=8, height=8)
@@ -130,8 +145,8 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.position="bottom",
             legend.box = 'vertical',
             legend.box.just = 'left')+
-      xlab(expression(paste(C[a]* " (umol ", m^-2, " ", s^-1, ")")))+
-      ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      xlab(expression(paste(C[a], " (", mu, "mol ", m^-2, " ", s^-1, ")")))+
+      ylab(expression(paste(A, " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
@@ -311,7 +326,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
-      ylab(expression(paste(V[cmax]* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      ylab(expression(paste(V[cmax], " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
@@ -346,7 +361,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
-      ylab(expression(paste(J[max]* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      ylab(expression(paste(J[max], " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
@@ -450,7 +465,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
-      ylab(expression(paste(A[c]* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      ylab(expression(paste(A[c], " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
@@ -485,7 +500,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
-      ylab(expression(paste(A[j]* " (umol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      ylab(expression(paste(A[j], " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
@@ -655,7 +670,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
-      ylab(expression(paste(delta,  "A/", delta, CO[2], " (umol ", m^-2, " ", s^-1, " ", ppm^-1, ")")))+
+      ylab(expression(paste(delta,  "A/", delta, CO[2], " (", mu, "mol ", m^-2, " ", s^-1, " ", ppm^-1, ")")))+
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
@@ -691,7 +706,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
-      ylab(expression(paste(delta,  "A/", A[400], " (umol ", m^-2, " ", s^-1, ")")))+
+      ylab(expression(paste(delta,  "A/", A[400], " (", mu, "mol ", m^-2, " ", s^-1, ")")))+
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
@@ -727,7 +742,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
-      ylab(expression(paste(delta,  A[c], "/", delta, CO[2], " (umol ", m^-2, " ", s^-1, " ", ppm^-1, ")")))+
+      ylab(expression(paste(delta,  A[c], "/", delta, CO[2], " (", mu, "mol ", m^-2, " ", s^-1, " ", ppm^-1, ")")))+
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
@@ -763,7 +778,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
-      ylab(expression(paste(delta,  A[c], "/", A[c400], " (umol ", m^-2, " ", s^-1, ")")))+
+      ylab(expression(paste(delta,  A[c], "/", A[c400], " (", mu, "mol ", m^-2, " ", s^-1, ")")))+
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
@@ -799,7 +814,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
-      ylab(expression(paste(delta,  A[j], "/", delta, CO[2], " (umol ", m^-2, " ", s^-1, " ", ppm^-1, ")")))+
+      ylab(expression(paste(delta,  A[j], "/", delta, CO[2], " (", mu, "mol ", m^-2, " ", s^-1, " ", ppm^-1, ")")))+
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
@@ -835,7 +850,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
-      ylab(expression(paste(delta,  A[j], "/", A[j400], " (umol ", m^-2, " ", s^-1, ")")))+
+      ylab(expression(paste(delta,  A[j], "/", A[j400], " (", mu, "mol ", m^-2, " ", s^-1, ")")))+
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),

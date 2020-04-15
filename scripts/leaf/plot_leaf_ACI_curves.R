@@ -104,7 +104,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
                           ymax = (Vcmax.mean+Vcmax.se)), position = "dodge", width=0.2)+
         geom_point(aes(CO2_treatment, Vcmax.mean, fill=CO2_treatment), size = 10, shape=21)+
         xlab("")+
-        ylab(expression(V[cmax]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        ylab(expression(V[cmax]*" (" * mu * "mol " * m^-2 * " " * s^-1 * ")"))+
         scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
                           limits=c("ambient", "elevated"),
                           values=c("grey", "black"))+
@@ -149,7 +149,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
                           ymax = (Vcmax.mean+Vcmax.se)), position = "dodge", width=0.2)+
         geom_point(aes(Height, Vcmax.mean, fill=Height), size = 10, shape=21)+
         xlab("")+
-        ylab(expression(V[cmax]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        ylab(expression(V[cmax]*" (" * mu * "mol " * m^-2 * " " * s^-1 * ")"))+
         scale_fill_manual(name="Canopy position",
                           limits=c("up", "low"),
                           values=c("grey", "black"))+
@@ -172,7 +172,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
                           ymax = (Jmax.mean+Jmax.se)), position = "dodge", width=0.2)+
         geom_point(aes(CO2_treatment, Jmax.mean, fill=CO2_treatment), size = 10, shape=21)+
         xlab("")+
-        ylab(expression(J[max]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        ylab(expression(J[max]*" (" * mu * "mol " * m^-2 * " " * s^-1 * ")"))+
         scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
                           limits=c("ambient", "elevated"),
                           values=c("grey", "black"))+
@@ -218,7 +218,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
                           ymax = (Jmax.mean+Jmax.se)), position = "dodge", width=0.2)+
         geom_point(aes(Height, Jmax.mean, fill=Height), size = 10, shape=21)+
         xlab("")+
-        ylab(expression(J[max]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        ylab(expression(J[max]*" (" * mu * "mol " * m^-2 * " " * s^-1 * ")"))+
         scale_fill_manual(name="Canopy position",
                           limits=c("up", "low"),
                           values=c("grey", "black"))+
@@ -241,7 +241,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
                           ymax = (Ci_transition_Ac_Aj.mean+Ci_transition_Ac_Aj.se)), position = "dodge", width=0.2)+
         geom_point(aes(CO2_treatment, Ci_transition_Ac_Aj.mean, fill=CO2_treatment), size = 10, shape=21)+
         xlab(expression(paste(CO[2] * " treatment")))+
-        ylab(expression(C[i]*" transition point (umol " * mol^-1 * ")"))+
+        ylab(expression(C[i]*" transition point (" * mu *"mol " * mol^-1 * ")"))+
         scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
                           limits=c("ambient", "elevated"),
                           values=c("grey", "black"))+
@@ -293,7 +293,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
                           ymax = (Ci_transition_Ac_Aj.mean+Ci_transition_Ac_Aj.se)), position = "dodge", width=0.2)+
         geom_point(aes(Height, Ci_transition_Ac_Aj.mean, fill=Height), size = 10, shape=21)+
         xlab("Canopy position")+
-        ylab(expression(C[i]*" transition point (umol " * mol^-1 * ")"))+
+        ylab(expression(C[i]*" transition point (" * mu * "mol " * mol^-1 * ")"))+
         scale_fill_manual(name="Canopy position",
                           limits=c("up", "low"),
                           values=c("grey", "black"))+
@@ -618,7 +618,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
         geom_point(aes(Height, Vcmax.mean, fill=CO2_treatment), size = 10, shape=21, 
                    position=position_dodge(width=0.5))+
         xlab("")+
-        ylab(expression(V[cmax]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        ylab(expression(V[cmax]*" (" * mu *"mol " * m^-2 * " " * s^-1 * ")"))+
         scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
                           limits=c("ambient", "elevated"),
                           values=c("grey", "black"))+
@@ -645,7 +645,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
         geom_point(aes(Height, Jmax.mean, fill=CO2_treatment), size = 10, shape=21, 
                    position=position_dodge(width=0.5))+
         xlab("")+
-        ylab(expression(J[max]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        ylab(expression(J[max]*" (" * mu * "mol " * m^-2 * " " * s^-1 * ")"))+
         scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
                           limits=c("ambient", "elevated"),
                           values=c("grey", "black"))+
@@ -699,7 +699,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
         geom_point(aes(Height, Ci_transition_Ac_Aj.mean, fill=CO2_treatment), size = 10, shape=21, 
                    position=position_dodge(width=0.5))+
         xlab("")+
-        ylab(expression(C[i]*" transition (umol " * mol^-1 * ")"))+
+        ylab(expression(C[i]*" transition (" * mu * "mol " * mol^-1 * ")"))+
         scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
                           limits=c("ambient", "elevated"),
                           values=c("grey", "black"))+
@@ -727,7 +727,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
         geom_point(aes(Height, Ac.mean, fill=CO2_treatment), size = 10, shape=21, 
                    position=position_dodge(width=0.5))+
         xlab("")+
-        ylab(expression(A[c]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        ylab(expression(A[c]*" (" * mu* "mol " * m^-2 * " " * s^-1 * ")"))+
         scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
                           limits=c("ambient", "elevated"),
                           values=c("grey", "black"))+
@@ -757,7 +757,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
         geom_point(aes(Height, Aj.mean, fill=CO2_treatment), size = 10, shape=21, 
                    position=position_dodge(width=0.5))+
         xlab("")+
-        ylab(expression(A[j]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        ylab(expression(A[j]*" (" * mu * "mol " * m^-2 * " " * s^-1 * ")"))+
         scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
                           limits=c("ambient", "elevated"),
                           values=c("grey", "black"))+
@@ -788,7 +788,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
         geom_point(aes(Height, ALEAF.mean, fill=CO2_treatment), size = 10, shape=21, 
                    position=position_dodge(width=0.5))+
         xlab("Canopy position")+
-        ylab(expression(A[leaf]*" (umol " * m^-2 * " " * s^-1 * ")"))+
+        ylab(expression(A[leaf]*" (" * mu * "mol " * m^-2 * " " * s^-1 * ")"))+
         scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
                           limits=c("ambient", "elevated"),
                           values=c("grey", "black"))+

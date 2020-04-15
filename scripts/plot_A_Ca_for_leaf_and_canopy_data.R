@@ -71,8 +71,8 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
               legend.position="none",
               legend.box = 'vertical',
               legend.box.just = 'left')+
-        xlab(expression(paste(C[a]* " (umol ", m^-2, s^-1, ")")))+
-        ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, s^-1, ")")))+
+        xlab(expression(paste(C[a], " (", mu, "mol ", m^-2, s^-1, ")")))+
+        ylab(expression(paste(A, " (", mu, "mol "* CO[2], " ", m^-2, s^-1, ")")))+
         scale_fill_manual(name="Position",
                            limits=c("12345", "345", "45", "up", "low"),
                            values=c("blue2", "red3", "purple", "orange", "green"),
@@ -110,8 +110,8 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
               legend.position="none",
               legend.box = 'vertical',
               legend.box.just = 'left')+
-        xlab(expression(paste(C[a]* " (umol ", m^-2, s^-1, ")")))+
-        ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, s^-1, ")")))+
+        xlab(expression(paste(C[a], " (", mu, "mol ", m^-2, s^-1, ")")))+
+        ylab(expression(paste(A, " (", mu, "mol "* CO[2], " ", m^-2, s^-1, ")")))+
         scale_fill_manual(name="Position",
                           limits=c("12345", "345", "45", "up", "low"),
                           values=c("blue2", "red3", "purple", "orange", "green"),
@@ -147,8 +147,8 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
               legend.position="none",
               legend.box = 'vertical',
               legend.box.just = 'left')+
-        xlab(expression(paste(C[a]* " (umol ", m^-2, s^-1, ")")))+
-        ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, s^-1, ")")))+
+        xlab(expression(paste(C[a], " (", mu, "mol ", m^-2, s^-1, ")")))+
+        ylab(expression(paste(A, " (", mu, "mol "* CO[2], " ", m^-2, s^-1, ")")))+
         scale_fill_manual(name="Position",
                           limits=c("12345", "345", "45", "up", "low"),
                           values=c("blue2", "red3", "purple", "orange", "green"),
@@ -184,8 +184,8 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
               legend.position="none",
               legend.box = 'vertical',
               legend.box.just = 'left')+
-        xlab(expression(paste(C[a]* " (umol ", m^-2, s^-1, ")")))+
-        ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, s^-1, ")")))+
+        xlab(expression(paste(C[a], " (", mu, "mol ", m^-2, s^-1, ")")))+
+        ylab(expression(paste(A, " (", mu, "mol "* CO[2], " ", m^-2, s^-1, ")")))+
         scale_fill_manual(name="Position",
                           limits=c("12345", "345", "45", "up", "low"),
                           values=c("blue2", "red3", "purple", "orange", "green"),
@@ -221,8 +221,8 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
               legend.position="none",
               legend.box = 'vertical',
               legend.box.just = 'left')+
-        xlab(expression(paste(C[a]* " (umol ", m^-2, s^-1, ")")))+
-        ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, s^-1, ")")))+
+        xlab(expression(paste(C[a], " (", mu, "mol ", m^-2, s^-1, ")")))+
+        ylab(expression(paste(A, " (", mu, "mol "* CO[2], " ", m^-2, s^-1, ")")))+
         scale_fill_manual(name="Position",
                           limits=c("12345", "345", "45", "up", "low"),
                           values=c("blue2", "red3", "purple", "orange", "green"),
@@ -258,8 +258,8 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
               legend.position="none",
               legend.box = 'vertical',
               legend.box.just = 'left')+
-        xlab(expression(paste(C[a]* " (umol ", m^-2, s^-1, ")")))+
-        ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, s^-1, ")")))+
+        xlab(expression(paste(C[a], " (", mu, "mol ", m^-2, s^-1, ")")))+
+        ylab(expression(paste(A, " (", mu, "mol "* CO[2], " ", m^-2, s^-1, ")")))+
         scale_fill_manual(name="Position",
                           limits=c("12345", "345", "45", "up", "low"),
                           values=c("blue2", "red3", "purple", "orange", "green"),
@@ -295,8 +295,8 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
               legend.position="none",
               legend.box = 'vertical',
               legend.box.just = 'left')+
-        xlab(expression(paste(C[a]* " (umol ", m^-2, s^-1, ")")))+
-        ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, s^-1, ")")))+
+        xlab(expression(paste(C[a], " (", mu, "mol ", m^-2, s^-1, ")")))+
+        ylab(expression(paste(A, " (", mu, "mol "* CO[2], " ", m^-2, s^-1, ")")))+
         scale_fill_manual(name="Position",
                           limits=c("12345", "345", "45", "up", "low"),
                           values=c("blue2", "red3", "purple", "orange", "green"),
@@ -332,8 +332,8 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
               legend.position="none",
               legend.box = 'vertical',
               legend.box.just = 'left')+
-        xlab(expression(paste(C[a]* " (umol ", m^-2, s^-1, ")")))+
-        ylab(expression(paste(A* " (umol "* CO[2], " ", m^-2, s^-1, ")")))+
+        xlab(expression(paste(C[a], " (", mu, "mol ", m^-2, s^-1, ")")))+
+        ylab(expression(paste(A, " (", mu, "mol "* CO[2], " ", m^-2, s^-1, ")")))+
         scale_fill_manual(name="Position",
                           limits=c("12345", "345", "45", "up", "low"),
                           values=c("blue2", "red3", "purple", "orange", "green"),

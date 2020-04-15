@@ -226,7 +226,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p3 <- ggplot(inDF[inDF$Chamber==1,], aes(x=time_elapsed, y=Revised_CO2_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x="Time", y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        labs(x="Time", y=expression(paste(CO[2], " flux (", mu, "mol ", m^-2, " ", s^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -246,7 +246,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p4 <- ggplot(inDF[inDF$Chamber==2,], aes(x=time_elapsed, y=Revised_CO2_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x="Time", y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        labs(x="Time", y=expression(paste(CO[2], " flux (", mu, "mol ", m^-2, " ", s^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -266,7 +266,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p5 <- ggplot(inDF[inDF$Chamber==3,], aes(x=time_elapsed, y=Revised_CO2_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x="Time", y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        labs(x="Time", y=expression(paste(CO[2], " flux (", mu, "mol ", m^-2, " ", s^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -287,7 +287,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p6 <- ggplot(inDF[inDF$Chamber==4,], aes(x=time_elapsed, y=Revised_CO2_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x="Time", y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        labs(x="Time", y=expression(paste(CO[2], " flux (", mu, "mol ", m^-2, " ", s^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -307,7 +307,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p7 <- ggplot(inDF[inDF$Chamber==7,], aes(x=time_elapsed, y=Revised_CO2_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x="Time", y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        labs(x="Time", y=expression(paste(CO[2], " flux (", mu, "mol ", m^-2, " ", s^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -327,7 +327,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p8 <- ggplot(inDF[inDF$Chamber==8,], aes(x=time_elapsed, y=Revised_CO2_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x="Time", y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        labs(x="Time", y=expression(paste(CO[2], " flux (", mu, "mol ", m^-2, " ", s^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -347,7 +347,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p9 <- ggplot(inDF[inDF$Chamber==11,], aes(x=time_elapsed, y=Revised_CO2_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x="Time", y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        labs(x="Time", y=expression(paste(CO[2], " flux (", mu, "mol ", m^-2, " ", s^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -367,7 +367,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p10 <- ggplot(inDF[inDF$Chamber==12,], aes(x=time_elapsed, y=Revised_CO2_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x="Time", y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        labs(x="Time", y=expression(paste(CO[2], " flux (", mu, "mol ", m^-2, " ", s^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -404,7 +404,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p3 <- ggplot(inDF[inDF$Chamber==1,], aes(x=WTC_CO2, y=Norm_corr_CO2_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (", mu, "mol ", m^-2, " ", s^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -424,7 +424,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p4 <- ggplot(inDF[inDF$Chamber==2,], aes(x=WTC_CO2, y=Norm_corr_CO2_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (", mu, "mol ", m^-2, " ", s^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -444,7 +444,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p5 <- ggplot(inDF[inDF$Chamber==3,], aes(x=WTC_CO2, y=Norm_corr_CO2_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (", mu, "mol ", m^-2, " ", s^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -465,7 +465,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p6 <- ggplot(inDF[inDF$Chamber==4,], aes(x=WTC_CO2, y=Norm_corr_CO2_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (", mu, "mol ", m^-2, " ", s^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -485,7 +485,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p7 <- ggplot(inDF[inDF$Chamber==7,], aes(x=WTC_CO2, y=Norm_corr_CO2_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (", mu, "mol ", m^-2, " ", s^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -505,7 +505,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p8 <- ggplot(inDF[inDF$Chamber==8,], aes(x=WTC_CO2, y=Norm_corr_CO2_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (", mu, "mol ", m^-2, " ", s^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -525,7 +525,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p9 <- ggplot(inDF[inDF$Chamber==11,], aes(x=WTC_CO2, y=Norm_corr_CO2_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (", mu, "mol ", m^-2, " ", s^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -545,7 +545,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p10 <- ggplot(inDF[inDF$Chamber==12,], aes(x=WTC_CO2, y=Norm_corr_CO2_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (umol ", m^-2, " ", s^-1, ")")))+
+        labs(x=expression(CO[2], " (ppm)"), y=expression(paste(CO[2], " flux (", mu, "mol ", m^-2, " ", s^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -804,7 +804,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p1 <- ggplot(inDF, aes(RH))+
         geom_point(aes(y=Norm_H2O_flux, shape=factor(Canopy), color=factor(Chamber)), size=2.0)+
         labs(x=expression("RH (%)"),
-             y=expression(paste(H[2], "O flux (umol ", H[2], "O ", min^-1, ")")))+
+             y=expression(paste(H[2], "O flux (", mu, "mol ", H[2], "O ", min^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -825,7 +825,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     ### plot CO2 flux over time elapsed
     p2 <- ggplot(inDF, aes(time_elapsed))+
         geom_point(aes(y=Norm_H2O_flux, shape=factor(Canopy), color=factor(Chamber)), size=2.0)+
-        labs(x="Time Elapsed (s)", y=expression(paste(H[2], "O flux (umol ", H[2], "O ", min^-1, ")")))+
+        labs(x="Time Elapsed (s)", y=expression(paste(H[2], "O flux (", mu, "mol ", H[2], "O ", min^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -847,7 +847,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p3 <- ggplot(inDF[inDF$Chamber==1,], aes(x=time_elapsed, y=Norm_H2O_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x="Time", y=expression(paste(H[2], "O flux (umol ", H[2], "O ", min^-1, ")")))+
+        labs(x="Time", y=expression(paste(H[2], "O flux (", mu, "mol ", H[2], "O ", min^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -867,7 +867,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p4 <- ggplot(inDF[inDF$Chamber==2,], aes(x=time_elapsed, y=Norm_H2O_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x="Time", y=expression(paste(H[2], "O flux (umol ", H[2], "O ", min^-1, ")")))+
+        labs(x="Time", y=expression(paste(H[2], "O flux (", mu, "mol ", H[2], "O ", min^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -887,7 +887,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p5 <- ggplot(inDF[inDF$Chamber==3,], aes(x=time_elapsed, y=Norm_H2O_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x="Time", y=expression(paste(H[2], "O flux (umol ", H[2], "O ", min^-1, ")")))+
+        labs(x="Time", y=expression(paste(H[2], "O flux (", mu, "mol ", H[2], "O ", min^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -908,7 +908,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p6 <- ggplot(inDF[inDF$Chamber==4,], aes(x=time_elapsed, y=Norm_H2O_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x="Time", y=expression(paste(H[2], "O flux (umol ", H[2], "O ", min^-1, ")")))+
+        labs(x="Time", y=expression(paste(H[2], "O flux (", mu, "mol ", H[2], "O ", min^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -928,7 +928,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p7 <- ggplot(inDF[inDF$Chamber==7,], aes(x=time_elapsed, y=Norm_H2O_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x="Time", y=expression(paste(H[2], "O flux (umol ", H[2], "O ", min^-1, ")")))+
+        labs(x="Time", y=expression(paste(H[2], "O flux (", mu, "mol ", H[2], "O ", min^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -948,7 +948,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p8 <- ggplot(inDF[inDF$Chamber==8,], aes(x=time_elapsed, y=Norm_H2O_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x="Time", y=expression(paste(H[2], "O flux (umol ", H[2], "O ", min^-1, ")")))+
+        labs(x="Time", y=expression(paste(H[2], "O flux (", mu, "mol ", H[2], "O ", min^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -968,7 +968,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p9 <- ggplot(inDF[inDF$Chamber==11,], aes(x=time_elapsed, y=Norm_H2O_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x="Time", y=expression(paste(H[2], "O flux (umol ", H[2], "O ", min^-1, ")")))+
+        labs(x="Time", y=expression(paste(H[2], "O flux (", mu, "mol ", H[2], "O ", min^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -988,7 +988,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     p10 <- ggplot(inDF[inDF$Chamber==12,], aes(x=time_elapsed, y=Norm_H2O_flux, color=factor(Canopy)))+
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
-        labs(x="Time", y=expression(paste(H[2], "O flux (umol ", H[2], "O ", min^-1, ")")))+
+        labs(x="Time", y=expression(paste(H[2], "O flux (", mu, "mol ", H[2], "O ", min^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -1026,7 +1026,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
         labs(x=expression(CO[2], " (ppm)"), 
-             y=expression(paste(H[2], "O flux (umol ", H[2], "O ", min^-1, ")")))+
+             y=expression(paste(H[2], "O flux (", mu, "mol ", H[2], "O ", min^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -1047,7 +1047,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
         labs(x=expression(CO[2], " (ppm)"), 
-             y=expression(paste(H[2], "O flux (umol ", H[2], "O ", min^-1, ")")))+
+             y=expression(paste(H[2], "O flux (", mu, "mol ", H[2], "O ", min^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -1068,7 +1068,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
         labs(x=expression(CO[2], " (ppm)"), 
-             y=expression(paste(H[2], "O flux (umol ", H[2], "O ", min^-1, ")")))+
+             y=expression(paste(H[2], "O flux (", mu, "mol ", H[2], "O ", min^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -1090,7 +1090,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
         labs(x=expression(CO[2], " (ppm)"), 
-             y=expression(paste(H[2], "O flux (umol ", H[2], "O ", min^-1, ")")))+
+             y=expression(paste(H[2], "O flux (", mu, "mol ", H[2], "O ", min^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -1111,7 +1111,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
         labs(x=expression(CO[2], " (ppm)"), 
-             y=expression(paste(H[2], "O flux (umol ", H[2], "O ", min^-1, ")")))+
+             y=expression(paste(H[2], "O flux (", mu, "mol ", H[2], "O ", min^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -1132,7 +1132,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
         labs(x=expression(CO[2], " (ppm)"), 
-             y=expression(paste(H[2], "O flux (umol ", H[2], "O ", min^-1, ")")))+
+             y=expression(paste(H[2], "O flux (", mu, "mol ", H[2], "O ", min^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -1153,7 +1153,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
         labs(x=expression(CO[2], " (ppm)"), 
-             y=expression(paste(H[2], "O flux (umol ", H[2], "O ", min^-1, ")")))+
+             y=expression(paste(H[2], "O flux (", mu, "mol ", H[2], "O ", min^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
@@ -1174,7 +1174,7 @@ canopy_data_per_second_check_and_plot <- function(inDF){
         geom_point(size=2.0)+
         geom_smooth(se=TRUE, method="gam", formula = y~s(x))+
         labs(x=expression(CO[2], " (ppm)"), 
-             y=expression(paste(H[2], "O flux (umol ", H[2], "O ", min^-1, ")")))+
+             y=expression(paste(H[2], "O flux (", mu, "mol ", H[2], "O ", min^-1, ")")))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_text(size=14), 
