@@ -22,9 +22,17 @@ canopy_data_control <- function(myDF) {
     #with(tDF2, plot(WTC_CO2~time))
     
     ### Chamber 2, 45
-    tDF1 <- subset(myDF, Chamber=="2"&Canopy=="45"&date=="2009-03-18"&WTC_CO2>=700)
-    tDF2 <- subset(myDF, Chamber=="2"&Canopy=="45"&date=="2009-03-20"&WTC_CO2<=700)
+    tDF1 <- subset(myDF, Chamber=="2"&Canopy=="45"&date=="2009-03-18"&Norm_corr_CO2_flux<=12)
+    with(tDF1, plot(Norm_corr_CO2_flux~WTC_CO2))
+    
+    tDF2 <- subset(myDF, Chamber=="2"&Canopy=="45"&date=="2009-03-20")
+    with(tDF2, plot(Norm_corr_CO2_flux~WTC_CO2))
+    
+    #tDF1 <- subset(myDF, Chamber=="2"&Canopy=="45"&date=="2009-03-18"&WTC_CO2>=700)
+    #tDF2 <- subset(myDF, Chamber=="2"&Canopy=="45"&date=="2009-03-20"&WTC_CO2<=700)
     tDF3 <- rbind(tDF1, tDF2)
+    with(tDF3, plot(Norm_corr_CO2_flux~WTC_CO2))
+    
     
     # new date starts on nd row
     nd <- length(tDF1$Chamber)+1

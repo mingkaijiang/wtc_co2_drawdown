@@ -116,8 +116,8 @@ processing_canopy_data <- function(leafDF) {
     ### check canopy data structure
     #canopy_data_check_and_plot(myDF)
     
-    ### time series data correction to control for breaks in the dataseries
-    myDF <- canopy_data_control(myDF)
+    ### only delete outliers, keep all date information
+    myDF <- canopy_data_control_basic(myDF)
     
     ### Calculate CO2 flux for each minute and output in the unit of ppm CO2 min-1
     ### also delete some unstable data points (mostly earlier period of the experiments)
