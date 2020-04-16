@@ -135,16 +135,16 @@ processing_canopy_data <- function(leafDF) {
     outDF <- calculate_transpiration_flux(myDF)
 
     ### calculate gs
-    outDF$gs <- outDF$Norm_H2O_flux / outDF$VPD
+    outDF$gs1 <- outDF$Norm_H2O_flux / outDF$VPD
     
-    outDF <- subset(outDF, gs > 0)
+    outDF <- subset(outDF, gs1 > 0)
     
     ### read in leaf-scale g1 value to represent canopy g1
     ### i.e. assuming same g1 value for leaf and canopy
     outDF <- add_leaf_g1_to_canopy_data(leafDF=leafDF, canopyDF=outDF)
     
     ### alterantive way of calculating gs
-    outDF$gs2 <- (1+(outDF$G1/sqrt(outDF$VPD))) * (outDF$Norm_corr_CO2_flux/outDF$WTC_CO2)
+    outDF$gs <- (1+(outDF$G1/sqrt(outDF$VPD))) * (outDF$Norm_corr_CO2_flux/outDF$WTC_CO2)
     
     ### alternative way of calculating water transpiration flux
     outDF$Norm_H2O_flux2 <- outDF$Norm_corr_CO2_flux * (outDF$G1*sqrt(outDF$VPD) + outDF$VPD) / outDF$WTC_CO2
