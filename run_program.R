@@ -76,7 +76,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment(cDF=canopyDF)
 
 ############################# Roger 2017 results ######################
 ###
-
+plot_roger_2017_model_result_comparison()
 
 
 
