@@ -11,20 +11,20 @@ canopy_data_control_basic <- function(myDF) {
 
     
     ### testing script
-    tDF1 <- subset(outDF, Chamber=="12"&Canopy=="45")
-    unique(tDF1$date)
-    with(tDF1, plot(Norm_corr_CO2_flux~WTC_CO2))
-    
-    tDF2 <- subset(tDF1, WTC_CO2<350)
-    with(tDF2, plot(Norm_corr_CO2_flux~WTC_CO2))
-    
-    
-    tDF3 <- subset(tDF1, WTC_CO2>=350&Norm_corr_CO2_flux>=6)
-    with(tDF3, plot(Norm_corr_CO2_flux~WTC_CO2))
-    
-    tDF4 <- rbind(tDF2, tDF3)
-    with(tDF4, plot(Norm_corr_CO2_flux~WTC_CO2))
-    tDF5 <- subset(tDF4, WTC_CO2<1600)
+    #tDF1 <- subset(outDF, Chamber=="12"&Canopy=="45")
+    #unique(tDF1$date)
+    #with(tDF1, plot(Norm_corr_CO2_flux~WTC_CO2))
+    #
+    #tDF2 <- subset(tDF1, WTC_CO2<350)
+    #with(tDF2, plot(Norm_corr_CO2_flux~WTC_CO2))
+    #
+    #
+    #tDF3 <- subset(tDF1, WTC_CO2>=350&Norm_corr_CO2_flux>=6)
+    #with(tDF3, plot(Norm_corr_CO2_flux~WTC_CO2))
+    #
+    #tDF4 <- rbind(tDF2, tDF3)
+    #with(tDF4, plot(Norm_corr_CO2_flux~WTC_CO2))
+    #tDF5 <- subset(tDF4, WTC_CO2<1600)
     
     
     

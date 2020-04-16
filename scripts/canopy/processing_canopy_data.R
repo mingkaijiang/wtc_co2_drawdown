@@ -121,13 +121,13 @@ processing_canopy_data <- function(leafDF) {
     
     ### Calculate CO2 flux for each minute and output in the unit of ppm CO2 min-1
     ### also delete some unstable data points (mostly earlier period of the experiments)
-    myDF <- calculate_co2_flux_per_second(myDF)
+    #myDF <- calculate_co2_flux_per_second(myDF)
 
     ### continue cleaning data
     ### remove missing data points
     myDF$Norm_corr_CO2_flux <- as.numeric(myDF$Norm_corr_CO2_flux)
     #myDF <- myDF[complete.cases(myDF$Norm_corr_CO2_flux), ]
-    myDF <- manually_delete_unreasonable_data(myDF)
+    #myDF <- manually_delete_unreasonable_data(myDF)
     
     
     ########################  add transpiration to get Ci ###########################
