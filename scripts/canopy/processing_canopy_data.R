@@ -136,15 +136,14 @@ processing_canopy_data <- function(leafDF) {
 
     ### calculate gs
     outDF$gs1 <- outDF$Norm_H2O_flux / outDF$VPD
-    
-    outDF <- subset(outDF, gs1 > 0)
-    
+
     ### read in leaf-scale g1 value to represent canopy g1
     ### i.e. assuming same g1 value for leaf and canopy
     outDF <- add_leaf_g1_to_canopy_data(leafDF=leafDF, canopyDF=outDF)
     
     ### alterantive way of calculating gs
     outDF$gs <- (1+(outDF$G1/sqrt(outDF$VPD))) * (outDF$Norm_corr_CO2_flux/outDF$WTC_CO2)
+    outDF <- subset(outDF, gs > 0)
     
     ### alternative way of calculating water transpiration flux
     outDF$Norm_H2O_flux2 <- outDF$Norm_corr_CO2_flux * (outDF$G1*sqrt(outDF$VPD) + outDF$VPD) / outDF$WTC_CO2
@@ -154,6 +153,10 @@ processing_canopy_data <- function(leafDF) {
     
     ### plotting CO2 and H2O flux at per second rate for each chamber
     canopy_data_per_second_check_and_plot(inDF=outDF)
+    
+    
+    ### filter according to PAR
+    outDF <- subset(outDF, WTC_PAR >= 1000)
     
     
     ### return output

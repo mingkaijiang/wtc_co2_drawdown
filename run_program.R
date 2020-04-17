@@ -61,7 +61,7 @@ canopy_aciDF <- canopy_ACI_processing(cDF=canopyDF)
 ############################# leaf & canopy result comparison ######################
 ####### Plot A-CA at each chamber, compare the shape of the curves
 ### need to go into function to plot
-cDF=canopyDF
+cDF <- canopyDF
 
 ### all data
 plot_A_Ca_for_leaf_and_canopy_data(cDF=canopyDF)

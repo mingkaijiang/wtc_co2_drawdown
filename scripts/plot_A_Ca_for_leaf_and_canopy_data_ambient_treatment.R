@@ -169,15 +169,77 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     dev.off()    
     
     
+    ## plot
+    p2 <- ggplot() +
+      geom_point(data=subDF, aes(Ci, Photo, 
+                                 fill=as.factor(Position), 
+                                 pch = as.factor(Source)), alpha=0.6)+
+      geom_smooth(data=subDF, aes(Ci, Photo, group=Position,
+                                  col=as.factor(Position)),
+                  method = "lm", formula = y ~ x, se=T)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="bottom",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab(expression(paste(C[i], " (", mu, "mol ", m^-2, " ", s^-1, ")")))+
+      ylab(expression(paste(A, " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      scale_fill_manual(name="Position",
+                        limits=c("12345", "345", "45", "up", "low"),
+                        values=c("blue2", "red3", "purple", "orange", "green"),
+                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_color_manual(name="Position",
+                         limits=c("12345", "345", "45", "up", "low"),
+                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
+                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_shape_manual(name="Measurements",
+                         values=c(21, 24),
+                         labels=c("Canopy", "Leaf"))+
+      #xlim(0,650)+
+      ylim(-5,40)+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+    
+    
+    ### output
+    pdf("output/A-Ca/ambient_A-Ci_plot_Ca_400_600_ppm.pdf", width=8, height=8)
+    plot(p2)
+    dev.off()    
+    
+    
     
     ################################# plot A-Ci for ambient #################################
     ##### preparing acifit
     #### the fit TPU function makes it long to run!
-    fits.ch01 <- fitacis(ch01DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=F)
-    fits.ch03 <- fitacis(ch03DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=F)
-    fits.ch11 <- fitacis(ch11DF, group="Position", fitmethod="bilinear", Tcorrect=T, fitTPU=F)
+    fits.ch01 <- fitacis(ch01DF, group="Position", varnames = list(ALEAF="Photo",
+                                                                   Tleaf="Tleaf", 
+                                                                   Ci = "Ci",
+                                                                   PPFD="PAR"),
+                         fitmethod="bilinear", Tcorrect=T, fitTPU=F)
+    
+    coef(fits.ch01)
+    test <- subset(ch01DF, Position="12345")
+    min(test$Photo)
+    
+    fits.ch03 <- fitacis(ch03DF, group="Position", varnames = list(ALEAF="Photo",
+                                                                   Tleaf="Tleaf", 
+                                                                   Ci = "Ci",
+                                                                   PPFD="PAR"),
+                         fitmethod="bilinear", Tcorrect=T, fitTPU=F)
+    
+    fits.ch11 <- fitacis(ch11DF, group="Position", varnames = list(ALEAF="Photo",
+                                                                   Tleaf="Tleaf", 
+                                                                   Ci = "Ci",
+                                                                   PPFD="PAR"),
+                         fitmethod="bilinear", Tcorrect=T, fitTPU=F)
 
-
+    
     ## pdf
     pdf("output/A-Ca/ambient_A-Ci_plots.pdf", width=14, height=14)
     par(mfrow=c(5,3),mar=c(2,2,4,1),oma = c(4, 6, 0, 0))
@@ -189,30 +251,30 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     ### first row
     plot(fits.ch01[[5]],lwd=3, col=alpha("black",0.6), pch=21, main="Leaves: up", cex.main=title.size,
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(280), lwd=2, lty=c(3))
+    abline(v=c(320), lwd=2, lty=c(3))
 
     plot(fits.ch03[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
          xlim=c(0, 1600), ylim=c(ymin, ymax), addlegend=F)
-    abline(v=c(280), lwd=2, lty=c(3))
+    abline(v=c(320), lwd=2, lty=c(3))
     
     
     plot(fits.ch11[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
          xlim=c(0, 1600), ylim=c(ymin, ymax), addlegend=F)
-    abline(v=c(280), lwd=2, lty=c(3))
+    abline(v=c(320), lwd=2, lty=c(3))
     
     
     ### second row
     plot(fits.ch01[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, main="Leaves: low", cex.main=title.size,
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(280), lwd=2, lty=c(3))
+    abline(v=c(320), lwd=2, lty=c(3))
     
     plot(fits.ch03[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(280), lwd=2, lty=c(3))
+    abline(v=c(320), lwd=2, lty=c(3))
     
     plot(fits.ch11[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(280), lwd=2, lty=c(3))
+    abline(v=c(320), lwd=2, lty=c(3))
     
 
     ### third row
@@ -220,44 +282,44 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     
     plot(fits.ch01[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, main="Canopy: whole", cex.main=title.size,
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(280), lwd=2, lty=c(3))
+    abline(v=c(320), lwd=2, lty=c(3))
     
     plot(fits.ch03[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(280), lwd=2, lty=c(3))
+    abline(v=c(320), lwd=2, lty=c(3))
     
     plot(fits.ch11[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(280), lwd=2, lty=c(3))
+    abline(v=c(320), lwd=2, lty=c(3))
     
     
     ### fourth row
     plot(fits.ch01[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,main="Canopy: T+M", cex.main=title.size,
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(280), lwd=2, lty=c(3))
+    abline(v=c(320), lwd=2, lty=c(3))
     
     plot(fits.ch03[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(280), lwd=2, lty=c(3))
+    abline(v=c(320), lwd=2, lty=c(3))
     
     plot(fits.ch11[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(280), lwd=2, lty=c(3))
+    abline(v=c(320), lwd=2, lty=c(3))
     
     
     ### fifth row
     plot(fits.ch01[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, main="Canopy: top", cex.main=title.size,
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(280), lwd=2, lty=c(3))
+    abline(v=c(320), lwd=2, lty=c(3))
 
     plot(fits.ch03[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(280), lwd=2, lty=c(3))
+    abline(v=c(320), lwd=2, lty=c(3))
     
     
     plot(fits.ch11[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
          xlim=c(0, 1600), ylim=c(ymin, ymax))
-    abline(v=c(280), lwd=2, lty=c(3))
+    abline(v=c(320), lwd=2, lty=c(3))
     
     # print the overall labels
     mtext(expression(C[i] * " (ppm)"), side = 1, outer = TRUE, line = 2, cex=2)
