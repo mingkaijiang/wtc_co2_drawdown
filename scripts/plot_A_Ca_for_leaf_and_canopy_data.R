@@ -53,12 +53,12 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
     
     ## plot
     p1 <- ggplot() +
-        geom_smooth(data=ch01DF, aes(Ca, Photo, group=ch01DF$Source,
-                                     col=as.factor(ch01DF$Source)),
+        geom_smooth(data=ch01DF, aes(Ca, Photo, group=Source,
+                                     col=as.factor(Source)),
                     method = "lm", formula = y ~ splines::bs(x, 3))+
         geom_point(data=ch01DF, aes(Ca, Photo, 
-                                    fill=as.factor(ch01DF$Position), 
-                                    pch = as.factor(ch01DF$Source)))+
+                                    fill=as.factor(Position), 
+                                    pch = as.factor(Source)))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
@@ -92,12 +92,12 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
     #plot(p1)
     
     p2 <- ggplot() +
-        geom_smooth(data=ch02DF, aes(Ca, Photo, group=ch02DF$Source,
-                                     col=as.factor(ch02DF$Source)),
+        geom_smooth(data=ch02DF, aes(Ca, Photo, group=Source,
+                                     col=as.factor(Source)),
                     method = "lm", formula = y ~ splines::bs(x, 3))+
         geom_point(data=ch02DF, aes(Ca, Photo, 
-                                    fill=as.factor(ch02DF$Position), 
-                                    pch = as.factor(ch02DF$Source)))+
+                                    fill=as.factor(Position), 
+                                    pch = as.factor(Source)))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
@@ -129,12 +129,12 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
                            labels=c("Canopy", "Leaf"))
     
     p3 <- ggplot() +
-        geom_smooth(data=ch03DF, aes(Ca, Photo, group=ch03DF$Source,
-                                     col=as.factor(ch03DF$Source)),
+        geom_smooth(data=ch03DF, aes(Ca, Photo, group=Source,
+                                     col=as.factor(Source)),
                     method = "lm", formula = y ~ splines::bs(x, 3))+
         geom_point(data=ch03DF, aes(Ca, Photo, 
-                                    fill=as.factor(ch03DF$Position), 
-                                    pch = as.factor(ch03DF$Source)))+
+                                    fill=as.factor(Position), 
+                                    pch = as.factor(Source)))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
@@ -166,12 +166,12 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
                            labels=c("Canopy", "Leaf"))
     
     p4 <- ggplot() +
-        geom_smooth(data=ch04DF, aes(Ca, Photo, group=ch04DF$Source,
-                                     col=as.factor(ch04DF$Source)),
+        geom_smooth(data=ch04DF, aes(Ca, Photo, group=Source,
+                                     col=as.factor(Source)),
                     method = "lm", formula = y ~ splines::bs(x, 3))+
         geom_point(data=ch04DF, aes(Ca, Photo, 
-                                    fill=as.factor(ch04DF$Position), 
-                                    pch = as.factor(ch04DF$Source)))+
+                                    fill=as.factor(Position), 
+                                    pch = as.factor(Source)))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
@@ -203,12 +203,12 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
                            labels=c("Canopy", "Leaf"))
     
     p5 <- ggplot() +
-        geom_smooth(data=ch07DF, aes(Ca, Photo, group=ch07DF$Source,
-                                     col=as.factor(ch07DF$Source)),
+        geom_smooth(data=ch07DF, aes(Ca, Photo, group=Source,
+                                     col=as.factor(Source)),
                     method = "lm", formula = y ~ splines::bs(x, 3))+
         geom_point(data=ch07DF, aes(Ca, Photo, 
-                                    fill=as.factor(ch07DF$Position), 
-                                    pch = as.factor(ch07DF$Source)))+
+                                    fill=as.factor(Position), 
+                                    pch = as.factor(Source)))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
@@ -240,12 +240,12 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
                            labels=c("Canopy", "Leaf"))
     
     p6 <- ggplot() +
-        geom_smooth(data=ch08DF, aes(Ca, Photo, group=ch08DF$Source,
-                                     col=as.factor(ch08DF$Source)),
+        geom_smooth(data=ch08DF, aes(Ca, Photo, group=Source,
+                                     col=as.factor(Source)),
                     method = "lm", formula = y ~ splines::bs(x, 3))+
         geom_point(data=ch08DF, aes(Ca, Photo, 
-                                    fill=as.factor(ch08DF$Position), 
-                                    pch = as.factor(ch08DF$Source)))+
+                                    fill=as.factor(Position), 
+                                    pch = as.factor(Source)))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
@@ -277,12 +277,12 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
                            labels=c("Canopy", "Leaf"))
     
     p7 <- ggplot() +
-        geom_smooth(data=ch11DF, aes(Ca, Photo, group=ch11DF$Source,
-                                     col=as.factor(ch11DF$Source)),
+        geom_smooth(data=ch11DF, aes(Ca, Photo, group=Source,
+                                     col=as.factor(Source)),
                     method = "lm", formula = y ~ splines::bs(x, 3))+
         geom_point(data=ch11DF, aes(Ca, Photo, 
-                                    fill=as.factor(ch11DF$Position), 
-                                    pch = as.factor(ch11DF$Source)))+
+                                    fill=as.factor(Position), 
+                                    pch = as.factor(Source)))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
@@ -314,12 +314,12 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
                            labels=c("Canopy", "Leaf"))
     
     p8 <- ggplot() +
-        geom_smooth(data=ch12DF, aes(Ca, Photo, group=ch12DF$Source,
-                                     col=as.factor(ch12DF$Source)),
+        geom_smooth(data=ch12DF, aes(Ca, Photo, group=Source,
+                                     col=as.factor(Source)),
                     method = "lm", formula = y ~ splines::bs(x, 3))+
         geom_point(data=ch12DF, aes(Ca, Photo, 
-                                    fill=as.factor(ch12DF$Position), 
-                                    pch = as.factor(ch12DF$Source)))+
+                                    fill=as.factor(Position), 
+                                    pch = as.factor(Source)))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
@@ -364,4 +364,4 @@ plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
     plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
     dev.off()    
     
-  }
+}

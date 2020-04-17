@@ -223,10 +223,6 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
                                                                    PPFD="PAR"),
                          fitmethod="bilinear", Tcorrect=T, fitTPU=F)
     
-    coef(fits.ch01)
-    test <- subset(ch01DF, Position="12345")
-    min(test$Photo)
-    
     fits.ch03 <- fitacis(ch03DF, group="Position", varnames = list(ALEAF="Photo",
                                                                    Tleaf="Tleaf", 
                                                                    Ci = "Ci",
@@ -384,7 +380,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
-            legend.position="bone",
+            legend.position="none",
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
@@ -419,7 +415,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
-            legend.position="bone",
+            legend.position="none",
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
@@ -454,7 +450,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
-            legend.position="bone",
+            legend.position="none",
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
@@ -489,7 +485,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
-            legend.position="bone",
+            legend.position="none",
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
@@ -523,7 +519,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
-            legend.position="bone",
+            legend.position="none",
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
@@ -558,7 +554,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
-            legend.position="bone",
+            legend.position="none",
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
@@ -728,7 +724,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
-            legend.position="bone",
+            legend.position="none",
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
@@ -764,7 +760,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
-            legend.position="bone",
+            legend.position="none",
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
@@ -800,7 +796,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
-            legend.position="bone",
+            legend.position="none",
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
@@ -836,7 +832,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
-            legend.position="bone",
+            legend.position="none",
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
@@ -872,7 +868,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
-            legend.position="bone",
+            legend.position="none",
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
@@ -908,7 +904,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
-            legend.position="bone",
+            legend.position="none",
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
