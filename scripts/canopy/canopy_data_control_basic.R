@@ -1,9 +1,4 @@
 canopy_data_control_basic <- function(myDF) {
-    ### smooth Canopy time series data 
-    ### Chamber 2: top Canopy
-    ### Chamber 4: top + middle
-    ### Chamber 8: all
-    ### Chamber 12: top + middle
     
     ### Canopy code: 12345 full 
     ###              345 top + middle
@@ -11,9 +6,9 @@ canopy_data_control_basic <- function(myDF) {
 
     
     ### testing script
-    #tDF1 <- subset(myDF, Chamber=="1"&Canopy=="345"&WTC_CO2>100)
-    #unique(tDF1$date)
-    #with(tDF1, plot(Norm_corr_CO2_flux~WTC_CO2))
+    tDF1 <- subset(myDF, Chamber=="11"&Canopy=="45"&WTC_CO2<1400)
+    unique(tDF1$date)
+    with(tDF1, plot(Norm_corr_CO2_flux~WTC_CO2))
     #
     #tDF2 <- subset(tDF1, WTC_CO2<800&Norm_corr_CO2_flux<7)
     #with(tDF2, plot(Norm_corr_CO2_flux~WTC_CO2))
@@ -66,7 +61,7 @@ canopy_data_control_basic <- function(myDF) {
     outDF <- rbind(outDF, subDF)
     
     ### Chamber 3, canopy 45, delete outliers
-    subDF <- subset(outDF, Chamber=="3"&Canopy=="45"&WTC_CO2<=1650)
+    subDF <- subset(outDF, Chamber=="3"&Canopy=="45"&WTC_CO2<=1550&Norm_corr_CO2_flux<=14)
     outDF <- subset(outDF, Chamber!="3"|Canopy!="45")
     outDF <- rbind(outDF, subDF)
     
@@ -133,7 +128,7 @@ canopy_data_control_basic <- function(myDF) {
     
     
     ### Chamber 11, 45
-    subDF <- subset(outDF, Chamber=="11"&Canopy=="45"&WTC_CO2<=1300)
+    subDF <- subset(outDF, Chamber=="11"&Canopy=="45"&WTC_CO2<=1400)
     outDF <- subset(outDF, Chamber!="11"|Canopy!="45")
     outDF <- rbind(outDF, subDF)
     

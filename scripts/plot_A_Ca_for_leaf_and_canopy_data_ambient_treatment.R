@@ -644,12 +644,12 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
                                                                 Rd = "Rd"),
                      Tcorrect=T, fitTPU = F)
       
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "ALEAF_400"] <- fit1$Photosyn(Ci=320)$ALEAF
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "ALEAF_600"] <- fit1$Photosyn(Ci=480)$ALEAF
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "Ac_400"] <- fit1$Photosyn(Ci=320)$Ac
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "Ac_600"] <- fit1$Photosyn(Ci=480)$Ac
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "Aj_400"] <- fit1$Photosyn(Ci=320)$Aj
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "Aj_600"] <- fit1$Photosyn(Ci=480)$Aj
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "ALEAF_400"] <- fit1$Photosyn(Ca=400)$ALEAF
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "ALEAF_600"] <- fit1$Photosyn(Ca=600)$ALEAF
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "Ac_400"] <- fit1$Photosyn(Ca=400)$Ac
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "Ac_600"] <- fit1$Photosyn(Ca=600)$Ac
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "Aj_400"] <- fit1$Photosyn(Ca=400)$Aj
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "Aj_600"] <- fit1$Photosyn(Ca=600)$Aj
     }
    
     
@@ -666,12 +666,12 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
                                                                  Rd = "Rd"),
                      Tcorrect=T, fitTPU = F)
       
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "ALEAF_400"] <- fit1$Photosyn(Ci=320)$ALEAF
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "ALEAF_600"] <- fit1$Photosyn(Ci=480)$ALEAF
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "Ac_400"] <- fit1$Photosyn(Ci=320)$Ac
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "Ac_600"] <- fit1$Photosyn(Ci=480)$Ac
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "Aj_400"] <- fit1$Photosyn(Ci=320)$Aj
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "Aj_600"] <- fit1$Photosyn(Ci=480)$Aj
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "ALEAF_400"] <- fit1$Photosyn(Ca=400)$ALEAF
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "ALEAF_600"] <- fit1$Photosyn(Ca=600)$ALEAF
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "Ac_400"] <- fit1$Photosyn(Ca=400)$Ac
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "Ac_600"] <- fit1$Photosyn(Ca=600)$Ac
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "Aj_400"] <- fit1$Photosyn(Ca=400)$Aj
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "Aj_600"] <- fit1$Photosyn(Ca=600)$Aj
     }
 
     ### ch11
@@ -687,12 +687,12 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
                                                                  Rd = "Rd"),
                      Tcorrect=T, fitTPU = F)
       
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "ALEAF_400"] <- fit1$Photosyn(Ci=320)$ALEAF
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "ALEAF_600"] <- fit1$Photosyn(Ci=480)$ALEAF
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "Ac_400"] <- fit1$Photosyn(Ci=320)$Ac
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "Ac_600"] <- fit1$Photosyn(Ci=480)$Ac
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "Aj_400"] <- fit1$Photosyn(Ci=320)$Aj
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "Aj_600"] <- fit1$Photosyn(Ci=480)$Aj
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "ALEAF_400"] <- fit1$Photosyn(Ca=400)$ALEAF
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "ALEAF_600"] <- fit1$Photosyn(Ca=600)$ALEAF
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "Ac_400"] <- fit1$Photosyn(Ca=400)$Ac
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "Ac_600"] <- fit1$Photosyn(Ca=600)$Ac
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "Aj_400"] <- fit1$Photosyn(Ca=400)$Aj
+      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "Aj_600"] <- fit1$Photosyn(Ca=600)$Aj
     }
     
     ### unnormalized sensitivity
@@ -728,7 +728,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
-      ylab(expression(paste(delta,  "A/", delta, CO[2], " (", mu, "mol ", m^-2, " ", s^-1, " ", ppm^-1, ")")))+
+      ylab(expression(paste(delta,  "A / ", delta, CO[2], " (", mu, "mol ", m^-2, " ", s^-1, " ", ppm^-1, ")")))+
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
@@ -764,7 +764,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
-      ylab(expression(paste(delta,  "A/", A[400], " (", mu, "mol ", m^-2, " ", s^-1, ")")))+
+      ylab(expression(paste(delta,  "A / ", A[400])))+
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
@@ -800,7 +800,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
-      ylab(expression(paste(delta,  A[c], "/", delta, CO[2], " (", mu, "mol ", m^-2, " ", s^-1, " ", ppm^-1, ")")))+
+      ylab(expression(paste(delta,  A[c], " / ", delta, CO[2], " (", mu, "mol ", m^-2, " ", s^-1, " ", ppm^-1, ")")))+
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
@@ -836,7 +836,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
-      ylab(expression(paste(delta,  A[c], "/", A[c400], " (", mu, "mol ", m^-2, " ", s^-1, ")")))+
+      ylab(expression(paste(delta,  A[c], " / ", A[c400])))+
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
@@ -872,7 +872,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
-      ylab(expression(paste(delta,  A[j], "/", delta, CO[2], " (", mu, "mol ", m^-2, " ", s^-1, " ", ppm^-1, ")")))+
+      ylab(expression(paste(delta,  A[j], " / ", delta, CO[2], " (", mu, "mol ", m^-2, " ", s^-1, " ", ppm^-1, ")")))+
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
@@ -908,7 +908,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
-      ylab(expression(paste(delta,  A[j], "/", A[j400], " (", mu, "mol ", m^-2, " ", s^-1, ")")))+
+      ylab(expression(paste(delta,  A[j], " / ", A[j400])))+
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
