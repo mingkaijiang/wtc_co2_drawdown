@@ -211,13 +211,18 @@ plot_roger_2017_model_result_comparison <- function() {
     
     
     ### plotting
-    p5 <- ggplot() +
-        geom_bar(data=sumDF, stat = "identity", 
-                 aes(Vcmax, Sensitivity.mean, color=Position, fill=Position), 
-                 position="dodge", alpha=0.2) +
+    p5 <- ggplot(data=sumDF, 
+                 aes(Vcmax, Sensitivity.mean)) +
+        geom_bar(stat = "identity", aes(fill=Position), 
+                 position="dodge", alpha=0.5) +
+        geom_errorbar(aes(x=Vcmax, ymin=Sensitivity.mean-Sensitivity.se, 
+                          ymax=Sensitivity.mean+Sensitivity.se, 
+                          group=as.factor(Position)), 
+                      position=position_dodge(0.9), width=0.2) +
         geom_point(data=plotDF2, 
-                   mapping=aes(x=Vcmax, y=Sensitivity, fill=Model), 
-                   size=4, position = position_dodge(0.9), col="black")+
+                   mapping=aes(x=Vcmax, y=Sensitivity, group=Position, col=Model), 
+                   size=4, 
+                   position = position_jitterdodge(0.9))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
@@ -227,14 +232,62 @@ plot_roger_2017_model_result_comparison <- function() {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="none",
+              legend.position="bottom",
               legend.box = 'vertical',
               legend.box.just = 'left')+
-        ylab(expression(paste(A, " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
-        scale_colour_colorblind()
+        ylab(expression(paste(delta * A * " / " * A[400])))+
+        scale_fill_colorblind(name="Level")+
+        scale_color_colorblind(guide=guide_legend(nrow=3))+
+        xlab("")+
+        scale_x_discrete(breaks=c("Vcmax45", "Vcmax60"),
+                         labels=c(expression(paste(V[cmax45])),
+                                  expression(paste(V[cmax60]))))+
+        ylim(0, 0.4)
+    
+    ### add WTC result and compare
+    wtcDF <- read.csv("output/A-Ca/predicted_A_at_Ci_400_600_ppm.csv")
+    
+    sumDF2 <- summaryBy(A_sens_norm~Source+Position, FUN=c(mean,se),
+                        data=wtcDF, keep.names=T, na.rm=T)
+    
+    p6 <- ggplot(data=sumDF2, 
+                 aes(Position, A_sens_norm.mean)) +
+        geom_bar(stat = "identity", aes(fill=Source, col=Position), 
+                 position="dodge", alpha=0.5) +
+        geom_errorbar(aes(x=Position, ymin=A_sens_norm.mean-A_sens_norm.se, 
+                          ymax=A_sens_norm.mean+A_sens_norm.se, 
+                          group=as.factor(Position)), 
+                      position=position_dodge(0.9), width=0.2) +
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.text.x=element_text(size=12),
+              axis.title.x=element_text(size=14),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="bottom",
+              legend.box = 'vertical',
+              legend.box.just = 'left')+
+        ylab(expression(paste(delta * A * " / " * A[400])))+
+        scale_fill_colorblind(name="Level")+
+        scale_color_colorblind(name="Position",
+                               breaks=c("12345", "345", "45", "low", "up"),
+                               labels=c("Whole", "T+M", "T", "Low", "Up"),
+                               guide=guide_legend(nrow=3))+
+        xlab("")+
+        scale_x_discrete(breaks=c("12345", "345", "45", "low", "up"),
+                         labels=c("Whole", "T+M", "T", "Low", "Up"))+
+        ylim(0, 0.4)
+    
+    #plot(p6)
     
     
-    plot(p5)
+    pdf("output/A-Ca/Roger_model_sensitivity.pdf", width=8, height=6)
+    plot_grid(p5, p6, labels="", ncol=2, align="v", axis = "l")
+    dev.off()
+    
     
     
     
