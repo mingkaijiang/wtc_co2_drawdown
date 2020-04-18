@@ -2,17 +2,17 @@ plot_leaf_ACI_curves <- function(plotDF) {
     
 
     ### create pdf
-    #pdf("output/leaf/leaf_level_individual_chamber_result.pdf", height=24, width=20)
-    #par(mfrow=c(6,4))
-    #
+    pdf("output/leaf/leaf_level_individual_chamber_result.pdf", height=24, width=20)
+    par(mfrow=c(6,4))
+    
     ### make plot
-    #plot.sequence <- c(1,9,12,15,2,11,14,17,6,4,21,19,10,24,16,13,5,8,20,22, 3,7,18)
-    #for (i in 1:length(plot.sequence)) {
-    #    plot(outlist[[plot.sequence[i]]], main=paste0(plotDF$Chamber[plot.sequence[i]], ", ", plotDF$Height[plot.sequence[i]], ", ",
-    #                                                  plotDF$CO2_treatment[plot.sequence[i]], ", ", plotDF$Water_treatment[plot.sequence[i]]))
-    #}
-    #
-    #dev.off()
+    plot.sequence <- c(1,9,12,15,2,11,14,17,6,4,21,19,10,24,16,13,5,8,20,22, 3,7,18)
+    for (i in 1:length(plot.sequence)) {
+        plot(outlist[[plot.sequence[i]]], main=paste0(plotDF$Chamber[plot.sequence[i]], ", ", plotDF$Height[plot.sequence[i]], ", ",
+                                                      plotDF$CO2_treatment[plot.sequence[i]], ", ", plotDF$Water_treatment[plot.sequence[i]]))
+    }
+    
+    dev.off()
     
     ### visually check whether Jmax, Vcmax, and JVratio change with multiple treatments
     
