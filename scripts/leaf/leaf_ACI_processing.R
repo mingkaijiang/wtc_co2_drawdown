@@ -14,30 +14,24 @@ leaf_ACI_processing <- function() {
     ###                   water treatment
     ###                   canopy location
     ###                   time
+    ## chambers 1, 3, 5, 7, 9, 11 are CO2 ambient
+    ## chambers 1, 3, 4, 6, 8, 11 are wet 
     myDF <- rbind(myDF1, myDF2)
-    myDF <- subset(myDF, chamber %in% c("ch01", "ch02", "ch03", "ch04", #"ch05", "ch06",
-                                        "ch07", "ch08", #"ch09", "ch10", 
-                                        "ch11", "ch12"))
+    myDF <- subset(myDF, chamber %in% c("ch01",  # aCO2, wet
+                                        "ch03",  # aCO2, wet
+                                        "ch04",  # eCO2, wet
+                                        "ch08",  # eCO2, wet
+                                        "ch11")) # aCO2, wet
     
     myDF$year <- year(myDF$Date)
-    #myDF <- subset(myDF, year == 2009)
-    
-    ### I think we don't want to subset the dataset,
-    ### because summer 2008-9 has a drought treatment.
-    ### Plus, we would have less sample size. 
-    #myDF$Date <- as.Date(myDF$Date)
-    #myDF <- subset(myDF, Date >= "2008-10-01")
-    
+
     #### Fitting ACI curve at the finest resolution
-    fits.all <- fitacis(myDF, group="Identity", fitmethod="bilinear",Tcorrect=T, fitTPU=T)
+    fits.all <- fitacis(myDF, group="Identity", 
+                        fitmethod="bilinear",Tcorrect=T, fitTPU=F)
     
     ### fit g1 value
     names(myDF)[names(myDF) == "RH_S"] <- "RH"
     fits.bb <- fitBBs(myDF, group="Identity")
-    
-    ### plot all fittings on the same graph, looks messy
-    #plot(fits.all, how="oneplot")
-    #plot(fits.all[[1]], col="black", add=T)
     
     ### assign factors onto the dataframe
     coefDF <- coef(fits.all)
@@ -48,8 +42,6 @@ leaf_ACI_processing <- function() {
         coefDF[coefDF$Identity==i, "chamber"] <- unique(myDF[myDF$Identity==i, "chamber"])
         coefDF[coefDF$Identity==i, "Height"] <- unique(myDF[myDF$Identity==i, "Height"])
         coefDF[coefDF$Identity==i, "CO2_treatment"] <- unique(myDF[myDF$Identity==i, "CO2_treatment"])
-        #coefDF[coefDF$Identity==i, "Water_treatment"] <- unique(myDF[myDF$Identity==i, "Water_treatment"])
-        #coefDF[coefDF$Identity==i, "inside_or_outside_WTC"] <- unique(myDF[myDF$Identity==i, "inside_or_outside_WTC"])
     }
     
     
@@ -61,17 +53,10 @@ leaf_ACI_processing <- function() {
     ### calculate Ac_Aj transition Ci point
     for (i in unique(coefDF$Identity)) {
         testDF <- subset(myDF, Identity==i)
-        fit.i <- fitaci(testDF,Tcorrect=T, fitTPU=T)
+        fit.i <- fitaci(testDF,fitmethod="bilinear",Tcorrect=T, fitTPU=F)
         out <- findCiTransition(fit.i)
         coefDF[coefDF$Identity==i,"Ac_Aj"] <- out[1]
     }
-    
-    ### exclude outliers
-    #coefDF.sub <- coefDF[coefDF$JVratio <= 3, ]
-    coefDF.sub <- coefDF
-    
-    ### make a list of identify
-    id.list <- unique(coefDF.sub$Identity)
     
     ### prepare an output df
     outDF <- data.frame(id.list, NA, NA, NA, NA, NA, NA, 
@@ -82,8 +67,9 @@ leaf_ACI_processing <- function() {
     colnames(outDF) <- c("Identity", "Chamber", "CO2_treatment", "Height", "Date",
                          "RMSE", "Vcmax", "Vcmax.se", "Jmax", "Jmax.se", "Rd", "Rd.se",
                          "Ci", "ALEAF", "GS", "ELEAF", "Ac", "Aj", "Ap", "Rd2", "VPD",
-                         "Tleaf", "Ca", "Cc", "PPFD", "Ci_transition_Ac_Aj",
-                         "curve.fitting", "Patm", "GammaStar", "Km", "G1")
+                         "Tleaf", "Ca", "Cc", "PPFD", "Patm", 
+                         "Ci_transition_Ac_Aj","curve.fitting", 
+                         "GammaStar", "Km", "G1")
     
     ### the for loop
     for (i in 1:length(id.list)) {
@@ -91,7 +77,7 @@ leaf_ACI_processing <- function() {
         test <- subset(myDF, Identity == id.list[i])
         
         ## fit
-        fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU=T)
+        fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU=F)
         fit2 <- fitBB(test, gsmodel="BBOpti")
         
         
@@ -111,20 +97,20 @@ leaf_ACI_processing <- function() {
         outDF[outDF$Identity == id.list[i], "Rd"] <- fit1$pars[3,1]
         outDF[outDF$Identity == id.list[i], "Rd.se"] <- fit1$pars[3,2]
         
-        outDF[outDF$Identity == id.list[i], "Ci"] <- fit1$Photosyn()[1]
-        outDF[outDF$Identity == id.list[i], "ALEAF"] <- fit1$Photosyn()[2]
-        outDF[outDF$Identity == id.list[i], "GS"] <- fit1$Photosyn()[3]
-        outDF[outDF$Identity == id.list[i], "ELEAF"] <- fit1$Photosyn()[4]
-        outDF[outDF$Identity == id.list[i], "Ac"] <- fit1$Photosyn()[5]
-        outDF[outDF$Identity == id.list[i], "Aj"] <- fit1$Photosyn()[6]
-        outDF[outDF$Identity == id.list[i], "Ap"] <- fit1$Photosyn()[7]
-        outDF[outDF$Identity == id.list[i], "Rd2"] <- fit1$Photosyn()[8]
-        outDF[outDF$Identity == id.list[i], "VPD"] <- fit1$Photosyn()[9]
-        outDF[outDF$Identity == id.list[i], "Tleaf"] <- fit1$Photosyn()[10]
-        outDF[outDF$Identity == id.list[i], "Ca"] <- fit1$Photosyn()[11]
-        outDF[outDF$Identity == id.list[i], "Cc"] <- fit1$Photosyn()[12]
-        outDF[outDF$Identity == id.list[i], "PPFD"] <- fit1$Photosyn()[13]
-        outDF[outDF$Identity == id.list[i], "Patm"] <- fit1$Photosyn()[14]
+        outDF[outDF$Identity == id.list[i], "Ci"] <- fit1$Photosyn(Ca=400)[1]
+        outDF[outDF$Identity == id.list[i], "ALEAF"] <- fit1$Photosyn(Ca=400)[2]
+        outDF[outDF$Identity == id.list[i], "GS"] <- fit1$Photosyn(Ca=400)[3]
+        outDF[outDF$Identity == id.list[i], "ELEAF"] <- fit1$Photosyn(Ca=400)[4]
+        outDF[outDF$Identity == id.list[i], "Ac"] <- fit1$Photosyn(Ca=400)[5]
+        outDF[outDF$Identity == id.list[i], "Aj"] <- fit1$Photosyn(Ca=400)[6]
+        outDF[outDF$Identity == id.list[i], "Ap"] <- fit1$Photosyn(Ca=400)[7]
+        outDF[outDF$Identity == id.list[i], "Rd2"] <- fit1$Photosyn(Ca=400)[8]
+        outDF[outDF$Identity == id.list[i], "VPD"] <- fit1$Photosyn(Ca=400)[9]
+        outDF[outDF$Identity == id.list[i], "Tleaf"] <- fit1$Photosyn(Ca=400)[10]
+        outDF[outDF$Identity == id.list[i], "Ca"] <- fit1$Photosyn(Ca=400)[11]
+        outDF[outDF$Identity == id.list[i], "Cc"] <- fit1$Photosyn(Ca=400)[12]
+        outDF[outDF$Identity == id.list[i], "PPFD"] <- fit1$Photosyn(Ca=400)[13]
+        outDF[outDF$Identity == id.list[i], "Patm"] <- fit1$Photosyn(Ca=400)[14]
         
         outDF[outDF$Identity == id.list[i], "Ci_transition_Ac_Aj"] <- fit1$Ci_transition
         outDF[outDF$Identity == id.list[i], "GammaStar"] <- fit1$GammaStar
@@ -138,6 +124,23 @@ leaf_ACI_processing <- function() {
     
     ### save
     write.csv(outDF, "output/leaf/leaf_scale_parameters.csv", row.names=F)
+    
+    
+    
+    
+    ### create pdf
+    pdf("output/leaf/leaf_level_individual_chamber_result.pdf", height=24, width=20)
+    par(mfrow=c(8,5))
+    #1,3,11, 4, 8
+
+    ### make plot
+    for (i in 1:40) {
+        plot(fits.all[[i]], main=paste0(outDF$Chamber[i], ", ", outDF$Height[i], ", ",
+                                        outDF$CO2_treatment[i]))
+        abline(v=c(320), lwd=2, lty=3)
+    }
+    
+    dev.off()
     
     
     ### return 

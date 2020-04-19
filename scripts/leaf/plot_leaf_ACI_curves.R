@@ -1,98 +1,8 @@
 plot_leaf_ACI_curves <- function(plotDF) {
     
-
-    ### create pdf
-    pdf("output/leaf/leaf_level_individual_chamber_result.pdf", height=24, width=20)
-    par(mfrow=c(6,4))
-    
-    ### make plot
-    plot.sequence <- c(1,9,12,15,2,11,14,17,6,4,21,19,10,24,16,13,5,8,20,22, 3,7,18)
-    for (i in 1:length(plot.sequence)) {
-        plot(outlist[[plot.sequence[i]]], main=paste0(plotDF$Chamber[plot.sequence[i]], ", ", plotDF$Height[plot.sequence[i]], ", ",
-                                                      plotDF$CO2_treatment[plot.sequence[i]], ", ", plotDF$Water_treatment[plot.sequence[i]]))
-    }
-    
-    dev.off()
-    
-    ### visually check whether Jmax, Vcmax, and JVratio change with multiple treatments
-    
-    ### plot a time series of Vcmax and Jmax and JV ratio
-    #p1 <- ggplot(coefDF) +
-    #    geom_point(aes(Date, Vcmax, col=CO2_treatment, 
-    #                   pch=Water_treatment, size=as.factor(coefDF$Height)))+
-    #    theme_linedraw() +
-    #    theme(panel.grid.minor=element_blank(),
-    #          axis.title.x = element_blank(), 
-    #          axis.text.x = element_blank(),
-    #          axis.text.y=element_text(size=12),
-    #          axis.title.y=element_text(size=14),
-    #          legend.text=element_text(size=12),
-    #          legend.title=element_text(size=14),
-    #          panel.grid.major=element_blank(),
-    #          legend.position="none",
-    #          legend.text.align=0)+
-    #    ylab(expression(Vc[max]))+
-    #    scale_color_manual(limits=c("ambient", "elevated"),
-    #                       values=c("blue2", "red3"))+
-    #    scale_size_manual(name="Position",
-    #                      values=c(1,4))
-    #
-    #
-    #p2 <- ggplot(coefDF) +
-    #    geom_point(aes(Date, Jmax, col=CO2_treatment, 
-    #                   pch=Water_treatment, size=as.factor(coefDF$Height)))+
-    #    theme_linedraw() +
-    #    theme(panel.grid.minor=element_blank(),
-    #          axis.title.x = element_blank(), 
-    #          axis.text.x = element_blank(),
-    #          axis.text.y=element_text(size=12),
-    #          axis.title.y=element_text(size=14),
-    #          legend.text=element_text(size=12),
-    #          legend.title=element_text(size=14),
-    #          panel.grid.major=element_blank(),
-    #          legend.position="none",
-    #          legend.text.align=0)+
-    #    ylab(expression(J[max]))+
-    #    scale_color_manual(limits=c("ambient", "elevated"),
-    #                       values=c("blue2", "red3"))+
-    #    scale_size_manual(name="Position",
-    #                      values=c(1,4))
-    #
-    #p3 <- ggplot(coefDF) +
-    #    geom_point(aes(Date, JVratio, col=CO2_treatment, 
-    #                   pch=Water_treatment, size=as.factor(coefDF$Height)))+
-    #    theme_linedraw() +
-    #    theme(panel.grid.minor=element_blank(),
-    #          axis.title.x = element_text(size=14), 
-    #          axis.text.x = element_text(size=12),
-    #          axis.text.y=element_text(size=12),
-    #          axis.title.y=element_text(size=14),
-    #          legend.text=element_text(size=12),
-    #          legend.title=element_text(size=14),
-    #          panel.grid.major=element_blank(),
-    #          legend.position="bottom",
-    #          legend.text.align=0)+
-    #    ylab("JV ratio")+
-    #    scale_color_manual(name=expression(paste(CO[2], " treatment")),
-    #                       limits=c("ambient", "elevated"),
-    #                       values=c("blue2", "red3"))+
-    #    scale_size_manual(name="Position",
-    #                      values=c(1,4))+
-    #    scale_shape_discrete(name="Water treatment")+
-    #    theme(legend.direction = "vertical", legend.box = "horizontal")
-    #
-    #pdf("output/leaf/leaf_flux_all_treatment_time_series_parameters.pdf", width=6, height=12)
-    #plot_grid(p1, p2, p3, rel_heights=c(1,1,1.5),
-    #          labels="AUTO", ncol=1, align="v", axis = "l")
-    #dev.off()
-    
-    
     ##### make box plot for long-term CO2 and position factors
     sumDF.co2 <- summaryBy(Vcmax + Jmax + Rd + ALEAF + GS + ELEAF + Ac + Aj +Ci_transition_Ac_Aj + GammaStar + Km ~ CO2_treatment,
                            data=plotDF, FUN = c(mean, se), keep.names=T)
-    
-    #sumDF.h2o <- summaryBy(Vcmax + Jmax + Rd + ALEAF + GS + ELEAF + Ac + Aj +Ci_transition_Ac_Aj + GammaStar + Km ~ Water_treatment,
-    #                       data=plotDF, FUN = c(mean, se), keep.names=T)
     
     sumDF.ht <- summaryBy(Vcmax + Jmax + Rd + ALEAF + GS + ELEAF + Ac + Aj +Ci_transition_Ac_Aj + GammaStar + Km ~ Height,
                           data=plotDF, FUN = c(mean, se), keep.names=T)
@@ -118,30 +28,8 @@ plot_leaf_ACI_curves <- function(plotDF) {
               panel.grid.major=element_blank(),
               legend.position="none",
               plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-        ylim(40,100)+
+        ylim(40,120)+
         ggtitle("a")
-    
-    #p2 <- ggplot(sumDF.h2o) +
-    #    geom_errorbar(aes(x=Water_treatment, ymin=(Vcmax.mean - Vcmax.se), 
-    #                      ymax = (Vcmax.mean+Vcmax.se)), position = "dodge", width=0.2)+
-    #    geom_point(aes(Water_treatment, Vcmax.mean, fill=Water_treatment), size = 10, shape=21)+
-    #    xlab("")+
-    #    ylab(expression(V[cmax]*" (umol " * m^-2 * " " * s^-1 * ")"))+
-    #    scale_fill_manual(name=expression(paste(H[2] * "O treatment")),
-    #                      limits=c("wet", "dry"),
-    #                      values=c("grey", "black"))+
-    #    theme(panel.grid.minor=element_blank(),
-    #          axis.title.x = element_blank(), 
-    #          axis.text.x = element_blank(),
-    #          axis.text.y=element_blank(), 
-    #          axis.title.y=element_blank(), 
-    #          legend.text=element_text(size=18),
-    #          legend.title=element_text(size=18),
-    #          panel.grid.major=element_blank(),
-    #          legend.position="none",
-    #          plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-    #    ylim(40,100)+
-    #    ggtitle("b")
     
     
     p2 <- ggplot(sumDF.ht) +
@@ -163,7 +51,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
               panel.grid.major=element_blank(),
               legend.position="none",
               plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-        ylim(40,100)+
+        ylim(40,120)+
         ggtitle("b")
     
     
@@ -188,30 +76,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
               plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
         ylim(50,200)+
         ggtitle("c")
-    
-    
-    #p5 <- ggplot(sumDF.h2o) +
-    #    geom_errorbar(aes(x=Water_treatment, ymin=(Jmax.mean - Jmax.se), 
-    #                      ymax = (Jmax.mean+Jmax.se)), position = "dodge", width=0.2)+
-    #    geom_point(aes(Water_treatment, Jmax.mean, fill=Water_treatment), size = 10, shape=21)+
-    #    xlab("")+
-    #    ylab(expression(J[max]*" (umol " * m^-2 * " " * s^-1 * ")"))+
-    #    scale_fill_manual(name=expression(paste(H[2] * "O treatment")),
-    #                      limits=c("wet", "dry"),
-    #                      values=c("grey", "black"))+
-    #    theme(panel.grid.minor=element_blank(),
-    #          axis.title.x = element_blank(), 
-    #          axis.text.x = element_blank(),
-    #          axis.text.y=element_blank(), 
-    #          axis.title.y=element_blank(), 
-    #          legend.text=element_text(size=18),
-    #          legend.title=element_text(size=18),
-    #          panel.grid.major=element_blank(),
-    #          legend.position="none",
-    #          plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-    #    ylim(50,150)+
-    #    ggtitle("e")
-    
+
     
     p4 <- ggplot(sumDF.ht) +
         geom_errorbar(aes(x=Height, ymin=(Jmax.mean - Jmax.se), 
@@ -255,38 +120,11 @@ plot_leaf_ACI_curves <- function(plotDF) {
               panel.grid.major=element_blank(),
               legend.position="bottom",
               plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-        ylim(200,400)+
+        ylim(150,400)+
         scale_x_discrete(breaks=c("ambient", "elevated"),
                          labels=c("ambient", "elevated"))+
         guides(fill = guide_legend(title.position = "top"))+
         ggtitle("e")
-    
-    
-    #p8 <- ggplot(sumDF.h2o) +
-    #    geom_errorbar(aes(x=Water_treatment, ymin=(Ci_transition_Ac_Aj.mean - Ci_transition_Ac_Aj.se), 
-    #                      ymax = (Ci_transition_Ac_Aj.mean+Ci_transition_Ac_Aj.se)), position = "dodge", width=0.2)+
-    #    geom_point(aes(Water_treatment, Ci_transition_Ac_Aj.mean, fill=Water_treatment), size = 10, shape=21)+
-    #    xlab("Water treatment")+
-    #    ylab(expression(C[i]*" transition point (umol " * mol^-1 * ")"))+
-    #    scale_fill_manual(name="Water treatment",
-    #                      limits=c("wet", "dry"),
-    #                      values=c("grey", "black"))+
-    #    theme(panel.grid.minor=element_blank(),
-    #          axis.title.x = element_text(size=20), 
-    #          axis.text.x = element_text(size=18),
-    #          axis.text.y=element_blank(), 
-    #          axis.title.y=element_blank(), 
-    #          legend.text=element_text(size=18),
-    #          legend.title=element_text(size=18),
-    #          panel.grid.major=element_blank(),
-    #          legend.position="bottom",
-    #          plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-    #    ylim(200,300)+
-    #    scale_x_discrete(breaks=c("wet", "dry"),
-    #                     labels=c("Watered", "Droughted"))+
-    #    guides(fill = guide_legend(title.position = "top"))+
-    #    ggtitle("h")
-    
     
     p6 <- ggplot(sumDF.ht) +
         geom_errorbar(aes(x=Height, ymin=(Ci_transition_Ac_Aj.mean - Ci_transition_Ac_Aj.se), 
@@ -307,17 +145,16 @@ plot_leaf_ACI_curves <- function(plotDF) {
               panel.grid.major=element_blank(),
               legend.position="bottom",
               plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-        ylim(200,400)+
+        ylim(150,400)+
         scale_x_discrete(breaks=c("up", "low"),
                          labels=c("Up", "Low"))+
         guides(fill = guide_legend(title.position = "top"))+
         ggtitle("g")
     
     
-    pdf("output/leaf/leaf_parameter_co2_ht_comparison.pdf", width=12, height=14)
+    pdf("output/leaf/leaf_parameter_comparison.pdf", width=12, height=14)
     plot_grid(p1, p2, p3, 
               p4, p5, p6, 
-              #p7, p8, p9, 
               rel_heights=c(1,1,1.5),
               rel_widths=c(1.2, 1, 1),
               labels="", ncol=2, align="h", axis = "l")
@@ -635,8 +472,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
               panel.grid.major=element_blank(),
               legend.position="none",
               plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-        ylim(40,120)+
-        ggtitle("a")
+        ylim(20,120)
     
     p2 <- ggplot(sumDF) +
         geom_errorbar(aes(x=Height, ymin=(Jmax.mean - Jmax.se), 
@@ -662,8 +498,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
               panel.grid.major=element_blank(),
               legend.position="none",
               plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-        ylim(50,200)+
-        ggtitle("b")
+        ylim(50,200)
     
     p3 <- ggplot(sumDF) +
         geom_errorbar(aes(x=Height, ymin=(JVratio.mean - JVratio.se), 
@@ -681,7 +516,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
                            values=c("black", "black"))+
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_blank(), 
-              axis.text.x = element_blank(),
+              axis.text.x = element_text(size=18),
               axis.text.y=element_text(size=18),
               axis.title.y=element_text(size=18),
               legend.text=element_text(size=18),
@@ -689,8 +524,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
               panel.grid.major=element_blank(),
               legend.position="none",
               plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-        ylim(1.25,2)+
-        ggtitle("c")
+        ylim(1.,2)
     
     p4 <- ggplot(sumDF) +
         geom_errorbar(aes(x=Height, ymin=(Ci_transition_Ac_Aj.mean - Ci_transition_Ac_Aj.se), 
@@ -708,7 +542,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
                            values=c("black", "black"))+
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_blank(), 
-              axis.text.x = element_blank(),
+              axis.text.x = element_text(size=18),
               axis.text.y=element_text(size=18),
               axis.title.y=element_text(size=18),
               legend.text=element_text(size=18),
@@ -716,118 +550,91 @@ plot_leaf_ACI_curves <- function(plotDF) {
               panel.grid.major=element_blank(),
               legend.position="none",
               plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-        ylim(180,360)+
-        ggtitle("d")
+        ylim(150,400)
     
     
-    p5 <- ggplot(sumDF) +
-        geom_errorbar(aes(x=Height, ymin=(Ac.mean - Ac.se), 
-                          ymax = (Ac.mean+Ac.se), color=CO2_treatment),
-                      position=position_dodge(width=0.5),width=0.2)+
-        geom_point(aes(Height, Ac.mean, fill=CO2_treatment), size = 10, shape=21, 
+    legend_shared <- get_legend(p1 + theme(legend.position="bottom",
+                                           legend.box = 'vertical',
+                                           legend.box.just = 'left'))
+    
+    combined_plots <- plot_grid(p1, p2, p3, p4, 
+                                labels="AUTO", ncol=2, align="vh", axis = "l")
+    
+    #plot(p1)
+    
+    pdf("output/leaf/leaf_parameter_summary_detailed_breakdowns.pdf", 
+        width=10, height=12)
+    plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
+    dev.off()    
+    
+    
+    
+    
+    ### plot aCO2 and date to reconcile apparent date issue
+    ### in low and up comparison
+    subDF <- subset(plotDF, CO2_treatment == "ambient")
+    subDF$year <- year(subDF$Date)
+    
+    pre2009DF <- subset(subDF, year < 2009)
+    in2009DF <- subset(subDF, year == 2009)
+    
+    ### average Ci
+    up.pre09 <- mean(pre2009DF$Ci_transition_Ac_Aj[pre2009DF$Height=="up"])
+    up.in09 <- mean(in2009DF$Ci_transition_Ac_Aj[in2009DF$Height=="up"])
+    low.in09 <- mean(in2009DF$Ci_transition_Ac_Aj[in2009DF$Height=="low"])
+    
+    ### create DF to store Ci
+    sDF1 <- data.frame(unique(pre2009DF$Date), up.pre09)
+    sDF2 <- data.frame(unique(in2009DF$Date), up.in09)
+    sDF3 <- data.frame(unique(in2009DF$Date), low.in09)
+    colnames(sDF1)<-colnames(sDF2) <- colnames(sDF3) <- c("Date", "Ci")
+    sDF1$Group <- "A"
+    sDF2$Group <- "B"
+    sDF3$Group <- "C"
+    
+    mDF <- rbind(sDF1, sDF2, sDF3)
+    
+    subDF$Date <- as.Date(as.character(subDF$Date))
+    mDF$Date <- as.Date(as.character(mDF$Date))
+    
+    p4 <- ggplot(subDF) +
+        geom_point(aes(Date, Ci_transition_Ac_Aj, fill=Height), 
+                   size = 10, shape=21, 
                    position=position_dodge(width=0.5))+
+        geom_line(data=mDF, aes(Date, Ci, linetype=Group))+
         xlab("")+
-        ylab(expression(A[c]*" (" * mu* "mol " * m^-2 * " " * s^-1 * ")"))+
-        scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
-                          limits=c("ambient", "elevated"),
+        ylab(expression(C[i]*" transition (" * mu * "mol " * mol^-1 * ")"))+
+        scale_fill_manual(name="Height",
+                          limits=c("up", "low"),
                           values=c("grey", "black"))+
-        scale_color_manual(name=expression(paste(CO[2] * " treatment")),
-                           limits=c("ambient", "elevated"),
-                           values=c("black", "black"))+
+        scale_color_manual(name="Height",
+                           limits=c("up", "low"),
+                           values=c("grey", "black"))+
+        scale_linetype_manual(name="Group",
+                         limits=c("A", "B", "C"),
+                         values=c("dotdash", "dotted", "solid"),
+                         labels=c("up_pre2009",
+                                  "up_2009",
+                                  "low_2009"))+
         theme(panel.grid.minor=element_blank(),
               axis.title.x = element_blank(), 
               axis.text.x = element_text(size=18),
-              axis.text.y=element_text(size=18), 
-              axis.title.y=element_text(size=18), 
-              legend.text=element_text(size=18),
-              legend.title=element_text(size=18),
-              panel.grid.major=element_blank(),
-              legend.position="none",
-              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-        ylim(10,30)+
-        scale_x_discrete(breaks=c("up", "low"),
-                         labels=c("Up", "Low"))+
-        guides(fill = guide_legend(title.position = "top"))+
-        ggtitle("e")
-    
-    p6 <- ggplot(sumDF) +
-        geom_errorbar(aes(x=Height, ymin=(Aj.mean - Aj.se), 
-                          ymax = (Aj.mean+Aj.se), color=CO2_treatment),
-                      position=position_dodge(width=0.5),width=0.3)+
-        geom_point(aes(Height, Aj.mean, fill=CO2_treatment), size = 10, shape=21, 
-                   position=position_dodge(width=0.5))+
-        xlab("")+
-        ylab(expression(A[j]*" (" * mu * "mol " * m^-2 * " " * s^-1 * ")"))+
-        scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
-                          limits=c("ambient", "elevated"),
-                          values=c("grey", "black"))+
-        scale_color_manual(name=expression(paste(CO[2] * " treatment")),
-                           limits=c("ambient", "elevated"),
-                           values=c("black", "black"))+
-        theme(panel.grid.minor=element_blank(),
-              axis.title.x = element_blank(), 
-              axis.text.x = element_text(size=18),
-              axis.text.y=element_text(size=18), 
-              axis.title.y=element_text(size=18), 
-              legend.text=element_text(size=18),
-              legend.title=element_text(size=18),
-              panel.grid.major=element_blank(),
-              legend.position="none",
-              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
-        ylim(10,30)+
-        scale_x_discrete(breaks=c("up", "low"),
-                         labels=c("Up", "Low"))+
-        guides(fill = guide_legend(title.position = "top"))+
-        ggtitle("f")
-    
-    
-    p7 <- ggplot(sumDF) +
-        geom_errorbar(aes(x=Height, ymin=(ALEAF.mean - ALEAF.se), 
-                          ymax = (ALEAF.mean+ALEAF.se), color=CO2_treatment),
-                      position=position_dodge(width=0.5),width=0.2)+
-        geom_point(aes(Height, ALEAF.mean, fill=CO2_treatment), size = 10, shape=21, 
-                   position=position_dodge(width=0.5))+
-        xlab("Canopy position")+
-        ylab(expression(A[leaf]*" (" * mu * "mol " * m^-2 * " " * s^-1 * ")"))+
-        scale_fill_manual(name=expression(paste(CO[2] * " treatment")),
-                          limits=c("ambient", "elevated"),
-                          values=c("grey", "black"))+
-        scale_color_manual(name=expression(paste(CO[2] * " treatment")),
-                           limits=c("ambient", "elevated"),
-                           values=c("black", "black"))+
-        theme(panel.grid.minor=element_blank(),
-              axis.title.x = element_text(size=20), 
-              axis.text.x = element_text(size=18),
-              axis.text.y=element_text(size=18), 
-              axis.title.y=element_text(size=18), 
+              axis.text.y=element_text(size=18),
+              axis.title.y=element_text(size=18),
               legend.text=element_text(size=18),
               legend.title=element_text(size=18),
               panel.grid.major=element_blank(),
               legend.position="bottom",
-              plot.title = element_text(size = 18, face = "bold", hjust=0.05))+
-        ylim(10,30)+
-        scale_x_discrete(breaks=c("up", "low"),
-                         labels=c("Up", "Low"))+
-        guides(fill = guide_legend(title.position = "top"))+
-        ggtitle("g")
+              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+        ylim(10,500)
     
+    #plot(p4)
     
-    pdf("output/leaf/leaf_parameter_summary_detailed_breakdowns.pdf", width=12, height=14)
-    #plot_grid(p1, p2, 
-    #          p3, p4, 
-    #          p5, p6, 
-    #          rel_heights=c(1,1,1.4),
-    #          rel_widths=c(1, 1.1),
-    #          labels="", ncol=2, align="h", axis = "l")
-    grid.arrange(p1, p2, p3, p4, p5, p6, 
-                 p7,  
-                 heights=c(1, 1, 1.2, 1.8),
-                 #ncol = 2, nrow = 4, 
-                 layout_matrix = rbind(c(1,2),
-                                       c(3,4),
-                                       c(5,6),
-                                       c(7,7)))
+    pdf("output/leaf/leaf_Ci_over_date.pdf", 
+        width=26, height=6)
+    plot(p4)
+    dev.off()  
+ 
     
-    dev.off()
     
 }
