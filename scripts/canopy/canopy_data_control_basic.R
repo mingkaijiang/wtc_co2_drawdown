@@ -6,9 +6,9 @@ canopy_data_control_basic <- function(myDF) {
 
     
     ### testing script
-    tDF1 <- subset(myDF, Chamber=="11"&Canopy=="45"&WTC_CO2<1400)
-    unique(tDF1$date)
-    with(tDF1, plot(Norm_corr_CO2_flux~WTC_CO2))
+    #tDF1 <- subset(myDF, Chamber=="11"&Canopy=="45"&WTC_CO2<1400)
+    #unique(tDF1$date)
+    #with(tDF1, plot(Norm_corr_CO2_flux~WTC_CO2))
     #
     #tDF2 <- subset(tDF1, WTC_CO2<800&Norm_corr_CO2_flux<7)
     #with(tDF2, plot(Norm_corr_CO2_flux~WTC_CO2))

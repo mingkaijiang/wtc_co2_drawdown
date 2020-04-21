@@ -17,8 +17,8 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     lDF$year <- year(lDF$Date)
     lDF$Date <- as.Date(lDF$Date)
     
-    lDF <- subset(lDF, Identity %in% c("90", "91", "92", "93", "96", "97", "100", "101", ### low
-                                     "78", "104", "103", "87", "81", "82", "84", "86"))  ### high
+    #lDF <- subset(lDF, Identity %in% c("90", "91", "92", "93", "96", "97", "100", "101", ### low
+    #                                 "78", "104", "103", "87", "81", "82", "84", "86"))  ### high
     
     #lDF <- subset(lDF, Date>=as.Date("2009-01-01")&Date<=as.Date("2009-03-01"))
     
