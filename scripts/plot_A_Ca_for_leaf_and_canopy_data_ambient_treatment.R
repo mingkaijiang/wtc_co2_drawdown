@@ -963,7 +963,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     
     #plot(p1)
     
-    pdf("output/A-Ca/ambient_A_sensitivity_plot.pdf", width=10, height=16)
+    pdf("output/A-Ca/ambient_A_sensitivity_plot.pdf", width=10, height=14)
     plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
     dev.off()  
     
