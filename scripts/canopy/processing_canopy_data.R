@@ -124,11 +124,7 @@ processing_canopy_data <- function(leafDF) {
     #myDF <- calculate_co2_flux_per_second(myDF)
 
     ### continue cleaning data
-    ### remove missing data points
     myDF$Norm_corr_CO2_flux <- as.numeric(myDF$Norm_corr_CO2_flux)
-    #myDF <- myDF[complete.cases(myDF$Norm_corr_CO2_flux), ]
-    #myDF <- manually_delete_unreasonable_data(myDF)
-    
     
     ########################  add transpiration to get Ci ###########################
     ### add H2O flux

@@ -17,9 +17,6 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     lDF$year <- year(lDF$Date)
     lDF$Date <- as.Date(lDF$Date)
     
-    #lDF <- subset(lDF, Identity %in% c("90", "91", "92", "93", "96", "97", "100", "101", ### low
-    #                                 "78", "104", "103", "87", "81", "82", "84", "86"))  ### high
-    
     #lDF <- subset(lDF, Date>=as.Date("2009-01-01")&Date<=as.Date("2009-03-01"))
     
     ### rename canopy DF
@@ -31,6 +28,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     ### assign CO2, water treatment
     ## chambers 1, 3, 5, 7, 9, 11 are CO2 ambient
     ## chambers 1, 3, 4, 6, 8, 11 are wet 
+    ## do not include drought treatment chambers
     
     ### ambient CO2
     ch01DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
@@ -42,12 +40,12 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     ch11DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
                                                       ch.l="ch11", ch.c="11")
     
-    ch07DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
-                                                      ch.l="ch07", ch.c="7")
+    #ch07DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
+    #                                                  ch.l="ch07", ch.c="7")
     
     ### elevated CO2
-    ch02DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
-                                                      ch.l="ch02", ch.c="2")
+    #ch02DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
+    #                                                  ch.l="ch02", ch.c="2")
     
     ch04DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
                                                       ch.l="ch04", ch.c="4")
@@ -55,20 +53,24 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     ch08DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
                                                       ch.l="ch08", ch.c="8")
     
-    ch12DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF,
-                                                      ch.l="ch12", ch.c="12")
+    #ch12DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF,
+    #                                                  ch.l="ch12", ch.c="12")
     
     
     ### combine only aCO2 and wet treatment
-    plotDF <- rbind(ch01DF, ch03DF, ch11DF)
+    plotDF1 <- rbind(ch01DF, ch03DF, ch11DF)
+    plotDF2 <- rbind(ch04DF, ch08DF)
+    
+    
+    ### plot a subset range
+    ### i.e. Ca = 400 to 600
+    subDF1 <- subset(plotDF1, Ca>=350 & Ca <= 650)
+    subDF2 <- subset(plotDF2, Ca>=350 & Ca <= 650)
     
     ## plot
-    p1 <- ggplot(data=plotDF, aes(Ca, Photo, group=Position)) +
-      geom_point(data=plotDF, aes(fill=as.factor(Position), 
+    p1 <- ggplot(data=plotDF1, aes(Ca, Photo, group=Position)) +
+      geom_point(data=plotDF1, aes(fill=as.factor(Position), 
                                   pch = as.factor(Source)), alpha=0.6)+
-      #geom_smooth(data=plotDF, aes(Ca, Photo, group=Position,
-      #                             col=as.factor(Position)),
-      #            method = "lm", formula = y ~ splines::bs(x, 4), se=T)+
       geom_smooth(aes(col=as.factor(Position)), 
                   method="nls", 
                   formula=y~a*exp(b/x),
@@ -78,16 +80,16 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
-            axis.title.x=element_text(size=14),
+            axis.title.x=element_blank(),
             axis.text.y=element_text(size=12),
             axis.title.y=element_text(size=14),
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
-            legend.position="bottom",
+            legend.position="none",
             legend.box = 'vertical',
             legend.box.just = 'left')+
-      xlab(expression(paste(C[a], " (", mu, "mol ", m^-2, " ", s^-1, ")")))+
+      xlab(expression(paste(C[a], " (", mu, "mol ", mol^-1, ")")))+
       ylab(expression(paste(A, " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
@@ -100,52 +102,32 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
       scale_shape_manual(name="Measurements",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"))+
-      xlim(0,1800)+
-      ylim(-5,40)+
+      xlim(0,1250)+
+      ylim(-5,50)+
       guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
     
-    ## testing fitting outside geom_smooth
-    #subDF <- as.data.frame(subset(plotDF, Position=="up"))
-    #myModel <- nls(Photo~a*exp(b/Ca), data=subDF, start=list(a=1, b=0.1))
-    #myPredict <- expand.grid(Ca = seq(10, 1600, by =10))  
-    #myPredict$fit <- predict(myModel, newdata= myPredict) 
-    #p1 <- ggplot(data=subDF, 
-    #             aes(Ca, Photo)) +
-    #  geom_point()+
-    #  geom_line(data = myPredict, aes(x=Ca, y= fit))
-    #plot(p1)
-  
-    ### output
-    pdf("output/A-Ca/ambient_A-Ca_plot.pdf", width=8, height=8)
-    plot(p1)
-    dev.off()    
-    
-    
-    ### plot a subset range
-    ### i.e. Ca = 400 to 600
-    subDF <- subset(plotDF, Ca>=350 & Ca <= 650)
     
     ## plot
     p2 <- ggplot() +
-      geom_point(data=subDF, aes(Ca, Photo, 
+      geom_point(data=subDF1, aes(Ca, Photo, 
                                   fill=as.factor(Position), 
                                   pch = as.factor(Source)), alpha=0.6)+
-      geom_smooth(data=subDF, aes(Ca, Photo, group=Position,
+      geom_smooth(data=subDF1, aes(Ca, Photo, group=Position,
                                    col=as.factor(Position)),
                   method = "lm", formula = y ~ x, se=T)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
-            axis.title.x=element_text(size=14),
+            axis.title.x=element_blank(),
             axis.text.y=element_text(size=12),
-            axis.title.y=element_text(size=14),
+            axis.title.y=element_blank(),
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
-            legend.position="bottom",
+            legend.position="none",
             legend.box = 'vertical',
             legend.box.just = 'left')+
-      xlab(expression(paste(C[a], " (", mu, "mol ", m^-2, " ", s^-1, ")")))+
+      xlab(expression(paste(C[a], " (", mu, "mol ", mol^-1, ")")))+
       ylab(expression(paste(A, " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
@@ -163,20 +145,16 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
       guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
     
     
-    ### output
-    pdf("output/A-Ca/ambient_A-Ca_plot_400_600_ppm.pdf", width=8, height=8)
-    plot(p2)
-    dev.off()    
-    
-    
-    ## plot
-    p2 <- ggplot() +
-      geom_point(data=subDF, aes(Ci, Photo, 
-                                 fill=as.factor(Position), 
-                                 pch = as.factor(Source)), alpha=0.6)+
-      geom_smooth(data=subDF, aes(Ci, Photo, group=Position,
-                                  col=as.factor(Position)),
-                  method = "lm", formula = y ~ x, se=T)+
+    ### elevated CO2 treatment
+    p3 <- ggplot(data=plotDF2, aes(Ca, Photo, group=Position)) +
+      geom_point(data=plotDF2, aes(fill=as.factor(Position), 
+                                   pch = as.factor(Source)), alpha=0.6)+
+      geom_smooth(aes(col=as.factor(Position)), 
+                  method="nls", 
+                  formula=y~a*exp(b/x),
+                  fullrange=T,
+                  method.args = list(start=c(a=1,b=0.1)), 
+                  se=F)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -186,10 +164,10 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
-            legend.position="bottom",
+            legend.position="none",
             legend.box = 'vertical',
             legend.box.just = 'left')+
-      xlab(expression(paste(C[i], " (", mu, "mol ", m^-2, " ", s^-1, ")")))+
+      xlab(expression(paste(C[a], " (", mu, "mol ", mol^-1, ")")))+
       ylab(expression(paste(A, " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
@@ -202,15 +180,135 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
       scale_shape_manual(name="Measurements",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"))+
-      #xlim(0,650)+
+      xlim(0,1250)+
+      ylim(-5,50)+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+    
+    
+    ## plot
+    p4 <- ggplot() +
+      geom_point(data=subDF2, aes(Ca, Photo, 
+                                  fill=as.factor(Position), 
+                                  pch = as.factor(Source)), alpha=0.6)+
+      geom_smooth(data=subDF2, aes(Ca, Photo, group=Position,
+                                   col=as.factor(Position)),
+                  method = "lm", formula = y ~ x, se=T)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_blank(),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab(expression(paste(C[a], " (", mu, "mol ", mol^-1, ")")))+
+      ylab(expression(paste(A, " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      scale_fill_manual(name="Position",
+                        limits=c("12345", "345", "45", "up", "low"),
+                        values=c("blue2", "red3", "purple", "orange", "green"),
+                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_color_manual(name="Position",
+                         limits=c("12345", "345", "45", "up", "low"),
+                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
+                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_shape_manual(name="Measurements",
+                         values=c(21, 24),
+                         labels=c("Canopy", "Leaf"))+
+      xlim(350,650)+
+      ylim(-5,40)+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+    
+    
+    ## plot A-Ci
+    p5 <- ggplot() +
+      geom_point(data=subDF1, aes(Ci, Photo, 
+                                 fill=as.factor(Position), 
+                                 pch = as.factor(Source)), alpha=0.6)+
+      geom_smooth(data=subDF1, aes(Ci, Photo, group=Position,
+                                  col=as.factor(Position)),
+                  method = "lm", formula = y ~ x, se=T)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_blank(),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_blank(),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab(expression(paste(C[i], " (", mu, "mol ", mol^-1, ")")))+
+      ylab(expression(paste(A, " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      scale_fill_manual(name="Position",
+                        limits=c("12345", "345", "45", "up", "low"),
+                        values=c("blue2", "red3", "purple", "orange", "green"),
+                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_color_manual(name="Position",
+                         limits=c("12345", "345", "45", "up", "low"),
+                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
+                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_shape_manual(name="Measurements",
+                         values=c(21, 24),
+                         labels=c("Canopy", "Leaf"))+
+      xlim(150,600)+
+      ylim(-5,40)+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+    
+    
+    p6 <- ggplot() +
+      geom_point(data=subDF2, aes(Ci, Photo, 
+                                  fill=as.factor(Position), 
+                                  pch = as.factor(Source)), alpha=0.6)+
+      geom_smooth(data=subDF2, aes(Ci, Photo, group=Position,
+                                   col=as.factor(Position)),
+                  method = "lm", formula = y ~ x, se=T)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_blank(),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab(expression(paste(C[i], " (", mu, "mol ", mol^-1, ")")))+
+      ylab(expression(paste(A, " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      scale_fill_manual(name="Position",
+                        limits=c("12345", "345", "45", "up", "low"),
+                        values=c("blue2", "red3", "purple", "orange", "green"),
+                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_color_manual(name="Position",
+                         limits=c("12345", "345", "45", "up", "low"),
+                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
+                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_shape_manual(name="Measurements",
+                         values=c(21, 24),
+                         labels=c("Canopy", "Leaf"))+
+      xlim(150,600)+
       ylim(-5,40)+
       guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
     
     
     ### output
-    pdf("output/A-Ca/ambient_A-Ci_plot_Ca_400_600_ppm.pdf", width=8, height=8)
-    plot(p2)
-    dev.off()    
+    legend_shared <- get_legend(p1 + theme(legend.position="bottom",
+                                           legend.box = 'vertical',
+                                           legend.box.just = 'left'))
+    
+    combined_plots <- plot_grid(p1, p2, p5, p3, p4, p6, 
+                                labels="auto", ncol=3, align="vh", axis = "l")
+    
+    pdf("output/A-Ca/A-Ca_plots.pdf", width=12, height=10)
+    plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
+    dev.off() 
     
     
     
