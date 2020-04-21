@@ -2,13 +2,7 @@
 #### Fit A-CI curve for each chamber
 
 canopy_ACI_processing <- function(cDF) {
-    
-    
-    ### create an identity list for each chamber and canopy
-    cDF$Identity <- paste0(cDF$Chamber, "-", cDF$Canopy)
-    
-    #cDF <- cDF[cDF$Identity!="7-45",]
-    
+
     ### assign CO2, water treatment
     ## chambers 1, 3, 5, 7, 9, 11 are CO2 ambient
     ## chambers 1, 3, 4, 6, 8, 11 are wet 

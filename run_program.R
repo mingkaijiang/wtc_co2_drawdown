@@ -27,14 +27,8 @@ leaf_aciDF <- leaf_ACI_processing()
 
 #### Make some plots
 ### go into function to plot!
-plot_leaf_ACI_curves(plotDF=leaf_aciDF)
+#plot_leaf_ACI_curves(plotDF=leaf_aciDF)
 
-#### results summary:
-###  there were statistically significant position effects on 
-###  key photosynthetic parameters (e.g. Vcmax, Jmax, transitional Ci),
-###  but there were no significant CO2 effects;
-###  And, there were no significant CO2 x position interaction effects.
-###  Detailed statistics available within the plot_leaf_ACI_curves function.
 
 ############################# processing canopy data #################################
 #### Data note:
@@ -65,14 +59,14 @@ canopy_aciDF <- canopy_ACI_processing(cDF=canopyDF)
 cDF <- canopyDF
 
 ### all data
-plot_A_Ca_for_leaf_and_canopy_data(cDF=canopyDF)
+#plot_A_Ca_for_leaf_and_canopy_data(cDF=canopyDF)
 
 ### ambient CO2 and well-watered treatment
 ### include both A-Ca and A-Ci plots
 ### including statistics
 plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment(cDF=canopyDF)
 
-#summary_statistics_A_Ci_curves()
+#statistical_tests_linear_mixed_effect_model()
 
 
 ############################# Roger 2017 results ######################

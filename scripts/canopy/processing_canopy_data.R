@@ -154,6 +154,22 @@ processing_canopy_data <- function(leafDF) {
     ### filter according to PAR
     outDF <- subset(outDF, WTC_PAR >= 1000)
     
+    ### add identity information, starting from 110 so that it doesn't repeat leaf identity
+    outDF$ID <- paste0(outDF$Chamber, "-", outDF$Canopy)
+    idDF <- data.frame(c(111:125), unique(outDF$ID))
+    colnames(idDF) <- c("Identity", "ID")
+    
+    outDF <- merge(outDF, idDF, by="ID", all=T)
+    
+    
+    ### outDF
+    outDF <- outDF[,c("Identity", "Chamber", "Canopy", "datetime",
+                      "date", "time", "WTC_CO2", "WTC_T", "WTC_dew_point",
+                      "WTC_PAR", "Tair", "ES", "RH", "EA", "VPD",
+                      "Leaf_area", "Leak_coef", "Leak", "CO2_flux",
+                      "Norm_CO2_flux", "Corr_CO2_flux", "Norm_corr_CO2_flux",
+                      "Cond_water", "WTC_volume_m3", "Norm_H2O_flux",
+                      "gs1", "G1", "gs", "Norm_H2O_flux2", "Ci")]
     
     ### return output
     return(outDF)
