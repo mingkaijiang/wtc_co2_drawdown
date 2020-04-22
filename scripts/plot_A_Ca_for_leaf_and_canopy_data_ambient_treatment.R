@@ -442,46 +442,64 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     stDF <- rbind(subDF.l, subDF.c)
     stDF <- merge(stDF, idDF, by="Identity", all=T)
     
-    ### plotDF
+    ### separate into aCO2 and eCO2 DF
     plotDF1 <- subset(stDF, CO2_treatment == "aCO2")
     plotDF2 <- subset(stDF, CO2_treatment == "eCO2")
     
-    ### perform linear mixed effect model statistics
-    mod <- lmer(Jmax~ CO2_treatment + Type + Position + (1|Chamber), data=stDF)
-    mod1 <- lmer(Jmax~ Type + (1|Position), data=plotDF1)
-    mod2 <- lmer(Jmax~ Type + (1|Position), data=plotDF2)
-    anova(mod)
-    anova(mod1)
-    require(lme4)
-    require(lmerTest)
-    rand(mod)
+    ### convert into factors
+    stDF$Type <- as.factor(stDF$Type)
+    stDF$CO2_treatment <- as.factor(stDF$CO2_treatment)
+    plotDF1$Type <- as.factor(plotDF1$Type)
+    plotDF2$Type <- as.factor(plotDF2$Type)
     
-    mod2 <- gls(Jmax ~ Position,
-                data=plotDF1)
+    ### build a linear model to compare position only
+    #mod <- gls(Jmax ~ Position,
+    #           data=plotDF1)
+    #
+    #coef(summary(mod)) 
+    #anova(mod, type = "marginal")
+    #
+    #library(emmeans)
+    #pairs(emmeans(mod, "Position"))
     
-    coef(summary(mod2)) 
-    anova(mod2, type = "marginal")
-    
-    library(emmeans)
-    pairs(emmeans(mod, "Position"))
-    
-    #plotDF1$Position <- as.factor(as.character(plotDF1$Position))
+    ### nested anova
     #summary(aov(Jmax ~ Type + Position, plotDF1))
     #contrasts(plotDF1$Position) <- contr.sum
     #library(car)
     #Anova(aov(Jmax ~ Type/Position, plotDF1))
     
-    stDF$Type <- as.factor(stDF$Type)
-    stDF$CO2_treatment <- as.factor(stDF$CO2_treatment)
-    plotDF1$Type <- as.factor(plotDF1$Type)
+    
+    ### perform linear mixed effect model statistics
+    ## including all factors
+    mod <- lmer(Jmax~ CO2_treatment + Type + (1|Position), data=stDF)
+    anova(mod)
+    rand(mod)
+    # result: 
+    #         CO2 treatment is not signfiicant
+    #         Type is marginally significant
+    #         random effect (position) is significant
+    
+    ## aCO2
+    mod1 <- lmer(Jmax~ Type + (1|Position), data=plotDF1)
+    anova(mod1)
+    rand(mod1)
+    # result:
+    #        Type is marginally significant
+    #        random effect (position) is significant
+    
+    mod2 <- lmer(Jmax~ Type + (1|Position), data=plotDF2)
+    anova(mod2)
+    rand(mod2)
+    # result:
+    #        Type is marginally significant
+    #        random effect (position) is not significant
     
     data.lme <- lme(Jmax ~ CO2_treatment + Type, random = ~1 | Position, stDF)
     summary(data.lme)
     anova(data.lme)
-    library(multcomp)
     summary(glht(data.lme, linfct = mcp(Type = "Tukey")))
     summary(glht(data.lme, linfct = mcp(CO2_treatment = "Tukey")))
-    
+    rand(data.lme)
     
     
     ### plotting

@@ -32,7 +32,9 @@ pacman::p_load(dplyr,
                cowplot,
                nlme,
                gridExtra,
-               ggthemes)    
+               ggthemes,
+               lmerTest,
+               multcomp)    
 
 
 #### Sourcing all R files in the modules subdirectory
