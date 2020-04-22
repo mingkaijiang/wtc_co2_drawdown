@@ -153,7 +153,7 @@ processing_canopy_data <- function(leafDF) {
     
     ### filter according to PAR
     outDF <- subset(outDF, WTC_PAR >= 1000)
-    
+
     ### add identity information, starting from 110 so that it doesn't repeat leaf identity
     outDF$ID <- paste0(outDF$Chamber, "-", outDF$Canopy)
     idDF <- data.frame(c(111:125), unique(outDF$ID))

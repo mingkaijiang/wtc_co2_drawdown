@@ -318,14 +318,14 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     ################################# Fit A-CI #################################
     ##### preparing acifit
     #### the fit TPU function makes it long to run!
-    fits <- fitacis(myDF, group="Identity", varnames = list(ALEAF="Photo",
-                                                            Tleaf="Tleaf", 
-                                                            Ci = "Ci",
-                                                            PPFD="PAR"),
-                    fitmethod="bilinear", Tcorrect=T, fitTPU=F)
-    
-    coefDF <- coef(fits)
-    coefDF <- merge(coefDF, idDF, by="Identity", all=T)
+    #fits <- fitacis(myDF, group="Identity", varnames = list(ALEAF="Photo",
+    #                                                        Tleaf="Tleaf", 
+    #                                                        Ci = "Ci",
+    #                                                        PPFD="PAR"),
+    #                fitmethod="bilinear", Tcorrect=T, fitTPU=F)
+    #
+    #coefDF <- coef(fits)
+    #coefDF <- merge(coefDF, idDF, by="Identity", all=T)
     
     
     ## ambient A-Ci plots, leaf and canopy
@@ -499,8 +499,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     anova(data.lme)
     summary(glht(data.lme, linfct = mcp(Type = "Tukey")))
     summary(glht(data.lme, linfct = mcp(CO2_treatment = "Tukey")))
-    rand(data.lme)
-    
+
     
     ### plotting
     p1 <- ggplot() +
