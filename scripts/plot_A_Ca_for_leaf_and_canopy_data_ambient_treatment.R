@@ -13,54 +13,57 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     ### combine the datasets
     lDF <- rbind(lDF1, lDF2)
     
-    #### subset year 2009
+    #### subset 2009
     lDF$year <- year(lDF$Date)
     lDF$Date <- as.Date(lDF$Date)
     
-    #lDF <- subset(lDF, Date>=as.Date("2009-01-01")&Date<=as.Date("2009-03-01"))
+    ### add type information
+    lDF$Type <- "leaf"
+    cDF$Type <- "canopy"
+
+    ### select columns
+    lDF.sub <- lDF[,c("Identity", "chamber", "Height", "Date",
+                     "Photo", "CO2S", "Cond", 
+                      "Ci", "Tair", "Tleaf", "PARi", "VpdL", "Type")]
     
-    ### rename canopy DF
-    ### note the Tleaf definition is not real!
-    names(cDF)[names(cDF) == "WTC_CO2"] <- "Ca"
+    cDF.sub <- cDF[,c("Identity", "Chamber", "Canopy", "date",
+                      "Norm_corr_CO2_flux", "WTC_CO2", "Norm_H2O_flux", 
+                      "Ci", "WTC_T", "WTC_T", "WTC_PAR", "VPD", 'Type')]
     
-    cDF$Ci_Ca <- with(cDF, Ci / Ca)
+    
+    colnames(lDF.sub) <- colnames(cDF.sub) <- c("Identity", "Chamber", "Position", "Date",
+                                                "Photo", "Ca", "Cond", 
+                                                "Ci", "Tair", "Tleaf", "PAR", "VPD", "Type")
+    
+    myDF <- rbind(lDF.sub, cDF.sub)
+    
+    myDF$Identity <- as.numeric(as.character(myDF$Identity))
+    
+    myDF$Chamber <- gsub("ch", "", myDF$Chamber)
+    myDF$Chamber <- as.numeric(as.character(myDF$Chamber))
     
     ### assign CO2, water treatment
     ## chambers 1, 3, 5, 7, 9, 11 are CO2 ambient
     ## chambers 1, 3, 4, 6, 8, 11 are wet 
     ## do not include drought treatment chambers
+    myDF <- myDF[myDF$Chamber%in%c(1,3,11,4,8),]
+    myDF$CO2_treatment <- "aCO2"
+    myDF$CO2_treatment[myDF$Chamber%in%c(4,8)] <- "eCO2"
     
-    ### ambient CO2
-    ch01DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
-                                                      ch.l="ch01", ch.c="1")
+    ### generate identity list
+    idDF <- unique(myDF[,c("Identity", "Chamber", "Position", 
+                           "Type", "CO2_treatment")])
     
-    ch03DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
-                                                      ch.l="ch03", ch.c="3")
-    
-    ch11DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
-                                                      ch.l="ch11", ch.c="11")
-    
-    #ch07DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
-    #                                                  ch.l="ch07", ch.c="7")
-    
-    ### elevated CO2
-    #ch02DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
-    #                                                  ch.l="ch02", ch.c="2")
-    
-    ch04DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
-                                                      ch.l="ch04", ch.c="4")
-    
-    ch08DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF, 
-                                                      ch.l="ch08", ch.c="8")
-    
-    #ch12DF <- leaf_canopy_combined_for_ACA_ACI_curves(lDF, cDF,
-    #                                                  ch.l="ch12", ch.c="12")
-    
-    
+    ### individual chambers
+    ch01DF <- subset(myDF, Chamber == 1)
+    ch03DF <- subset(myDF, Chamber == 3)
+    ch11DF <- subset(myDF, Chamber == 11)
+    ch04DF <- subset(myDF, Chamber == 4)
+    ch08DF <- subset(myDF, Chamber == 8)
+
     ### combine only aCO2 and wet treatment
     plotDF1 <- rbind(ch01DF, ch03DF, ch11DF)
     plotDF2 <- rbind(ch04DF, ch08DF)
-    
     
     ### plot a subset range
     ### i.e. Ca = 400 to 600
@@ -70,7 +73,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     ## plot
     p1 <- ggplot(data=plotDF1, aes(Ca, Photo, group=Position)) +
       geom_point(data=plotDF1, aes(fill=as.factor(Position), 
-                                  pch = as.factor(Source)), alpha=0.6)+
+                                  pch = as.factor(Type)), alpha=0.6)+
       geom_smooth(aes(col=as.factor(Position)), 
                   method="nls", 
                   formula=y~a*exp(b/x),
@@ -111,7 +114,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     p2 <- ggplot() +
       geom_point(data=subDF1, aes(Ca, Photo, 
                                   fill=as.factor(Position), 
-                                  pch = as.factor(Source)), alpha=0.6)+
+                                  pch = as.factor(Type)), alpha=0.6)+
       geom_smooth(data=subDF1, aes(Ca, Photo, group=Position,
                                    col=as.factor(Position)),
                   method = "lm", formula = y ~ x, se=T)+
@@ -148,7 +151,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     ### elevated CO2 treatment
     p3 <- ggplot(data=plotDF2, aes(Ca, Photo, group=Position)) +
       geom_point(data=plotDF2, aes(fill=as.factor(Position), 
-                                   pch = as.factor(Source)), alpha=0.6)+
+                                   pch = as.factor(Type)), alpha=0.6)+
       geom_smooth(aes(col=as.factor(Position)), 
                   method="nls", 
                   formula=y~a*exp(b/x),
@@ -189,7 +192,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     p4 <- ggplot() +
       geom_point(data=subDF2, aes(Ca, Photo, 
                                   fill=as.factor(Position), 
-                                  pch = as.factor(Source)), alpha=0.6)+
+                                  pch = as.factor(Type)), alpha=0.6)+
       geom_smooth(data=subDF2, aes(Ca, Photo, group=Position,
                                    col=as.factor(Position)),
                   method = "lm", formula = y ~ x, se=T)+
@@ -227,7 +230,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     p5 <- ggplot() +
       geom_point(data=subDF1, aes(Ci, Photo, 
                                  fill=as.factor(Position), 
-                                 pch = as.factor(Source)), alpha=0.6)+
+                                 pch = as.factor(Type)), alpha=0.6)+
       geom_smooth(data=subDF1, aes(Ci, Photo, group=Position,
                                   col=as.factor(Position)),
                   method = "lm", formula = y ~ x, se=T)+
@@ -264,7 +267,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     p6 <- ggplot() +
       geom_point(data=subDF2, aes(Ci, Photo, 
                                   fill=as.factor(Position), 
-                                  pch = as.factor(Source)), alpha=0.6)+
+                                  pch = as.factor(Type)), alpha=0.6)+
       geom_smooth(data=subDF2, aes(Ci, Photo, group=Position,
                                    col=as.factor(Position)),
                   method = "lm", formula = y ~ x, se=T)+
@@ -312,163 +315,180 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     
     
     
-    ################################# plot A-Ci for ambient #################################
+    ################################# Fit A-CI #################################
     ##### preparing acifit
     #### the fit TPU function makes it long to run!
-    fits.ch01 <- fitacis(ch01DF, group="Position", varnames = list(ALEAF="Photo",
-                                                                   Tleaf="Tleaf", 
-                                                                   Ci = "Ci",
-                                                                   PPFD="PAR"),
-                         fitmethod="bilinear", Tcorrect=T, fitTPU=F)
+    fits <- fitacis(myDF, group="Identity", varnames = list(ALEAF="Photo",
+                                                            Tleaf="Tleaf", 
+                                                            Ci = "Ci",
+                                                            PPFD="PAR"),
+                    fitmethod="bilinear", Tcorrect=T, fitTPU=F)
     
-    fits.ch03 <- fitacis(ch03DF, group="Position", varnames = list(ALEAF="Photo",
-                                                                   Tleaf="Tleaf", 
-                                                                   Ci = "Ci",
-                                                                   PPFD="PAR"),
-                         fitmethod="bilinear", Tcorrect=T, fitTPU=F)
-    
-    fits.ch11 <- fitacis(ch11DF, group="Position", varnames = list(ALEAF="Photo",
-                                                                   Tleaf="Tleaf", 
-                                                                   Ci = "Ci",
-                                                                   PPFD="PAR"),
-                         fitmethod="bilinear", Tcorrect=T, fitTPU=F)
-
-    
-    ## pdf
-    pdf("output/A-Ca/ambient_A-Ci_plots.pdf", width=14, height=14)
-    par(mfrow=c(5,3),mar=c(2,2,4,1),oma = c(4, 6, 0, 0))
-    
-    ymin <- -2
-    ymax <- 40
-    title.size <- 1.5
-    
-    ### first row
-    plot(fits.ch01[[5]],lwd=3, col=alpha("black",0.6), pch=21, main="Leaves: up", cex.main=title.size,
-         xlim=c(0, 1200), ylim=c(ymin, ymax))
-    abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-
-    plot(fits.ch03[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
-         xlim=c(0, 1200), ylim=c(ymin, ymax), addlegend=F)
-    abline(v=c(320, 512), lwd=2, lty=c(1, 3))
+    coefDF <- coef(fits)
+    coefDF <- merge(coefDF, idDF, by="Identity", all=T)
     
     
-    plot(fits.ch11[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
-         xlim=c(0, 1200), ylim=c(ymin, ymax), addlegend=F)
-    abline(v=c(320, 512), lwd=2, lty=c(1, 3))
+    ## ambient A-Ci plots, leaf and canopy
+    #pdf("output/A-Ca/ambient_A-Ci_plots.pdf", width=14, height=14)
+    #par(mfrow=c(5,3),mar=c(2,2,4,1),oma = c(4, 6, 0, 0))
+    #
+    #ymin <- -2
+    #ymax <- 40
+    #title.size <- 1.5
+    #
+    #### first row
+    #plot(fits.ch01[[5]],lwd=3, col=alpha("black",0.6), pch=21, main="Leaves: up", cex.main=title.size,
+    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
+    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
+#
+    #plot(fits.ch03[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
+    #     xlim=c(0, 1200), ylim=c(ymin, ymax), addlegend=F)
+    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
+    #
+    #
+    #plot(fits.ch11[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
+    #     xlim=c(0, 1200), ylim=c(ymin, ymax), addlegend=F)
+    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
+    #
+    #
+    #### second row
+    #plot(fits.ch01[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, main="Leaves: low", cex.main=title.size,
+    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
+    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
+    #
+    #plot(fits.ch03[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
+    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
+    #
+    #plot(fits.ch11[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
+    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
+    #
+#
+    #### third row
+    #ymax <- 20
+    #
+    #plot(fits.ch01[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, main="Canopy: whole", cex.main=title.size,
+    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
+    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
+    #
+    #plot(fits.ch03[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
+    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
+    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
+    #
+    #plot(fits.ch11[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
+    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
+    #
+    #
+    #### fourth row
+    #plot(fits.ch01[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,main="Canopy: T+M", cex.main=title.size,
+    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
+    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
+    #
+    #plot(fits.ch03[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
+    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
+    #
+    #plot(fits.ch11[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
+    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
+    #
+    #
+    #### fifth row
+    #plot(fits.ch01[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, main="Canopy: top", cex.main=title.size,
+    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
+    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
+    #
+    #plot(fits.ch03[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
+    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
+    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
+    #
+    #
+    #plot(fits.ch11[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
+    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
+    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
+    #
+    ## print the overall labels
+    #mtext(expression(C[i] * " (" * mu * "mol " * mol^-1 * ")"), side = 1, outer = TRUE, line = 2, cex=2)
+    #mtext(expression(A * " (" * mu * "mol " * CO[2] * m^-2 * " " * s^-1 * ")"), 
+    #      side = 2, outer = TRUE, line = 2, cex=2)
+    #
+    #dev.off()
     
     
-    ### second row
-    plot(fits.ch01[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, main="Leaves: low", cex.main=title.size,
-         xlim=c(0, 1200), ylim=c(ymin, ymax))
-    abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    
-    plot(fits.ch03[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-         xlim=c(0, 1200), ylim=c(ymin, ymax))
-    abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    
-    plot(fits.ch11[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-         xlim=c(0, 1200), ylim=c(ymin, ymax))
-    abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    
-
-    ### third row
-    ymax <- 20
-    
-    plot(fits.ch01[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, main="Canopy: whole", cex.main=title.size,
-         xlim=c(0, 1200), ylim=c(ymin, ymax))
-    abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    
-    plot(fits.ch03[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
-         xlim=c(0, 1200), ylim=c(ymin, ymax))
-    abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    
-    plot(fits.ch11[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-         xlim=c(0, 1200), ylim=c(ymin, ymax))
-    abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    
-    
-    ### fourth row
-    plot(fits.ch01[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,main="Canopy: T+M", cex.main=title.size,
-         xlim=c(0, 1200), ylim=c(ymin, ymax))
-    abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    
-    plot(fits.ch03[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-         xlim=c(0, 1200), ylim=c(ymin, ymax))
-    abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    
-    plot(fits.ch11[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-         xlim=c(0, 1200), ylim=c(ymin, ymax))
-    abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    
-    
-    ### fifth row
-    plot(fits.ch01[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, main="Canopy: top", cex.main=title.size,
-         xlim=c(0, 1200), ylim=c(ymin, ymax))
-    abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    
-    plot(fits.ch03[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-         xlim=c(0, 1200), ylim=c(ymin, ymax))
-    abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    
-    
-    plot(fits.ch11[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
-         xlim=c(0, 1200), ylim=c(ymin, ymax))
-    abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    
-    # print the overall labels
-    mtext(expression(C[i] * " (" * mu * "mol " * mol^-1 * ")"), side = 1, outer = TRUE, line = 2, cex=2)
-    mtext(expression(A * " (" * mu * "mol " * CO[2] * m^-2 * " " * s^-1 * ")"), 
-          side = 2, outer = TRUE, line = 2, cex=2)
-    
-    dev.off()
-    
-    
-    ################################# plot statistics for ambient #################################
+    ################################# plot statistics #################################
     #### read biochemical parameter summary table
     ### we have multiple dates in leaf-scale measurements
     stDF.c <- read.csv("output/canopy/canopy_scale_parameters.csv", header=T)
     stDF.l <- read.csv("output/leaf/leaf_scale_parameters.csv", header=T)
     
-    ### subset leaf
-    subDF.l <- subset(stDF.l, Chamber%in%c("ch01", "ch03", "ch11"))
-    subDF.l$Date <- as.Date(as.character(subDF.l$Date))
-    #subDF.l <- subset(subDF.l, Date>=as.Date("2009-01-01")&Date<=as.Date("2009-03-01"))
+    ### subset chambers
+    subDF.l <- subset(stDF.l, Chamber%in%c("ch01", "ch03", "ch11", "ch04", "ch08"))
+    subDF.c <- subset(stDF.c, Chamber%in%c("1", "3", "11", "4", "8"))
     
-    subDF.l <- subDF.l[,c("Chamber", "Height", "RMSE", "Vcmax", "Vcmax.se", "Jmax",
+    ### subset columns
+    subDF.l <- subDF.l[,c("Identity", "RMSE", "Vcmax", "Vcmax.se", "Jmax",
                           "Jmax.se", "Rd", "Rd.se", "Ci", "ALEAF", "GS", "ELEAF", "Ac",
                           "Aj", "Ap", "VPD", "Tleaf", "Ca", "Cc", "PPFD", 
                           "Ci_transition_Ac_Aj", "GammaStar", "Km", "G1", "JVratio")]
     
-    subDF.l$Chamber <- as.character(subDF.l$Chamber)
-    subDF.l$Chamber <- as.numeric(gsub("ch", "", subDF.l$Chamber))
-    subDF.l$Height <- as.character(subDF.l$Height)
-    subDF.l$Source <- "Leaf"
-    
-    ### subset canopy
-    subDF.c <- subset(stDF.c, Chamber%in%c("1", "3", "11"))
-    
-    subDF.c <- subDF.c[,c("Chamber", "Canopy", "RMSE", "Vcmax", "Vcmax.se", "Jmax",
+    subDF.c <- subDF.c[,c("Identity", "RMSE", "Vcmax", "Vcmax.se", "Jmax",
                           "Jmax.se", "Rd", "Rd.se", "Ci", "ALEAF", "GS", "ELEAF", "Ac",
                           "Aj", "Ap", "VPD", "Tleaf", "Ca", "Cc", "PPFD", 
                           "Ci_transition_Ac_Aj", "GammaStar", "Km", "G1", "JVratio")]
     
     ### change col names
-    names(subDF.c)[names(subDF.c) == "Canopy"] <- "Height"
+    stDF <- rbind(subDF.l, subDF.c)
+    stDF <- merge(stDF, idDF, by="Identity", all=T)
     
-    subDF.c$Source <- "Canopy"
-
-    ### combine    
-    plotDF <- rbind(subDF.l, subDF.c)
-    plotDF$Chamber <- as.factor(as.character(plotDF$Chamber))
-    plotDF$Source <- as.factor(as.character(plotDF$Source))
-    plotDF$Height <- as.factor(as.character(plotDF$Height))
+    ### plotDF
+    plotDF1 <- subset(stDF, CO2_treatment == "aCO2")
+    plotDF2 <- subset(stDF, CO2_treatment == "eCO2")
+    
+    ### perform linear mixed effect model statistics
+    mod <- lmer(Jmax~ CO2_treatment + Type + Position + (1|Chamber), data=stDF)
+    mod1 <- lmer(Jmax~ Type + (1|Position), data=plotDF1)
+    mod2 <- lmer(Jmax~ Type + (1|Position), data=plotDF2)
+    anova(mod)
+    anova(mod1)
+    require(lme4)
+    require(lmerTest)
+    rand(mod)
+    
+    mod2 <- gls(Jmax ~ Position,
+                data=plotDF1)
+    
+    coef(summary(mod2)) 
+    anova(mod2, type = "marginal")
+    
+    library(emmeans)
+    pairs(emmeans(mod, "Position"))
+    
+    #plotDF1$Position <- as.factor(as.character(plotDF1$Position))
+    #summary(aov(Jmax ~ Type + Position, plotDF1))
+    #contrasts(plotDF1$Position) <- contr.sum
+    #library(car)
+    #Anova(aov(Jmax ~ Type/Position, plotDF1))
+    
+    stDF$Type <- as.factor(stDF$Type)
+    stDF$CO2_treatment <- as.factor(stDF$CO2_treatment)
+    plotDF1$Type <- as.factor(plotDF1$Type)
+    
+    data.lme <- lme(Jmax ~ CO2_treatment + Type, random = ~1 | Position, stDF)
+    summary(data.lme)
+    anova(data.lme)
+    library(multcomp)
+    summary(glht(data.lme, linfct = mcp(Type = "Tukey")))
+    summary(glht(data.lme, linfct = mcp(CO2_treatment = "Tukey")))
+    
     
     
     ### plotting
     p1 <- ggplot() +
-      geom_point(data=plotDF, aes(Height, Vcmax, 
-                                  fill=as.factor(Height), 
-                                  pch = as.factor(Source)), alpha=1.0, size=4)+
+      geom_point(data=plotDF1, aes(Position, Vcmax, 
+                                  fill=as.factor(Position), 
+                                  pch = as.factor(Type)), alpha=1.0, size=4)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -501,9 +521,9 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     
     
     p2 <- ggplot() +
-      geom_point(data=plotDF, aes(Height, Jmax, 
-                                  fill=as.factor(Height), 
-                                  pch = as.factor(Source)), alpha=1.0, size=4)+
+      geom_point(data=plotDF1, aes(Position, Jmax, 
+                                  fill=as.factor(Position), 
+                                  pch = as.factor(Type)), alpha=1.0, size=4)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -536,9 +556,9 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     
     
     p3 <- ggplot() +
-      geom_point(data=plotDF, aes(Height, JVratio, 
-                                  fill=as.factor(Height), 
-                                  pch = as.factor(Source)), alpha=1.0, size=4)+
+      geom_point(data=plotDF1, aes(Position, JVratio, 
+                                  fill=as.factor(Position), 
+                                  pch = as.factor(Type)), alpha=1.0, size=4)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -571,9 +591,9 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     
     
     p4 <- ggplot() +
-      geom_point(data=plotDF, aes(Height, Ci_transition_Ac_Aj, 
-                                  fill=as.factor(Height), 
-                                  pch = as.factor(Source)), alpha=1.0, size=4)+
+      geom_point(data=plotDF1, aes(Position, Ci_transition_Ac_Aj, 
+                                  fill=as.factor(Position), 
+                                  pch = as.factor(Type)), alpha=1.0, size=4)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -615,28 +635,6 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     pdf("output/A-Ca/ambient_biochemical_parameter_plot.pdf", width=10, height=10)
     plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
     dev.off()  
-    
-    
-    
-    #### perform statistics
-    #require(nlme)
-    #require(lme4)
-    #require(lmerTest)
-    #fit = aov(Vcmax ~ Source + Error(Height), data=plotDF)
-    #summary(fit)
-    #
-    #pf(q=13057/805,
-    #   df1=1,
-    #   df2=3,
-    #   lower.tail=FALSE)
-    #
-    #pf(q=805/142.6,
-    #   df1=3,
-    #   df2=10,
-    #   lower.tail=F)
-    
-    ### to be written
-    
     
     
     
@@ -732,8 +730,8 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     outDF2$Aj_sens_norm <- with(outDF2, (Aj_600-Aj_400)/Aj_400)
     outDF2$Ac_sens_norm <- with(outDF2, (Ac_600-Ac_400)/Ac_400)
     
-    ### Source
-    outDF2$Source <- c(rep("Leaf", 6), rep("Canopy", 9))
+    ### Type
+    outDF2$Type <- c(rep("Leaf", 6), rep("Canopy", 9))
     
     write.csv(outDF2, "output/A-Ca/predicted_A_at_Ci_400_600_ppm.csv", row.names=F)
     
@@ -741,7 +739,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     p1 <- ggplot() +
       geom_point(data=outDF2, aes(Position, A_sens, 
                                   fill=as.factor(Position), 
-                                  pch = as.factor(Source)), alpha=1.0, size=4)+
+                                  pch = as.factor(Type)), alpha=1.0, size=4)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -777,7 +775,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     p2 <- ggplot() +
       geom_point(data=outDF2, aes(Position, A_sens_norm, 
                                   fill=as.factor(Position), 
-                                  pch = as.factor(Source)), alpha=1.0, size=4)+
+                                  pch = as.factor(Type)), alpha=1.0, size=4)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -813,7 +811,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     p3 <- ggplot() +
       geom_point(data=outDF2, aes(Position, Ac_sens, 
                                   fill=as.factor(Position), 
-                                  pch = as.factor(Source)), alpha=1.0, size=4)+
+                                  pch = as.factor(Type)), alpha=1.0, size=4)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -849,7 +847,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     p4 <- ggplot() +
       geom_point(data=outDF2, aes(Position, Ac_sens_norm, 
                                   fill=as.factor(Position), 
-                                  pch = as.factor(Source)), alpha=1.0, size=4)+
+                                  pch = as.factor(Type)), alpha=1.0, size=4)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -885,7 +883,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     p5 <- ggplot() +
       geom_point(data=outDF2, aes(Position, Aj_sens, 
                                   fill=as.factor(Position), 
-                                  pch = as.factor(Source)), alpha=1.0, size=4)+
+                                  pch = as.factor(Type)), alpha=1.0, size=4)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -921,7 +919,7 @@ plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment <- function(cDF) {
     p6 <- ggplot() +
       geom_point(data=outDF2, aes(Position, Aj_sens_norm, 
                                   fill=as.factor(Position), 
-                                  pch = as.factor(Source)), alpha=1.0, size=4)+
+                                  pch = as.factor(Type)), alpha=1.0, size=4)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
