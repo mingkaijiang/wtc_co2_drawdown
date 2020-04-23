@@ -1,4 +1,4 @@
-plot_A_Ca_for_leaf_and_canopy_data <- function(cDF) {
+plot_individual_A_Ca_curves <- function(cDF) {
     #### This script plots A-CA curve for leaf and canopy data on to the same plot
     #### and compare the shapes
     #### which can be related to Rogers et al. 2017 conceptual figure

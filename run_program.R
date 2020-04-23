@@ -59,12 +59,12 @@ canopy_aciDF <- canopy_ACI_processing(cDF=canopyDF)
 cDF <- canopyDF
 
 ### all data
-#plot_A_Ca_for_leaf_and_canopy_data(cDF=canopyDF)
+#plot_individual_A_Ca_curves(cDF=canopyDF)
 
 ### ambient CO2 and well-watered treatment
 ### include both A-Ca and A-Ci plots
 ### including statistics
-plot_A_Ca_for_leaf_and_canopy_data_ambient_treatment(cDF=canopyDF)
+plot_A_Ca_and_perform_statistics(cDF=canopyDF)
 
 #statistical_tests_linear_mixed_effect_model()
 
