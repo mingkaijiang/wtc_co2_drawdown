@@ -47,7 +47,7 @@ canopyDF <- processing_canopy_data(leafDF=leaf_aciDF)
 #### Fit canopy level A-Ci curves to:
 ###                                1. generate parameters to compare against leaf scale A-Ci
 ###                                2. compare treatment effect (reduced sample size)
-###                                3. layer effect (whole, top, middle and bottom)
+###                                3. position effect (whole, top, middle and bottom)
 ###                                4. save stats and figures
 ###                                5. output parameters for leaf and canopy comparison
 canopy_aciDF <- canopy_ACI_processing(cDF=canopyDF)

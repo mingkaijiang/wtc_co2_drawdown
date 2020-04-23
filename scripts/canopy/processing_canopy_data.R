@@ -119,10 +119,6 @@ processing_canopy_data <- function(leafDF) {
     ### only delete outliers, keep all date information
     myDF <- canopy_data_control_basic(myDF)
     
-    ### Calculate CO2 flux for each minute and output in the unit of ppm CO2 min-1
-    ### also delete some unstable data points (mostly earlier period of the experiments)
-    #myDF <- calculate_co2_flux_per_second(myDF)
-
     ### continue cleaning data
     myDF$Norm_corr_CO2_flux <- as.numeric(myDF$Norm_corr_CO2_flux)
     
@@ -162,17 +158,135 @@ processing_canopy_data <- function(leafDF) {
     outDF <- merge(outDF, idDF, by="ID", all=T)
     
     
-    ### outDF
-    outDF <- outDF[,c("Identity", "Chamber", "Canopy", "datetime",
-                      "date", "time", "WTC_CO2", "WTC_T", "WTC_dew_point",
-                      "WTC_PAR", "Tair", "ES", "RH", "EA", "VPD",
-                      "Leaf_area", "Leak_coef", "Leak", "CO2_flux",
-                      "Norm_CO2_flux", "Corr_CO2_flux", "Norm_corr_CO2_flux",
-                      "Cond_water", "WTC_volume_m3", "Norm_H2O_flux",
-                      "gs1", "G1", "gs", "Norm_H2O_flux2", "Ci")]
+    ### return canopyDF
+    rtDF <- outDF[,c("Identity", "Chamber", "Canopy", "datetime",
+                     "date", "time", "WTC_CO2", "WTC_T", "WTC_dew_point",
+                     "WTC_PAR", "Tair", "ES", "RH", "EA", "VPD",
+                     "Leaf_area", "Leak_coef", "Leak", "CO2_flux",
+                     "Norm_CO2_flux", "Corr_CO2_flux", "Norm_corr_CO2_flux",
+                     "Cond_water", "WTC_volume_m3", "Norm_H2O_flux",
+                     "gs1", "G1", "gs", "Norm_H2O_flux2", "Ci")]
+    
+    
+    
+    #### Fitting ACI curve at the finest resolution
+    myDF <- rtDF[,c("Identity", "Chamber", "Canopy", "date", "RH",
+                      "Norm_corr_CO2_flux", "WTC_CO2", "Norm_H2O_flux", 
+                      "Ci", "WTC_T", "WTC_T", "WTC_PAR", "VPD")]
+    
+    
+    colnames(myDF) <- c("Identity", "Chamber", "Position", "Date", "RH",
+                        "Photo", "Ca", "Cond", 
+                        "Ci", "Tair", "Tleaf", "PAR", "VPD")
+    
+    fits.all <- fitacis(myDF, group="Identity", 
+                        fitmethod="bilinear", varnames = list(ALEAF="Photo",
+                                                              Tleaf="Tleaf", 
+                                                              Ci = "Ci",
+                                                              PPFD="PAR"),
+                        Tcorrect=T, fitTPU=F)
+    
+    ### fit g1 value
+    fits.bb <- fitBBs(myDF, group="Identity")
+    
+    ### create DF for fit aci parameters
+    id.list <- unique(myDF$Identity)
+    
+    ### prepare an output df
+    outDF <- data.frame(id.list, NA, NA, NA, NA, NA, 
+                        NA, NA, NA, NA, NA, NA,
+                        NA, NA, NA, NA, NA, NA,
+                        NA, NA, NA, NA, NA, NA,
+                        NA, NA, NA, NA, NA, NA)
+    colnames(outDF) <- c("Identity", "Chamber", "CO2_treatment", "Position", 
+                         "RMSE", "Vcmax", "Vcmax.se", "Jmax", "Jmax.se", "Rd", "Rd.se",
+                         "Ci", "ALEAF", "GS", "ELEAF", "Ac", "Aj", "Ap", "Rd2", "VPD",
+                         "Tleaf", "Ca", "Cc", "PPFD", "Patm", 
+                         "Ci_transition_Ac_Aj","curve.fitting", 
+                         "GammaStar", "Km", "G1")
+    
+    
+    
+    ### the for loop
+    for (i in 1:length(id.list)) {
+        ## subset each data
+        test <- subset(myDF, Identity == id.list[i])
+        
+        ## fit
+        fit1 <- fitaci(test, fitmethod="bilinear", varnames = list(ALEAF="Photo",
+                                                                   Tleaf="Tleaf", 
+                                                                   Ci = "Ci",
+                                                                   PPFD="PAR"),
+                       Tcorrect=T, fitTPU=F)
+        fit2 <- fitBB(test, varnames = list(ALEAF = "Photo", GS = "Cond", VPD = "VPD",
+                                            Ca = "Ca", RH = "RH"),
+                      gsmodel="BBOpti")
+        
+        
+        ## get information on identity
+        outDF[outDF$Identity == id.list[i], "Chamber"] <- unique(test$Chamber)
+        outDF[outDF$Identity == id.list[i], "Position"] <- unique(test$Position)
+        outDF[outDF$Identity == id.list[i], "curve.fitting"] <- fit1$fitmethod
+
+        ## assign fitted values
+        outDF[outDF$Identity == id.list[i], "RMSE"] <- fit1$RMSE
+        outDF[outDF$Identity == id.list[i], "Vcmax"] <- fit1$pars[1,1]
+        outDF[outDF$Identity == id.list[i], "Vcmax.se"] <- fit1$pars[1,2]
+        outDF[outDF$Identity == id.list[i], "Jmax"] <- fit1$pars[2,1]
+        outDF[outDF$Identity == id.list[i], "Jmax.se"] <- fit1$pars[2,2]
+        outDF[outDF$Identity == id.list[i], "Rd"] <- fit1$pars[3,1]
+        outDF[outDF$Identity == id.list[i], "Rd.se"] <- fit1$pars[3,2]
+        
+        outDF[outDF$Identity == id.list[i], "Ci"] <- fit1$Photosyn(Ca=400)[1]
+        outDF[outDF$Identity == id.list[i], "ALEAF"] <- fit1$Photosyn(Ca=400)[2]
+        outDF[outDF$Identity == id.list[i], "GS"] <- fit1$Photosyn(Ca=400)[3]
+        outDF[outDF$Identity == id.list[i], "ELEAF"] <- fit1$Photosyn(Ca=400)[4]
+        outDF[outDF$Identity == id.list[i], "Ac"] <- fit1$Photosyn(Ca=400)[5]
+        outDF[outDF$Identity == id.list[i], "Aj"] <- fit1$Photosyn(Ca=400)[6]
+        outDF[outDF$Identity == id.list[i], "Ap"] <- fit1$Photosyn(Ca=400)[7]
+        outDF[outDF$Identity == id.list[i], "Rd2"] <- fit1$Photosyn(Ca=400)[8]
+        outDF[outDF$Identity == id.list[i], "VPD"] <- fit1$Photosyn(Ca=400)[9]
+        outDF[outDF$Identity == id.list[i], "Tleaf"] <- fit1$Photosyn(Ca=400)[10]
+        outDF[outDF$Identity == id.list[i], "Ca"] <- fit1$Photosyn(Ca=400)[11]
+        outDF[outDF$Identity == id.list[i], "Cc"] <- fit1$Photosyn(Ca=400)[12]
+        outDF[outDF$Identity == id.list[i], "PPFD"] <- fit1$Photosyn(Ca=400)[13]
+        outDF[outDF$Identity == id.list[i], "Patm"] <- fit1$Photosyn(Ca=400)[14]
+        
+        outDF[outDF$Identity == id.list[i], "Ci_transition_Ac_Aj"] <- fit1$Ci_transition
+        outDF[outDF$Identity == id.list[i], "GammaStar"] <- fit1$GammaStar
+        outDF[outDF$Identity == id.list[i], "Km"] <- fit1$Km
+        # G1
+        outDF[outDF$Identity == id.list[i], "G1"] <- coef(fit2)[2]
+        
+    }
+    
+    outDF$JVratio <- outDF$Jmax / outDF$Vcmax
+    
+    outDF$CO2_treatment <- "aCO2"
+    outDF$CO2_treatment[outDF$Chamber%in%c(4,8)] <- "eCO2"
+    
+    ### save
+    write.csv(outDF, "output/canopy/canopy_scale_parameters.csv", row.names=F)
+    
+    
+    ### create pdf
+    pdf("output/canopy/canopy_level_individual_chamber_result.pdf", height=24, width=20)
+    par(mfrow=c(5,3))
+    #1,3,11, 4, 8
+    
+    ### make plot
+    for (i in 1:15) {
+        plot(fits.all[[i]], main=paste0(outDF$Chamber[i], ", ", outDF$Position[i], ", ",
+                                        outDF$CO2_treatment[i]),
+             xlim=c(0, 1200))
+        abline(v=c(320), lwd=2, lty=3)
+    }
+    
+    dev.off()
+    
     
     ### return output
-    return(outDF)
+    return(rtDF)
 
     
 }
