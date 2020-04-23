@@ -6,7 +6,7 @@ canopy_data_control_basic <- function(myDF) {
 
     
     ### testing script
-    #tDF1 <- subset(myDF, Chamber=="1"&Canopy=="45")
+    #tDF1 <- subset(myDF, Chamber=="2"&Canopy=="45")
     #unique(tDF1$date)
     #with(tDF1, plot(Norm_corr_CO2_flux~WTC_CO2))
     #
@@ -28,7 +28,8 @@ canopy_data_control_basic <- function(myDF) {
     #tDF7 <- rbind(tDF5, tDF6)
     #with(tDF7, plot(Norm_corr_CO2_flux~WTC_CO2))
     
-    
+    ### prepare outDF
+
     ### Chamber 2, canopy 45, delete outliers
     outDF <- subset(myDF, Chamber!="2"|Canopy!="45")
     subDF <- subset(myDF, Chamber=="2"&Canopy=="45"&date=="2009-03-20"&WTC_CO2<=650)
@@ -36,30 +37,30 @@ canopy_data_control_basic <- function(myDF) {
     
     
     ### Chamber 1, 345
-    #subDF1 <- subset(outDF, Chamber=="1"&Canopy=="345")
-    #outDF <- subset(outDF, Chamber!="1"|Canopy!="345")
-    #subDF2 <- subset(subDF1, WTC_CO2<800)
-    #subDF3 <- subset(subDF1, WTC_CO2>=800&Norm_corr_CO2_flux<=7.5)
-    #subDF4 <- rbind(subDF2, subDF3)
-    #subDF5 <- subset(subDF4, WTC_CO2<=300&Norm_corr_CO2_flux<=4)
-    #subDF6 <- subset(subDF4, WTC_CO2>300&Norm_corr_CO2_flux>=5)
-    #subDF7 <- rbind(subDF5, subDF6)
-    #outDF <- rbind(outDF, subDF7)
-    #
+    subDF1 <- subset(outDF, Chamber=="1"&Canopy=="345")
+    outDF <- subset(outDF, Chamber!="1"|Canopy!="345")
+    subDF2 <- subset(subDF1, WTC_CO2<800)
+    subDF3 <- subset(subDF1, WTC_CO2>=800&Norm_corr_CO2_flux<=7.5)
+    subDF4 <- rbind(subDF2, subDF3)
+    subDF5 <- subset(subDF4, WTC_CO2<=300&Norm_corr_CO2_flux<=4)
+    subDF6 <- subset(subDF4, WTC_CO2>300&Norm_corr_CO2_flux>=5)
+    subDF7 <- rbind(subDF5, subDF6)
+    outDF <- rbind(outDF, subDF7)
+    
     #### Chamber 1, 12345
-    #subDF1 <- subset(outDF, Chamber=="1"&Canopy=="12345"&WTC_CO2<=1200&Norm_corr_CO2_flux<=7)
-    #outDF <- subset(outDF, Chamber!="1"|Canopy!="12345")
-    #subDF2 <- subset(subDF1, WTC_CO2<150&Norm_corr_CO2_flux<=2.5)
-    #subDF3 <- subset(subDF1, WTC_CO2>=150)
-    #subDF4 <- rbind(subDF2, subDF3)
-    #outDF <- rbind(outDF, subDF4)
-    #
-    #
+    subDF1 <- subset(outDF, Chamber=="1"&Canopy=="12345"&WTC_CO2<=1200&Norm_corr_CO2_flux<=7)
+    outDF <- subset(outDF, Chamber!="1"|Canopy!="12345")
+    subDF2 <- subset(subDF1, WTC_CO2<150&Norm_corr_CO2_flux<=2.5)
+    subDF3 <- subset(subDF1, WTC_CO2>=150)
+    subDF4 <- rbind(subDF2, subDF3)
+    outDF <- rbind(outDF, subDF4)
+    
+    
     #### Chamber 1, canopy 45, delete outliers
-    #subDF <- subset(outDF, Chamber=="1"&Canopy=="45"&WTC_CO2<=1500)
-    #outDF <- subset(outDF, Chamber!="1"|Canopy!="45")
-    #outDF <- rbind(outDF, subDF)
-    #
+    subDF <- subset(outDF, Chamber=="1"&Canopy=="45"&WTC_CO2<=1500)
+    outDF <- subset(outDF, Chamber!="1"|Canopy!="45")
+    outDF <- rbind(outDF, subDF)
+    
     #### Chamber 3, canopy 45, delete outliers
     #subDF <- subset(outDF, Chamber=="3"&Canopy=="45"&WTC_CO2<=1550&Norm_corr_CO2_flux<=14)
     #outDF <- subset(outDF, Chamber!="3"|Canopy!="45")

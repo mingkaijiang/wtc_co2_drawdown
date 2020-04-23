@@ -117,7 +117,7 @@ processing_canopy_data <- function(leafDF) {
     #canopy_data_check_and_plot(myDF)
     
     ### only delete outliers, keep all date information
-    myDF <- canopy_data_control_basic(myDF)
+    myDF <- canopy_data_control_basic_2(myDF)
     
     ### continue cleaning data
     myDF$Norm_corr_CO2_flux <- as.numeric(myDF$Norm_corr_CO2_flux)
@@ -187,10 +187,12 @@ processing_canopy_data <- function(leafDF) {
                         Tcorrect=T, fitTPU=F)
     
     ### fit g1 value
-    fits.bb <- fitBBs(myDF, group="Identity")
+    fits.bb <- fitBBs(myDF, varnames = list(ALEAF = "Photo", GS = "Cond", VPD = "VPD",
+                                            Ca = "Ca", RH = "RH"),
+                      group="Identity")
     
     ### create DF for fit aci parameters
-    id.list <- unique(myDF$Identity)
+    id.list <- c(111:125)
     
     ### prepare an output df
     outDF <- data.frame(id.list, NA, NA, NA, NA, NA, 
@@ -208,9 +210,9 @@ processing_canopy_data <- function(leafDF) {
     
     
     ### the for loop
-    for (i in 1:length(id.list)) {
+    for (i in id.list) {
         ## subset each data
-        test <- subset(myDF, Identity == id.list[i])
+        test <- subset(myDF, Identity == i)
         
         ## fit
         fit1 <- fitaci(test, fitmethod="bilinear", varnames = list(ALEAF="Photo",
@@ -224,39 +226,39 @@ processing_canopy_data <- function(leafDF) {
         
         
         ## get information on identity
-        outDF[outDF$Identity == id.list[i], "Chamber"] <- unique(test$Chamber)
-        outDF[outDF$Identity == id.list[i], "Position"] <- unique(test$Position)
-        outDF[outDF$Identity == id.list[i], "curve.fitting"] <- fit1$fitmethod
+        outDF[outDF$Identity == i, "Chamber"] <- unique(test$Chamber)
+        outDF[outDF$Identity == i, "Position"] <- unique(test$Position)
+        outDF[outDF$Identity == i, "curve.fitting"] <- fit1$fitmethod
 
         ## assign fitted values
-        outDF[outDF$Identity == id.list[i], "RMSE"] <- fit1$RMSE
-        outDF[outDF$Identity == id.list[i], "Vcmax"] <- fit1$pars[1,1]
-        outDF[outDF$Identity == id.list[i], "Vcmax.se"] <- fit1$pars[1,2]
-        outDF[outDF$Identity == id.list[i], "Jmax"] <- fit1$pars[2,1]
-        outDF[outDF$Identity == id.list[i], "Jmax.se"] <- fit1$pars[2,2]
-        outDF[outDF$Identity == id.list[i], "Rd"] <- fit1$pars[3,1]
-        outDF[outDF$Identity == id.list[i], "Rd.se"] <- fit1$pars[3,2]
+        outDF[outDF$Identity == i, "RMSE"] <- fit1$RMSE
+        outDF[outDF$Identity == i, "Vcmax"] <- fit1$pars[1,1]
+        outDF[outDF$Identity == i, "Vcmax.se"] <- fit1$pars[1,2]
+        outDF[outDF$Identity == i, "Jmax"] <- fit1$pars[2,1]
+        outDF[outDF$Identity == i, "Jmax.se"] <- fit1$pars[2,2]
+        outDF[outDF$Identity == i, "Rd"] <- fit1$pars[3,1]
+        outDF[outDF$Identity == i, "Rd.se"] <- fit1$pars[3,2]
         
-        outDF[outDF$Identity == id.list[i], "Ci"] <- fit1$Photosyn(Ca=400)[1]
-        outDF[outDF$Identity == id.list[i], "ALEAF"] <- fit1$Photosyn(Ca=400)[2]
-        outDF[outDF$Identity == id.list[i], "GS"] <- fit1$Photosyn(Ca=400)[3]
-        outDF[outDF$Identity == id.list[i], "ELEAF"] <- fit1$Photosyn(Ca=400)[4]
-        outDF[outDF$Identity == id.list[i], "Ac"] <- fit1$Photosyn(Ca=400)[5]
-        outDF[outDF$Identity == id.list[i], "Aj"] <- fit1$Photosyn(Ca=400)[6]
-        outDF[outDF$Identity == id.list[i], "Ap"] <- fit1$Photosyn(Ca=400)[7]
-        outDF[outDF$Identity == id.list[i], "Rd2"] <- fit1$Photosyn(Ca=400)[8]
-        outDF[outDF$Identity == id.list[i], "VPD"] <- fit1$Photosyn(Ca=400)[9]
-        outDF[outDF$Identity == id.list[i], "Tleaf"] <- fit1$Photosyn(Ca=400)[10]
-        outDF[outDF$Identity == id.list[i], "Ca"] <- fit1$Photosyn(Ca=400)[11]
-        outDF[outDF$Identity == id.list[i], "Cc"] <- fit1$Photosyn(Ca=400)[12]
-        outDF[outDF$Identity == id.list[i], "PPFD"] <- fit1$Photosyn(Ca=400)[13]
-        outDF[outDF$Identity == id.list[i], "Patm"] <- fit1$Photosyn(Ca=400)[14]
+        outDF[outDF$Identity == i, "Ci"] <- fit1$Photosyn(Ca=400)[1]
+        outDF[outDF$Identity == i, "ALEAF"] <- fit1$Photosyn(Ca=400)[2]
+        outDF[outDF$Identity == i, "GS"] <- fit1$Photosyn(Ca=400)[3]
+        outDF[outDF$Identity == i, "ELEAF"] <- fit1$Photosyn(Ca=400)[4]
+        outDF[outDF$Identity == i, "Ac"] <- fit1$Photosyn(Ca=400)[5]
+        outDF[outDF$Identity == i, "Aj"] <- fit1$Photosyn(Ca=400)[6]
+        outDF[outDF$Identity == i, "Ap"] <- fit1$Photosyn(Ca=400)[7]
+        outDF[outDF$Identity == i, "Rd2"] <- fit1$Photosyn(Ca=400)[8]
+        outDF[outDF$Identity == i, "VPD"] <- fit1$Photosyn(Ca=400)[9]
+        outDF[outDF$Identity == i, "Tleaf"] <- fit1$Photosyn(Ca=400)[10]
+        outDF[outDF$Identity == i, "Ca"] <- fit1$Photosyn(Ca=400)[11]
+        outDF[outDF$Identity == i, "Cc"] <- fit1$Photosyn(Ca=400)[12]
+        outDF[outDF$Identity == i, "PPFD"] <- fit1$Photosyn(Ca=400)[13]
+        outDF[outDF$Identity == i, "Patm"] <- fit1$Photosyn(Ca=400)[14]
         
-        outDF[outDF$Identity == id.list[i], "Ci_transition_Ac_Aj"] <- fit1$Ci_transition
-        outDF[outDF$Identity == id.list[i], "GammaStar"] <- fit1$GammaStar
-        outDF[outDF$Identity == id.list[i], "Km"] <- fit1$Km
+        outDF[outDF$Identity == i, "Ci_transition_Ac_Aj"] <- fit1$Ci_transition
+        outDF[outDF$Identity == i, "GammaStar"] <- fit1$GammaStar
+        outDF[outDF$Identity == i, "Km"] <- fit1$Km
         # G1
-        outDF[outDF$Identity == id.list[i], "G1"] <- coef(fit2)[2]
+        outDF[outDF$Identity == i, "G1"] <- coef(fit2)[2]
         
     }
     
