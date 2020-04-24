@@ -160,16 +160,6 @@ plot_leaf_ACI_curves <- function(plotDF) {
               labels="", ncol=2, align="h", axis = "l")
     dev.off()
     
-    ### testing co2 by height, ignore date
-    ## vcmax
-    mod1 <- lme(Vcmax ~ CO2_treatment * Height, random=~1|Chamber, 
-                data=plotDF, 
-                method="REML")
-    anova.lme(mod1, 
-              type="sequential", 
-              adjustSigma = FALSE)
-    # no CO2 by height interaction on vcmax
-    
     
     ##### make box plot
     plotDF$JVratio <- plotDF$Jmax/plotDF$Vcmax
@@ -358,11 +348,74 @@ plot_leaf_ACI_curves <- function(plotDF) {
               plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
         ylim(10,500)
     
-    #plot(p4)
+    
+    p5 <- ggplot(subDF) +
+        geom_point(aes(Date, Tleaf, fill=Height), 
+                   size = 6, shape=21, 
+                   position=position_dodge(width=0.5))+
+        xlab("")+
+        ylab(expression(T[leaf]*" (" * degree * "C )"))+
+        scale_fill_manual(name="Height",
+                          limits=c("up", "low"),
+                          values=c("grey", "black"))+
+        scale_color_manual(name="Height",
+                           limits=c("up", "low"),
+                           values=c("grey", "black"))+
+        scale_linetype_manual(name="Group",
+                              limits=c("A", "B", "C"),
+                              values=c("dotdash", "dotted", "solid"),
+                              labels=c("up_pre2009",
+                                       "up_2009",
+                                       "low_2009"))+
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_blank(), 
+              axis.text.x = element_text(size=18),
+              axis.text.y=element_text(size=18),
+              axis.title.y=element_text(size=18),
+              legend.text=element_text(size=18),
+              legend.title=element_text(size=18),
+              panel.grid.major=element_blank(),
+              legend.position="bottom",
+              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+        ylim(20,35)
+    
+    
+    p6 <- ggplot(subDF) +
+        geom_point(aes(Tleaf, Ci_transition_Ac_Aj, fill=Height), 
+                   size = 6, shape=21)+
+        ylab(expression(C[i]*" transition (" * mu * "mol " * mol^-1 * ")"))+
+        xlab(expression(T[leaf]*" (" * degree * "C )"))+
+        scale_fill_manual(name="Height",
+                          limits=c("up", "low"),
+                          values=c("grey", "black"))+
+        scale_color_manual(name="Height",
+                           limits=c("up", "low"),
+                           values=c("grey", "black"))+
+        scale_linetype_manual(name="Group",
+                              limits=c("A", "B", "C"),
+                              values=c("dotdash", "dotted", "solid"),
+                              labels=c("up_pre2009",
+                                       "up_2009",
+                                       "low_2009"))+
+        theme(panel.grid.minor=element_blank(),
+              axis.title.x = element_text(size=18), 
+              axis.text.x = element_text(size=18),
+              axis.text.y=element_text(size=18),
+              axis.title.y=element_text(size=18),
+              legend.text=element_text(size=18),
+              legend.title=element_text(size=18),
+              panel.grid.major=element_blank(),
+              legend.position="bottom",
+              plot.title = element_text(size = 18, face = "bold", hjust=0.1))+
+        ylim(0,500)
+    
     
     pdf("output/leaf/leaf_Ci_over_date.pdf", 
         width=26, height=6)
     plot(p4)
+    plot(p5)
+    plot(p6)
+    
     dev.off()  
  
     

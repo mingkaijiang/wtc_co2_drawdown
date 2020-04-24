@@ -112,7 +112,13 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     
     slpDF <- rbind(slpDF1, slpDF2)
     
-    ### summary slope DF
+    ### summarize slope
+    outDF1 <- summaryBy(slope+intercept+A400+A600+sens~Position+Type+CO2_treatment,
+                        FUN=c(mean, se), data=slpDF, keep.names=T, na.rm=T)
+    
+    write.csv(outDF1, "output/A-Ca/linear_fit_summary_table.csv", row.names=F)
+    
+    ### predict A-Ca based on linear fit form Ca = 350 to 650
     ftDF1 <- data.frame(rep(unique(slpDF1$Identity), each=301),
                         rep(c(350:650), length(unique(slpDF1$Identity))),
                         NA)
@@ -220,7 +226,6 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       xlim(350,650)+
       ylim(-5,40)+
       guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
-    
     
     ### elevated CO2 treatment
     p3 <- ggplot(data=plotDF2, aes(Ca, Photo, group=Position)) +
@@ -445,8 +450,9 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     
     
     ### perform linear mixed effect model statistics
+    test <- subset(stDF, Type=="canopy")
     ## including all factors
-    mod <- lmer(Jmax~ CO2_treatment + Type + Position + (1|Chamber), data=stDF)
+    mod <- lmer(Jmax~ CO2_treatment + Position + (1|Chamber), data=test)
     anova(mod)
     rand(mod)
     # result: 
@@ -469,11 +475,14 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     #        Type is marginally significant
     #        random effect (position) is not significant
     
-    data.lme <- lme(Jmax ~ CO2_treatment + Type + Position, random = ~1 | Chamber, stDF)
+    data.lme <- lme(Jmax ~ CO2_treatment * Type * Position, 
+                    random = ~1 | Chamber, method="REML", stDF)
+    
     summary(data.lme)
     anova(data.lme)
     summary(glht(data.lme, linfct = mcp(Type = "Tukey")))
     summary(glht(data.lme, linfct = mcp(CO2_treatment = "Tukey")))
+
 
     
     ### plotting
