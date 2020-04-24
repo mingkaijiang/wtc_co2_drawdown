@@ -56,10 +56,11 @@ canopy_data_control_basic_2 <- function(myDF) {
     outDF <- rbind(outDF, subDF)
     
     ### Chamer 4, 345, date 2009-03-19 ignore completely
-    subDF1 <- subset(myDF, Chamber=="4"&Canopy=="345"&date=="2009-03-18"&Norm_corr_CO2_flux<=12)
-    subDF2 <- subset(subDF1, WTC_CO2<360)
-    subDF3 <- subset(subDF1, WTC_CO2>=360&Norm_corr_CO2_flux>=5&Norm_corr_CO2_flux<=8)
-    subDF4 <- rbind(subDF2, subDF3)
+    #subDF1 <- subset(myDF, Chamber=="4"&Canopy=="345"&date=="2009-03-18"&Norm_corr_CO2_flux<=12)
+    #subDF2 <- subset(subDF1, WTC_CO2<360)
+    #subDF3 <- subset(subDF1, WTC_CO2>=360&Norm_corr_CO2_flux>=5&Norm_corr_CO2_flux<=8)
+    #subDF4 <- rbind(subDF2, subDF3)
+    subDF4 <- subset(myDF, Chamber=="4"&Canopy=="345"&Norm_corr_CO2_flux<=9)
     outDF <- rbind(outDF, subDF4)
         
     ### Chamber 4, 45, ignore outliers
@@ -79,15 +80,16 @@ canopy_data_control_basic_2 <- function(myDF) {
     outDF <- rbind(outDF, subDF)
     
     ### Chamber 8, 12345, use two dates, ignore outliers
-    subDF1 <- subset(myDF, Chamber=="8"&Canopy=="12345"&WTC_CO2<=1650)
-    subDF2 <- subset(subDF1, WTC_CO2<200)
-    subDF3 <- subset(subDF1, WTC_CO2>=200&Norm_corr_CO2_flux>=2.5&Norm_corr_CO2_flux<=6.5)
+    subDF1 <- subset(myDF, Chamber=="8"&Canopy=="12345"&WTC_CO2<=1600)
+    subDF2 <- subset(subDF1, WTC_CO2<220)
+    subDF3 <- subset(subDF1, WTC_CO2>=220&Norm_corr_CO2_flux>=3.0&Norm_corr_CO2_flux<=5.5)
     subDF4 <- rbind(subDF2, subDF3)
     outDF <- rbind(outDF, subDF4)
     
     ### CHamber 8, 345
-    subDF <- subset(myDF, Chamber=="8"&Canopy=="345"&date=="2009-03-20"&WTC_CO2<=650)
-    outDF <- rbind(outDF, subDF)
+    subDF1 <- subset(myDF, Chamber=="8"&Canopy=="345"&date=="2009-03-20")
+    subDF2 <- subset(myDF, Chamber=="8"&Canopy=="345"&date=="2009-03-19"&Norm_corr_CO2_flux<=8&WTC_CO2>=600)
+    outDF <- rbind(outDF, subDF1, subDF2)
     
     ### Chamber 8, 45
     subDF <- subset(myDF, Chamber=="8"&Canopy=="45"&date=="2009-03-23"&Norm_corr_CO2_flux<=10&WTC_CO2<=1200)
@@ -95,7 +97,7 @@ canopy_data_control_basic_2 <- function(myDF) {
     
     
     ### Chamber 11, 45
-    subDF <- subset(myDF, Chamber=="11"&Canopy=="45"&WTC_CO2<=1400)
+    subDF <- subset(myDF, Chamber=="11"&Canopy=="45")#&WTC_CO2<=1400)
     outDF <- rbind(outDF, subDF)
     
     
