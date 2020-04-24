@@ -97,7 +97,7 @@ canopy_data_control_basic_2 <- function(myDF) {
     
     
     ### Chamber 11, 45
-    subDF <- subset(myDF, Chamber=="11"&Canopy=="45")#&WTC_CO2<=1400)
+    subDF <- subset(myDF, Chamber=="11"&Canopy=="45")
     outDF <- rbind(outDF, subDF)
     
     

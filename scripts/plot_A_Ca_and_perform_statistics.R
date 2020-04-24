@@ -70,7 +70,77 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     subDF1 <- subset(plotDF1, Ca>=350 & Ca <= 650)
     subDF2 <- subset(plotDF2, Ca>=350 & Ca <= 650)
     
-    ## plot
+    
+    ### create slope DF to store the slops
+    slpDF1 <- data.frame(unique(subDF1$Identity), NA, NA, NA, NA, NA)
+    slpDF2 <- data.frame(unique(subDF2$Identity), NA, NA, NA, NA, NA)
+    colnames(slpDF1) <- colnames(slpDF2) <- c("Identity", "slope", "intercept", 
+                                              "A400", "A600", "sens")
+
+    slpDF1 <- merge(slpDF1, idDF, by="Identity")
+    slpDF2 <- merge(slpDF2, idDF, by="Identity")
+    
+    ### calculate linear slope and intercept
+    for (i in unique(slpDF1$Identity)) {
+      subDF <- subset(subDF1, Identity == i)
+      
+      ## linear fit
+      lm.mod <- lm(Photo~Ca, data=subDF)
+      
+      ## coefficients
+      slpDF1$slope[slpDF1$Identity==i] <- coef(lm.mod)[2]
+      slpDF1$intercept[slpDF1$Identity==i] <- coef(lm.mod)[1]
+      slpDF1$A400[slpDF1$Identity==i] <- coef(lm.mod)[2] * 400 + coef(lm.mod)[1]
+      slpDF1$A600[slpDF1$Identity==i] <- coef(lm.mod)[2] * 600 + coef(lm.mod)[1]
+    }
+    
+    for (i in unique(slpDF2$Identity)) {
+      subDF <- subset(subDF2, Identity == i)
+      
+      ## linear fit
+      lm.mod <- lm(Photo~Ca, data=subDF)
+      
+      ## coefficients
+      slpDF2$slope[slpDF2$Identity==i] <- coef(lm.mod)[2]
+      slpDF2$intercept[slpDF2$Identity==i] <- coef(lm.mod)[1]
+      slpDF2$A400[slpDF2$Identity==i] <- coef(lm.mod)[2] * 400 + coef(lm.mod)[1]
+      slpDF2$A600[slpDF2$Identity==i] <- coef(lm.mod)[2] * 600 + coef(lm.mod)[1]
+    }
+    
+    slpDF1$sens <- (slpDF1$A600 - slpDF1$A400) / slpDF1$A400
+    slpDF2$sens <- (slpDF2$A600 - slpDF2$A400) / slpDF2$A400
+    
+    slpDF <- rbind(slpDF1, slpDF2)
+    
+    ### summary slope DF
+    ftDF1 <- data.frame(rep(unique(slpDF1$Identity), each=301),
+                        rep(c(350:650), length(unique(slpDF1$Identity))),
+                        NA)
+    ftDF2 <- data.frame(rep(unique(slpDF2$Identity), each=301),
+                        rep(c(350:650), length(unique(slpDF2$Identity))),
+                        NA)
+    colnames(ftDF1) <- colnames(ftDF2) <- c("Identity", "Ca", "Photo")
+    ftDF1 <- merge(ftDF1, idDF, by = "Identity")
+    ftDF2 <- merge(ftDF2, idDF, by = "Identity")
+    
+    for (i in unique(slpDF1$Identity)) {
+      ftDF1$Photo[ftDF1$Identity==i] <- ftDF1$Ca[ftDF1$Identity==i] * slpDF1$slope[slpDF1$Identity==i] + slpDF1$intercept[slpDF1$Identity==i]
+    }
+    
+    for (i in unique(slpDF2$Identity)) {
+      ftDF2$Photo[ftDF2$Identity==i] <- ftDF2$Ca[ftDF2$Identity==i] * slpDF2$slope[slpDF2$Identity==i] + slpDF2$intercept[slpDF2$Identity==i]
+    }
+    
+    ### 
+    smDF1 <- summaryBy(Photo~Position+Type+CO2_treatment+Ca, 
+                       FUN=c(mean, se), keep.names=T, na.rm=T,
+                       data=ftDF1)
+    smDF2 <- summaryBy(Photo~Position+Type+CO2_treatment+Ca, 
+                       FUN=c(mean, se), keep.names=T, na.rm=T,
+                       data=ftDF2)
+    
+    
+    ### plot
     p1 <- ggplot(data=plotDF1, aes(Ca, Photo, group=Position)) +
       geom_point(data=plotDF1, aes(fill=as.factor(Position), 
                                   pch = as.factor(Type)), alpha=0.6)+
@@ -115,9 +185,13 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       geom_point(data=subDF1, aes(Ca, Photo, 
                                   fill=as.factor(Position), 
                                   pch = as.factor(Type)), alpha=0.6)+
-      geom_smooth(data=subDF1, aes(Ca, Photo, group=Position,
-                                   col=as.factor(Position)),
-                  method = "lm", formula = y ~ x, se=T)+
+      geom_line(data=smDF1, aes(Ca, Photo.mean, group=Position,
+                                   col=as.factor(Position)), size=1.5)+
+      geom_ribbon(data=smDF1, 
+                  aes(x=Ca,group=Position,
+                      ymin = Photo.mean-Photo.se, 
+                      ymax = Photo.mean+Photo.se,
+                      fill=as.factor(Position)), alpha=0.2) +
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -193,9 +267,13 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       geom_point(data=subDF2, aes(Ca, Photo, 
                                   fill=as.factor(Position), 
                                   pch = as.factor(Type)), alpha=0.6)+
-      geom_smooth(data=subDF2, aes(Ca, Photo, group=Position,
-                                   col=as.factor(Position)),
-                  method = "lm", formula = y ~ x, se=T)+
+      geom_line(data=smDF2, aes(Ca, Photo.mean, group=Position,
+                                col=as.factor(Position)), size=1.5)+
+      geom_ribbon(data=smDF2, 
+                  aes(x=Ca,group=Position,
+                      ymin = Photo.mean-Photo.se, 
+                      ymax = Photo.mean+Photo.se,
+                      fill=as.factor(Position)), alpha=0.2) +
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -312,109 +390,6 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     pdf("output/A-Ca/A-Ca_plots.pdf", width=12, height=10)
     plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
     dev.off() 
-    
-    
-    
-    ################################# Fit A-CI #################################
-    ##### preparing acifit
-    #### the fit TPU function makes it long to run!
-    #fits <- fitacis(myDF, group="Identity", varnames = list(ALEAF="Photo",
-    #                                                        Tleaf="Tleaf", 
-    #                                                        Ci = "Ci",
-    #                                                        PPFD="PAR"),
-    #                fitmethod="bilinear", Tcorrect=T, fitTPU=F)
-    #
-    #coefDF <- coef(fits)
-    #coefDF <- merge(coefDF, idDF, by="Identity", all=T)
-    
-    
-    ## ambient A-Ci plots, leaf and canopy
-    #pdf("output/A-Ca/ambient_A-Ci_plots.pdf", width=14, height=14)
-    #par(mfrow=c(5,3),mar=c(2,2,4,1),oma = c(4, 6, 0, 0))
-    #
-    #ymin <- -2
-    #ymax <- 40
-    #title.size <- 1.5
-    #
-    #### first row
-    #plot(fits.ch01[[5]],lwd=3, col=alpha("black",0.6), pch=21, main="Leaves: up", cex.main=title.size,
-    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
-    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-#
-    #plot(fits.ch03[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
-    #     xlim=c(0, 1200), ylim=c(ymin, ymax), addlegend=F)
-    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    #
-    #
-    #plot(fits.ch11[[5]],lwd=3, col=alpha("black",0.6), pch=21, 
-    #     xlim=c(0, 1200), ylim=c(ymin, ymax), addlegend=F)
-    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    #
-    #
-    #### second row
-    #plot(fits.ch01[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, main="Leaves: low", cex.main=title.size,
-    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
-    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    #
-    #plot(fits.ch03[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
-    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    #
-    #plot(fits.ch11[[4]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
-    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    #
-#
-    #### third row
-    #ymax <- 20
-    #
-    #plot(fits.ch01[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, main="Canopy: whole", cex.main=title.size,
-    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
-    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    #
-    #plot(fits.ch03[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
-    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
-    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    #
-    #plot(fits.ch11[[1]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
-    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    #
-    #
-    #### fourth row
-    #plot(fits.ch01[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,main="Canopy: T+M", cex.main=title.size,
-    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
-    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    #
-    #plot(fits.ch03[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
-    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    #
-    #plot(fits.ch11[[2]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
-    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    #
-    #
-    #### fifth row
-    #plot(fits.ch01[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, main="Canopy: top", cex.main=title.size,
-    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
-    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    #
-    #plot(fits.ch03[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F, 
-    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
-    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    #
-    #
-    #plot(fits.ch11[[3]],lwd=3, col=alpha("black",0.6), pch=21, addlegend=F,
-    #     xlim=c(0, 1200), ylim=c(ymin, ymax))
-    #abline(v=c(320, 512), lwd=2, lty=c(1, 3))
-    #
-    ## print the overall labels
-    #mtext(expression(C[i] * " (" * mu * "mol " * mol^-1 * ")"), side = 1, outer = TRUE, line = 2, cex=2)
-    #mtext(expression(A * " (" * mu * "mol " * CO[2] * m^-2 * " " * s^-1 * ")"), 
-    #      side = 2, outer = TRUE, line = 2, cex=2)
-    #
-    #dev.off()
     
     
     ################################# plot statistics #################################
