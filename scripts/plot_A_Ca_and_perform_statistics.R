@@ -646,6 +646,43 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     dev.off()  
     
     
+    ################################# #################################
+    p4 <- ggplot() +
+      geom_point(data=plotDF1, aes(JVratio, Ci_transition_Ac_Aj, 
+                                   fill=as.factor(Position), 
+                                   pch = as.factor(Type)), alpha=1.0, size=4)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab("JV ratio")+
+      ylab(expression(paste("Transition " * C[i] * " (" * mu * "mol" * " " * mol^-1 * ")")))+
+      scale_fill_manual(name="Position",
+                        limits=c("12345", "345", "45", "up", "low"),
+                        values=c("blue2", "red3", "purple", "orange", "green"),
+                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_color_manual(name="Position",
+                         limits=c("12345", "345", "45", "up", "low"),
+                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
+                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      scale_shape_manual(name="Type",
+                         values=c(21, 24),
+                         labels=c("Canopy", "Leaf"))+
+      scale_x_discrete(name="", 
+                       breaks=c("12345", "345", "45", "up", "low"), 
+                       labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+    
+    plot(p4)
+    
     
     ################################# plot delta A sensitivity #################################
     ###### Plot delta A at the Ca = 400 to 600 range and see the slope
