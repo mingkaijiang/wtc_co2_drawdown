@@ -27,7 +27,7 @@ leaf_aciDF <- leaf_ACI_processing()
 
 #### Make some plots
 ### go into function to plot!
-plot_leaf_ACI_curves(plotDF=leaf_aciDF)
+#plot_leaf_ACI_curves(plotDF=leaf_aciDF)
 
 
 ############################# processing canopy data #################################

@@ -49,7 +49,7 @@ canopy_ACI_processing <- function(cDF) {
         
         ## fit
         fit1 <- fitaci(test, varnames = list(ALEAF = "Norm_corr_CO2_flux",
-                                             Tleaf = "WTC_T",
+                                             Tleaf = "Tleaf",
                                              Ci = "Ci",
                                              PPFD = "WTC_PAR",
                                              Rd = "Rd"),

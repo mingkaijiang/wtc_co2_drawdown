@@ -157,6 +157,8 @@ processing_canopy_data <- function(leafDF) {
     
     outDF <- merge(outDF, idDF, by="ID", all=T)
     
+    outDF$Tleaf <- outDF$WTC_T * 0.263 + 20.549
+    
     
     ### return canopyDF
     rtDF <- outDF[,c("Identity", "Chamber", "Canopy", "datetime",
@@ -165,14 +167,14 @@ processing_canopy_data <- function(leafDF) {
                      "Leaf_area", "Leak_coef", "Leak", "CO2_flux",
                      "Norm_CO2_flux", "Corr_CO2_flux", "Norm_corr_CO2_flux",
                      "Cond_water", "WTC_volume_m3", "Norm_H2O_flux",
-                     "gs1", "G1", "gs", "Norm_H2O_flux2", "Ci")]
+                     "gs1", "G1", "gs", "Norm_H2O_flux2", "Ci", "Tleaf")]
     
     
     
     #### Fitting ACI curve at the finest resolution
     myDF <- rtDF[,c("Identity", "Chamber", "Canopy", "date", "RH",
                       "Norm_corr_CO2_flux", "WTC_CO2", "Norm_H2O_flux", 
-                      "Ci", "WTC_T", "WTC_T", "WTC_PAR", "VPD")]
+                      "Ci", "WTC_T", "Tleaf", "WTC_PAR", "VPD")]
     
     
     colnames(myDF) <- c("Identity", "Chamber", "Position", "Date", "RH",

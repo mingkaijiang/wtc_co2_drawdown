@@ -17,6 +17,11 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     lDF$year <- year(lDF$Date)
     lDF$Date <- as.Date(lDF$Date)
     
+    ### plot leaf Tleaf and Tair
+    #with(lDF, plot(Tleaf~Tair, xlim=c(20, 35), ylim=c(20,35)))
+    #mod <- lm(Tleaf~Tair, data=lDF)
+    #abline(a=coef(mod)[1], b=coef(mod)[2])
+    
     ### add type information
     lDF$Type <- "leaf"
     cDF$Type <- "canopy"
@@ -28,12 +33,15 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     
     cDF.sub <- cDF[,c("Identity", "Chamber", "Canopy", "date",
                       "Norm_corr_CO2_flux", "WTC_CO2", "Norm_H2O_flux", 
-                      "Ci", "WTC_T", "WTC_T", "WTC_PAR", "VPD", 'Type')]
+                      "Ci", "WTC_T", "Tleaf", "WTC_PAR", "VPD", 'Type')]
     
     
     colnames(lDF.sub) <- colnames(cDF.sub) <- c("Identity", "Chamber", "Position", "Date",
                                                 "Photo", "Ca", "Cond", 
                                                 "Ci", "Tair", "Tleaf", "PAR", "VPD", "Type")
+    
+    ### adjust WTC Tleaf
+    #cDF.sub$Tleaf <- cDF.sub$Tair * coef(mod)[2] + coef(mod)[1]
     
     myDF <- rbind(lDF.sub, cDF.sub)
     
