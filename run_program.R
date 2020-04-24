@@ -61,12 +61,15 @@ cDF <- canopyDF
 ### all data
 #plot_individual_A_Ca_curves(cDF=canopyDF)
 
-### ambient CO2 and well-watered treatment
+### well-watered treatment
 ### include both A-Ca and A-Ci plots
 ### including statistics
 plot_A_Ca_and_perform_statistics(cDF=canopyDF)
 
-#statistical_tests_linear_mixed_effect_model()
+
+### EucFACE A-Ci curves
+plot_eucface_A_Ci()
+
 
 
 ############################# Roger 2017 results ######################

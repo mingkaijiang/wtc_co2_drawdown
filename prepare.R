@@ -16,6 +16,11 @@ if(!dir.exists("output/A-Ca")) {
     dir.create("output/A-Ca", showWarnings = FALSE)
 }
 
+
+if(!dir.exists("output/Eucface")) {
+    dir.create("output/Eucface", showWarnings = FALSE)
+}
+
 #### Install packages
 if(!require(pacman))install.packages("pacman")
 pacman::p_load(dplyr, 
