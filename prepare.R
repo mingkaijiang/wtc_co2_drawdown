@@ -17,8 +17,8 @@ if(!dir.exists("output/A-Ca")) {
 }
 
 
-if(!dir.exists("output/Eucface")) {
-    dir.create("output/Eucface", showWarnings = FALSE)
+if(!dir.exists("output/eucface")) {
+    dir.create("output/eucface", showWarnings = FALSE)
 }
 
 #### Install packages
