@@ -458,11 +458,11 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     
     
     ### perform linear mixed effect model statistics
-    test <- subset(stDF, Type=="canopy")
+    #test <- subset(stDF, Type=="canopy")
     ## including all factors
-    mod <- lmer(Jmax~ CO2_treatment + Position + (1|Chamber), data=test)
-    anova(mod)
-    rand(mod)
+    #mod <- lmer(Jmax~ CO2_treatment + Position + (1|Chamber), data=test)
+    #anova(mod)
+    #rand(mod)
     # result: 
     #         CO2 treatment is not signfiicant
     #         Type is marginally significant
@@ -483,13 +483,13 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     #        Type is marginally significant
     #        random effect (position) is not significant
     
-    data.lme <- lme(Jmax ~ CO2_treatment * Type * Position, 
-                    random = ~1 | Chamber, method="REML", stDF)
+    #data.lme <- lme(Jmax ~ CO2_treatment * Type * Position, 
+    #                random = ~1 | Chamber, method="REML", stDF)
     
-    summary(data.lme)
-    anova(data.lme)
-    summary(glht(data.lme, linfct = mcp(Type = "Tukey")))
-    summary(glht(data.lme, linfct = mcp(CO2_treatment = "Tukey")))
+    #summary(data.lme)
+    #anova(data.lme)
+    #summary(glht(data.lme, linfct = mcp(Type = "Tukey")))
+    #summary(glht(data.lme, linfct = mcp(CO2_treatment = "Tukey")))
 
 
     

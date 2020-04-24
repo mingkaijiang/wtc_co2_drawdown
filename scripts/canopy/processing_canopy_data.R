@@ -157,7 +157,7 @@ processing_canopy_data <- function(leafDF) {
     
     outDF <- merge(outDF, idDF, by="ID", all=T)
     
-    outDF$Tleaf <- outDF$WTC_T * 0.263 + 20.549
+    outDF$Tleaf <- outDF$WTC_T 
     
     
     ### return canopyDF
