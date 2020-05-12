@@ -686,7 +686,7 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     
     
     
-    ### plotting
+    ### plotting elevated
     p1 <- ggplot() +
       geom_boxplot(data=plotDF2, aes(Type, Vcmax),
                    outlier.fill = "white", outlier.color = "white",
@@ -868,6 +868,136 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     pdf("output/A-Ca/elevated_biochemical_parameter_plot.pdf", width=10, height=10)
     plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
     dev.off()  
+    
+    
+    
+    ### plotting CO2 comparison
+    p1 <- ggplot() +
+      geom_boxplot(data=stDF, aes(Type, Vcmax,
+                                  fill=CO2_treatment))+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab("")+
+      ylab(expression(paste(V[cmax], " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      scale_fill_manual(name="",
+                        limits=c("aCO2", "eCO2"),
+                        values=c("blue2", "red3"),
+                        labels=c(expression(paste(aCO[2])),
+                                 expression(paste(eCO[2]))))+
+      scale_x_discrete(name="", 
+                       breaks=c("canopy", "leaf"), 
+                       labels=c("Canopy", "Leaf"))+
+      ylim(0, 200)
+    
+    
+    p2 <- ggplot() +
+      geom_boxplot(data=stDF, aes(Type, Jmax,
+                                  fill=CO2_treatment))+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab("")+
+      ylab(expression(paste(J[max], " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      scale_fill_manual(name="",
+                        limits=c("aCO2", "eCO2"),
+                        values=c("blue2", "red3"),
+                        labels=c(expression(paste(aCO[2])),
+                                 expression(paste(eCO[2]))))+
+      scale_x_discrete(name="", 
+                       breaks=c("canopy", "leaf"), 
+                       labels=c("Canopy", "Leaf"))+
+      ylim(0, 300)
+    
+    
+    p3 <- ggplot() +
+      geom_boxplot(data=stDF, aes(Type, JVratio,
+                                  fill=CO2_treatment))+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab("")+
+      ylab(expression(paste(J[max] * "/" * V[cmax] * " ratio")))+
+      scale_fill_manual(name="",
+                        limits=c("aCO2", "eCO2"),
+                        values=c("blue2", "red3"),
+                        labels=c(expression(paste(aCO[2])),
+                                 expression(paste(eCO[2]))))+
+      scale_x_discrete(name="", 
+                       breaks=c("canopy", "leaf"), 
+                       labels=c("Canopy", "Leaf"))+
+      ylim(0, 3)
+    
+    
+    p4 <- ggplot() +
+      geom_boxplot(data=stDF, aes(Type, Ci_transition_Ac_Aj,
+                                  fill=CO2_treatment))+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab("")+
+      ylab(expression(paste("Transition " * C[i] * " (" * mu * "mol" * " " * mol^-1 * ")")))+
+      scale_fill_manual(name="",
+                        limits=c("aCO2", "eCO2"),
+                        values=c("blue2", "red3"),
+                        labels=c(expression(paste(aCO[2])),
+                                 expression(paste(eCO[2]))))+
+      scale_x_discrete(name="", 
+                       breaks=c("canopy", "leaf"), 
+                       labels=c("Canopy", "Leaf"))+
+      ylim(0, 600)
+    
+    
+    legend_shared <- get_legend(p1 + theme(legend.position="bottom",
+                                           legend.box = 'vertical',
+                                           legend.box.just = 'left'))
+    
+    combined_plots <- plot_grid(p1, p2, p3, p4, 
+                                labels=c("(a)", "(b)", "(c)", "(d)"),
+                                ncol=2, align="vh", axis = "l",
+                                label_x=0.16, label_y=0.95,
+                                label_size = 18)
+    
+    pdf("output/A-Ca/biochemical_parameter_plot.pdf", width=10, height=10)
+    plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
+    dev.off()  
+    
     
     
     ################################# #################################
