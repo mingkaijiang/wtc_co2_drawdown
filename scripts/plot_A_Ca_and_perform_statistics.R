@@ -439,65 +439,78 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     stDF$CO2_treatment <- as.factor(stDF$CO2_treatment)
     plotDF1$Type <- as.factor(plotDF1$Type)
     plotDF2$Type <- as.factor(plotDF2$Type)
-    
-    ### build a linear model to compare position only
-    #mod <- gls(Jmax ~ Position,
-    #           data=plotDF1)
-    #
-    #coef(summary(mod)) 
-    #anova(mod, type = "marginal")
-    #
-    #library(emmeans)
-    #pairs(emmeans(mod, "Position"))
-    
-    ### nested anova
-    #summary(aov(Jmax ~ Type + Position, plotDF1))
-    #contrasts(plotDF1$Position) <- contr.sum
-    #library(car)
-    #Anova(aov(Jmax ~ Type/Position, plotDF1))
+    plotDF1$Position <- as.factor(plotDF1$Position)
+    plotDF2$Position <- as.factor(plotDF2$Position)
     
     
     ### perform linear mixed effect model statistics
-    #test <- subset(stDF, Type=="canopy")
-    ## including all factors
-    #mod <- lmer(Jmax~ CO2_treatment + Position + (1|Chamber), data=test)
-    #anova(mod)
-    #rand(mod)
-    # result: 
-    #         CO2 treatment is not signfiicant
-    #         Type is marginally significant
-    #         random effect (position) is significant
+    #mod1 <- lmer(Vcmax~ CO2_treatment + Position + (1|Chamber), data=stDF)
+    
     
     ## aCO2
-    mod1 <- lmer(Jmax~ Type + (1|Position), data=plotDF1)
+    mod1 <- lmer(Vcmax~ Type + (1|Chamber), data=plotDF1)
+    #mod1 <- lmer(Vcmax~ Type + (1|Position/Chamber), data=plotDF1)
     anova(mod1)
     rand(mod1)
+    summary(glht(mod1, linfct = mcp(Type = "Tukey")))
     # result:
     #        Type is marginally significant
-    #        random effect (position) is significant
-    
-    mod2 <- lmer(Jmax~ Type + (1|Position), data=plotDF2)
+
+    mod2 <- lmer(Jmax~ Type + (1|Chamber), data=plotDF1)
     anova(mod2)
     rand(mod2)
     # result:
     #        Type is marginally significant
-    #        random effect (position) is not significant
-    
-    #data.lme <- lme(Jmax ~ CO2_treatment * Type * Position, 
-    #                random = ~1 | Chamber, method="REML", stDF)
-    
-    #summary(data.lme)
-    #anova(data.lme)
-    #summary(glht(data.lme, linfct = mcp(Type = "Tukey")))
-    #summary(glht(data.lme, linfct = mcp(CO2_treatment = "Tukey")))
-
 
     
     ### plotting
+    #p1 <- ggplot() +
+    #  geom_point(data=plotDF1, aes(Position, Vcmax, 
+    #                              fill=as.factor(Position), 
+    #                              pch = as.factor(Type)), alpha=1.0, size=4)+
+    #  theme_linedraw() +
+    #  theme(panel.grid.minor=element_blank(),
+    #        axis.text.x=element_text(size=12),
+    #        axis.title.x=element_text(size=14),
+    #        axis.text.y=element_text(size=12),
+    #        axis.title.y=element_text(size=14),
+    #        legend.text=element_text(size=12),
+    #        legend.title=element_text(size=14),
+    #        panel.grid.major=element_blank(),
+    #        legend.position="none",
+    #        legend.box = 'vertical',
+    #        legend.box.just = 'left')+
+    #  xlab("")+
+    #  ylab(expression(paste(V[cmax], " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+    #  scale_fill_manual(name="Position",
+    #                    limits=c("12345", "345", "45", "up", "low"),
+    #                    values=c("blue2", "red3", "purple", "orange", "green"),
+    #                    labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+    #  scale_color_manual(name="Position",
+    #                     limits=c("12345", "345", "45", "up", "low"),
+    #                     values=c("blue2", "red3", "purple", "orange", "darkgreen"),
+    #                     labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+    #  scale_shape_manual(name="Type",
+    #                     values=c(21, 24),
+    #                     labels=c("Canopy", "Leaf"))+
+    #  scale_x_discrete(name="", 
+    #                   breaks=c("12345", "345", "45", "up", "low"), 
+    #                   labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+    #  guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+    
+    ### fix jitter
+    set.seed(123)
+    
+    ### plotting
     p1 <- ggplot() +
-      geom_point(data=plotDF1, aes(Position, Vcmax, 
-                                  fill=as.factor(Position), 
-                                  pch = as.factor(Type)), alpha=1.0, size=4)+
+      geom_boxplot(data=plotDF1, aes(Type, Vcmax),
+                   outlier.fill = "white", outlier.color = "white",
+                   outlier.size = 0.0,
+                   outlier.alpha = 0.0, fill="grey")+
+      geom_jitter(data=plotDF1, aes(Type, Vcmax, 
+                                   fill=as.factor(Position), 
+                                   pch = as.factor(Type)), 
+                 alpha=0.8, col="black", size=4, width = 0.2)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -516,23 +529,30 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      scale_color_manual(name="Position",
-                         limits=c("12345", "345", "45", "up", "low"),
-                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Type",
+      scale_shape_manual(name="Scale",
                          values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
+                         labels=c("Canopy", "Leaf"),
+                         guide=F)+
       scale_x_discrete(name="", 
-                       breaks=c("12345", "345", "45", "up", "low"), 
-                       labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
-    
+                       breaks=c("canopy", "leaf"), 
+                       labels=c("Canopy", "Leaf"))+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24),
+                                                     fill = c("blue2","red3", "purple",
+                                                              "orange", "darkgreen"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))+
+      ylim(0, 200)
+  
     
     p2 <- ggplot() +
-      geom_point(data=plotDF1, aes(Position, Jmax, 
-                                  fill=as.factor(Position), 
-                                  pch = as.factor(Type)), alpha=1.0, size=4)+
+      geom_boxplot(data=plotDF1, aes(Type, Jmax),
+                   outlier.fill = "white", outlier.color = "white",
+                   outlier.size = 0.0,
+                   outlier.alpha = 0.0, fill="grey")+
+      geom_jitter(data=plotDF1, aes(Type, Jmax, 
+                                    fill=as.factor(Position), 
+                                    pch = as.factor(Type)), 
+                  alpha=0.8, col="black", size=4, width = 0.2)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -551,23 +571,30 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      scale_color_manual(name="Position",
-                         limits=c("12345", "345", "45", "up", "low"),
-                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Type",
+      scale_shape_manual(name="Scale",
                          values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
+                         labels=c("Canopy", "Leaf"),
+                         guide=F)+
       scale_x_discrete(name="", 
-                       breaks=c("12345", "345", "45", "up", "low"), 
-                       labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+                       breaks=c("canopy", "leaf"), 
+                       labels=c("Canopy", "Leaf"))+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24),
+                                                     fill = c("blue2","red3", "purple",
+                                                              "orange", "darkgreen"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))+
+      ylim(0, 300)
     
     
     p3 <- ggplot() +
-      geom_point(data=plotDF1, aes(Position, JVratio, 
-                                  fill=as.factor(Position), 
-                                  pch = as.factor(Type)), alpha=1.0, size=4)+
+      geom_boxplot(data=plotDF1, aes(Type, JVratio),
+                   outlier.fill = "white", outlier.color = "white",
+                   outlier.size = 0.0,
+                   outlier.alpha = 0.0, fill="grey")+
+      geom_jitter(data=plotDF1, aes(Type, JVratio, 
+                                    fill=as.factor(Position), 
+                                    pch = as.factor(Type)), 
+                  alpha=0.8, col="black", size=4, width = 0.2)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -586,23 +613,30 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      scale_color_manual(name="Position",
-                         limits=c("12345", "345", "45", "up", "low"),
-                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Type",
+      scale_shape_manual(name="Scale",
                          values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
+                         labels=c("Canopy", "Leaf"),
+                         guide=F)+
       scale_x_discrete(name="", 
-                       breaks=c("12345", "345", "45", "up", "low"), 
-                       labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+                       breaks=c("canopy", "leaf"), 
+                       labels=c("Canopy", "Leaf"))+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24),
+                                                     fill = c("blue2","red3", "purple",
+                                                              "orange", "darkgreen"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))+
+      ylim(0, 3)
     
     
     p4 <- ggplot() +
-      geom_point(data=plotDF1, aes(Position, Ci_transition_Ac_Aj, 
-                                  fill=as.factor(Position), 
-                                  pch = as.factor(Type)), alpha=1.0, size=4)+
+      geom_boxplot(data=plotDF1, aes(Type, Ci_transition_Ac_Aj),
+                   outlier.fill = "white", outlier.color = "white",
+                   outlier.size = 0.0,
+                   outlier.alpha = 0.0, fill="grey")+
+      geom_jitter(data=plotDF1, aes(Type, Ci_transition_Ac_Aj, 
+                                    fill=as.factor(Position), 
+                                    pch = as.factor(Type)), 
+                  alpha=0.8, col="black", size=4, width = 0.2)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -621,17 +655,19 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      scale_color_manual(name="Position",
-                         limits=c("12345", "345", "45", "up", "low"),
-                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Type",
+      scale_shape_manual(name="Scale",
                          values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
+                         labels=c("Canopy", "Leaf"),
+                         guide=F)+
       scale_x_discrete(name="", 
-                       breaks=c("12345", "345", "45", "up", "low"), 
-                       labels=c("Whole", "T+M", "Top", "Up", "Low"))+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+                       breaks=c("canopy", "leaf"), 
+                       labels=c("Canopy", "Leaf"))+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24),
+                                                     fill = c("blue2","red3", "purple",
+                                                              "orange", "darkgreen"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))+
+      ylim(0, 600)
     
 
     legend_shared <- get_legend(p1 + theme(legend.position="bottom",
@@ -639,7 +675,10 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
                                            legend.box.just = 'left'))
     
     combined_plots <- plot_grid(p1, p2, p3, p4, 
-                                labels="auto", ncol=2, align="vh", axis = "l")
+                                labels=c("(a)", "(b)", "(c)", "(d)"),
+                                ncol=2, align="vh", axis = "l",
+                                label_x=0.16, label_y=0.95,
+                                label_size = 18)
     
     pdf("output/A-Ca/ambient_biochemical_parameter_plot.pdf", width=10, height=10)
     plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
