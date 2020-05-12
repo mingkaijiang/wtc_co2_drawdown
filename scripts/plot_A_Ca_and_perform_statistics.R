@@ -1347,7 +1347,7 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     
     write.csv(outDF2, "output/A-Ca/predicted_A_at_Ci_400_600_ppm.csv", row.names=F)
     
-    ### plotting
+    ################################# plotting
     p1 <- ggplot() +
       geom_point(data=outDF2, aes(Position, A_sens, 
                                   fill=as.factor(Position), 
