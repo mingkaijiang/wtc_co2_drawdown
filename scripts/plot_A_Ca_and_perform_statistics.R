@@ -444,24 +444,149 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     
     
     ### perform linear mixed effect model statistics
-    #mod1 <- lmer(Vcmax~ CO2_treatment + Position + (1|Chamber), data=stDF)
+    ### check CO2 effect at each canopy position
+    mod1 <- lmer(Vcmax~ CO2_treatment + Type + (1|Chamber), data=stDF)
+    summary(mod1)
     
-    
-    ## aCO2
+    ## aCO2 only: scale effect on Vcmax, Jmax, JV ratio, and Ci transition
     mod1 <- lmer(Vcmax~ Type + (1|Chamber), data=plotDF1)
     #mod1 <- lmer(Vcmax~ Type + (1|Position/Chamber), data=plotDF1)
     anova(mod1)
     rand(mod1)
     summary(glht(mod1, linfct = mcp(Type = "Tukey")))
-    # result:
-    #        Type is marginally significant
+
 
     mod2 <- lmer(Jmax~ Type + (1|Chamber), data=plotDF1)
     anova(mod2)
     rand(mod2)
-    # result:
-    #        Type is marginally significant
-
+    summary(glht(mod2, linfct = mcp(Type = "Tukey")))
+    
+    mod3 <- lmer(JVratio~ Type + (1|Chamber), data=plotDF1)
+    anova(mod3)
+    rand(mod3)
+    summary(glht(mod3, linfct = mcp(Type = "Tukey")))
+    
+    mod4 <- lmer(Ci_transition_Ac_Aj~ Type + (1|Chamber), data=plotDF1)
+    anova(mod4)
+    rand(mod4)
+    summary(glht(mod4, linfct = mcp(Type = "Tukey")))
+    
+    
+    ## aCO2 and leaf only: position effect on Vcmax, Jmax, JV ratio, and Ci transition
+    mod1 <- lmer(Vcmax~ Position + (1|Chamber), data=plotDF1[plotDF1$Type=="leaf",])
+    anova(mod1)
+    rand(mod1)
+    summary(glht(mod1, linfct = mcp(Position = "Tukey")))
+    
+    mod2 <- lmer(Jmax~ Position + (1|Chamber), data=plotDF1[plotDF1$Type=="leaf",])
+    anova(mod2)
+    rand(mod2)
+    summary(glht(mod2, linfct = mcp(Position = "Tukey")))
+    
+    mod3 <- lmer(JVratio~ Position + (1|Chamber), data=plotDF1[plotDF1$Type=="leaf",])
+    anova(mod3)
+    rand(mod3)
+    summary(glht(mod3, linfct = mcp(Position = "Tukey")))
+    
+    
+    mod4 <- lmer(Ci_transition_Ac_Aj~ Position + (1|Chamber), data=plotDF1[plotDF1$Type=="leaf",])
+    anova(mod4)
+    rand(mod4)
+    summary(glht(mod4, linfct = mcp(Position = "Tukey")))
+    
+    
+    ## aCO2 and canopy only: position effect on Vcmax, Jmax, JV ratio, and Ci transition
+    mod1 <- lmer(Vcmax~ Position + (1|Chamber), data=plotDF1[plotDF1$Type=="canopy",])
+    anova(mod1)
+    rand(mod1)
+    summary(glht(mod1, linfct = mcp(Position = "Tukey")))
+    
+    mod2 <- lmer(Jmax~ Position + (1|Chamber), data=plotDF1[plotDF1$Type=="canopy",])
+    anova(mod2)
+    rand(mod2)
+    summary(glht(mod2, linfct = mcp(Position = "Tukey")))
+    
+    mod3 <- lmer(JVratio~ Position + (1|Chamber), data=plotDF1[plotDF1$Type=="canopy",])
+    anova(mod3)
+    rand(mod3)
+    summary(glht(mod3, linfct = mcp(Position = "Tukey")))
+    
+    
+    mod4 <- lmer(Ci_transition_Ac_Aj~ Position + (1|Chamber), data=plotDF1[plotDF1$Type=="canopy",])
+    anova(mod4)
+    rand(mod4)
+    summary(glht(mod4, linfct = mcp(Position = "Tukey")))
+    
+    
+    ## eCO2 only: scale effect on Vcmax, Jmax, JV ratio, and Ci transition
+    mod1 <- lmer(Vcmax~ Type + (1|Chamber), data=plotDF2)
+    anova(mod1)
+    rand(mod1)
+    summary(glht(mod1, linfct = mcp(Type = "Tukey")))
+    
+    
+    mod2 <- lmer(Jmax~ Type + (1|Chamber), data=plotDF2)
+    anova(mod2)
+    rand(mod2)
+    summary(glht(mod2, linfct = mcp(Type = "Tukey")))
+    
+    mod3 <- lmer(JVratio~ Type + (1|Chamber), data=plotDF2)
+    anova(mod3)
+    rand(mod3)
+    summary(glht(mod3, linfct = mcp(Type = "Tukey")))
+    
+    mod4 <- lmer(Ci_transition_Ac_Aj~ Type + (1|Chamber), data=plotDF2)
+    anova(mod4)
+    rand(mod4)
+    summary(glht(mod4, linfct = mcp(Type = "Tukey")))
+    
+    
+    ## eCO2 and leaf only: position effect on Vcmax, Jmax, JV ratio, and Ci transition
+    mod1 <- lmer(Vcmax~ Position + (1|Chamber), data=plotDF2[plotDF2$Type=="leaf",])
+    anova(mod1)
+    rand(mod1)
+    summary(glht(mod1, linfct = mcp(Position = "Tukey")))
+    
+    mod2 <- lmer(Jmax~ Position + (1|Chamber), data=plotDF2[plotDF2$Type=="leaf",])
+    anova(mod2)
+    rand(mod2)
+    summary(glht(mod2, linfct = mcp(Position = "Tukey")))
+    
+    mod3 <- lmer(JVratio~ Position + (1|Chamber), data=plotDF2[plotDF2$Type=="leaf",])
+    anova(mod3)
+    rand(mod3)
+    summary(glht(mod3, linfct = mcp(Position = "Tukey")))
+    
+    
+    mod4 <- lmer(Ci_transition_Ac_Aj~ Position + (1|Chamber), data=plotDF2[plotDF2$Type=="leaf",])
+    anova(mod4)
+    rand(mod4)
+    summary(glht(mod4, linfct = mcp(Position = "Tukey")))
+    
+    
+    ## eCO2 and canopy only: position effect on Vcmax, Jmax, JV ratio, and Ci transition
+    mod1 <- lmer(Vcmax~ Position + (1|Chamber), data=plotDF2[plotDF2$Type=="canopy",])
+    anova(mod1)
+    rand(mod1)
+    summary(glht(mod1, linfct = mcp(Position = "Tukey")))
+    
+    mod2 <- lmer(Jmax~ Position + (1|Chamber), data=plotDF2[plotDF2$Type=="canopy",])
+    anova(mod2)
+    rand(mod2)
+    summary(glht(mod2, linfct = mcp(Position = "Tukey")))
+    
+    mod3 <- lmer(JVratio~ Position + (1|Chamber), data=plotDF2[plotDF2$Type=="canopy",])
+    anova(mod3)
+    rand(mod3)
+    summary(glht(mod3, linfct = mcp(Position = "Tukey")))
+    
+    
+    mod4 <- lmer(Ci_transition_Ac_Aj~ Position + (1|Chamber), data=plotDF2[plotDF2$Type=="canopy",])
+    anova(mod4)
+    rand(mod4)
+    summary(glht(mod4, linfct = mcp(Position = "Tukey")))
+    
+    
     
     ################################ plotting
     #p1 <- ggplot() +
@@ -1250,6 +1375,347 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     dev.off()  
     
     
+    ####################### split plots into leaf and canopy responses separately ##########
+    ### separate into aCO2 and eCO2 DF
+    stDF1 <- subset(stDF, Type == "leaf")
+    stDF2 <- subset(stDF, Type == "canopy")
+    
+    ### perform statistics (i.e. position x CO2)
+    ## leaf, Vcmax
+    mod1 <- lmer(Vcmax~ Position * CO2_treatment + (1|Chamber), data=stDF1)
+    out1 <- anova(mod1)
+    summary(glht(mod1, linfct = mcp(Position = "Tukey")))
+    write.csv(out1, "output/A-Ca/mixed_effect_leaf_Vcmax_position_by_CO2.csv")
+    
+    ## leaf, Jmax
+    mod2 <- lmer(Jmax~ Position * CO2_treatment + (1|Chamber), data=stDF1)
+    out2 <- anova(mod2)
+    summary(glht(mod2, linfct = mcp(Position = "Tukey")))
+    write.csv(out2, "output/A-Ca/mixed_effect_leaf_Jmax_position_by_CO2.csv")
+    
+    ## leaf, JV ratio
+    mod3 <- lmer(JVratio~ Position * CO2_treatment + (1|Chamber), data=stDF1)
+    out3 <- anova(mod3)
+    summary(glht(mod3, linfct = mcp(Position = "Tukey")))
+    write.csv(out3, "output/A-Ca/mixed_effect_leaf_JVratio_position_by_CO2.csv")
+    
+    ## leaf, Ci
+    mod4 <- lmer(Ci_transition_Ac_Aj~ Position * CO2_treatment + (1|Chamber), data=stDF1)
+    out4 <- anova(mod4)
+    summary(glht(mod4, linfct = mcp(Position = "Tukey")))
+    write.csv(out4, "output/A-Ca/mixed_effect_leaf_Ci_position_by_CO2.csv")
+    
+    
+    
+    ## canopy, Vcmax
+    mod1 <- lmer(Vcmax~ Position * CO2_treatment + (1|Chamber), data=stDF2)
+    out1 <- anova(mod1)
+    summary(glht(mod1, linfct = mcp(Position = "Tukey")))
+    write.csv(out1, "output/A-Ca/mixed_effect_canopy_Vcmax_position_by_CO2.csv")
+    
+    ## canopy, Jmax
+    mod2 <- lmer(Jmax~ Position * CO2_treatment + (1|Chamber), data=stDF2)
+    out2 <- anova(mod2)
+    summary(glht(mod2, linfct = mcp(Position = "Tukey")))
+    write.csv(out2, "output/A-Ca/mixed_effect_canopy_Jmax_position_by_CO2.csv")
+    
+    ## canopy, JV ratio
+    mod3 <- lmer(JVratio~ Position * CO2_treatment + (1|Chamber), data=stDF2)
+    out3 <- anova(mod3)
+    summary(glht(mod3, linfct = mcp(Position = "Tukey")))
+    write.csv(out3, "output/A-Ca/mixed_effect_canopy_JVratio_position_by_CO2.csv")
+    
+    ## canopy, Ci
+    mod4 <- lmer(Ci_transition_Ac_Aj~ Position * CO2_treatment + (1|Chamber), data=stDF2)
+    out4 <- anova(mod4)
+    summary(glht(mod4, linfct = mcp(Position = "Tukey")))
+    write.csv(out4, "output/A-Ca/mixed_effect_canopy_Ci_position_by_CO2.csv")
+    
+    
+    ### set seed for reproducibility
+    set.seed(124)
+    
+    stDF1$CO2_treatment <- as.character(stDF1$CO2_treatment)
+    stDF2$CO2_treatment <- as.character(stDF2$CO2_treatment)
+    
+    stDF1$Position <- as.character(stDF1$Position)
+    stDF2$Position <- as.character(stDF2$Position)
+    
+    
+    ### plotting
+    ## leaf, Vcmax
+    p1 <- ggplot(stDF1, aes(Position, Vcmax, fill=CO2_treatment)) +
+      geom_boxplot(aes(Position, Vcmax, 
+                       fill=CO2_treatment), alpha=1.0)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left',
+            plot.title = element_text(size=16, face="bold", 
+                                      hjust = 0.5))+
+      xlab("")+
+      ylab(expression(paste(V[cmax], " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      scale_fill_manual(name=expression(paste(C[a] * " treatment")),
+                        limits=c("aCO2", "eCO2"),
+                        values=c("blue2", "red3"),
+                        labels=c(expression(paste(aC[a])), 
+                                 expression(paste(eC[a]))))+
+      scale_x_discrete(name="", 
+                       breaks=c("up", "low"), 
+                       labels=c("Up", "Low"))+
+      guides(fill = guide_legend(override.aes = list(fill = c("blue2","red3"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))+
+      ylim(0, 200)+
+      ggtitle("Leaf-scale")
+    
+    ## canopy, Vcmax
+    p2 <- ggplot(stDF2, aes(Position, Vcmax, fill=CO2_treatment)) +
+      geom_boxplot(aes(Position, Vcmax, 
+                       fill=CO2_treatment), alpha=1.0)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_blank(),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left',
+            plot.title = element_text(size=16, face="bold", 
+                                      hjust = 0.5))+
+      xlab("")+
+      ylab(expression(paste(V[cmax], " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      scale_fill_manual(name=expression(paste(C[a] * " treatment")),
+                        limits=c("aCO2", "eCO2"),
+                        values=c("blue2", "red3"),
+                        labels=c(expression(paste(aC[a])), 
+                                 expression(paste(eC[a]))))+
+      scale_x_discrete(name="", 
+                       breaks=c("12345", "345", "45"), 
+                       labels=c("Full", "T+M", "Top"))+
+      guides(fill = guide_legend(override.aes = list(fill = c("blue2","red3"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))+
+      ylim(0, 50)+
+      ggtitle("Canopy-scale")
+    
+    
+    ## leaf, Jmax
+    p3 <- ggplot(stDF1, aes(Position, Jmax, fill=CO2_treatment)) +
+      geom_boxplot(aes(Position, Jmax, 
+                       fill=CO2_treatment), alpha=1.0)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab("")+
+      ylab(expression(paste(J[max], " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      scale_fill_manual(name=expression(paste(C[a] * " treatment")),
+                        limits=c("aCO2", "eCO2"),
+                        values=c("blue2", "red3"),
+                        labels=c(expression(paste(aC[a])), 
+                                 expression(paste(eC[a]))))+
+      scale_x_discrete(name="", 
+                       breaks=c("up", "low"), 
+                       labels=c("Up", "Low"))+
+      guides(fill = guide_legend(override.aes = list(fill = c("blue2","red3"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))+
+      ylim(0, 300)
+    
+    ## canopy, Jmax
+    p4 <- ggplot(stDF2, aes(Position, Jmax, fill=CO2_treatment)) +
+      geom_boxplot(aes(Position, Jmax, 
+                       fill=CO2_treatment), alpha=1.0)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_blank(),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab("")+
+      ylab(expression(paste(J[max], " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      scale_fill_manual(name=expression(paste(C[a] * " treatment")),
+                        limits=c("aCO2", "eCO2"),
+                        values=c("blue2", "red3"),
+                        labels=c(expression(paste(aC[a])), 
+                                 expression(paste(eC[a]))))+
+      scale_x_discrete(name="", 
+                       breaks=c("12345", "345", "45"), 
+                       labels=c("Full", "T+M", "Top"))+
+      guides(fill = guide_legend(override.aes = list(fill = c("blue2","red3"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))+
+      ylim(0, 60)
+    
+    ## leaf, JV ratio
+    p5 <- ggplot(stDF1, aes(Position, JVratio, fill=CO2_treatment)) +
+      geom_boxplot(aes(Position, JVratio, 
+                       fill=CO2_treatment), alpha=1.0)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab("")+
+      ylab(expression(paste(J[max] * " / " * V[cmax])))+
+      scale_fill_manual(name=expression(paste(C[a] * " treatment")),
+                        limits=c("aCO2", "eCO2"),
+                        values=c("blue2", "red3"),
+                        labels=c(expression(paste(aC[a])), 
+                                 expression(paste(eC[a]))))+
+      scale_x_discrete(name="", 
+                       breaks=c("up", "low"), 
+                       labels=c("Up", "Low"))+
+      guides(fill = guide_legend(override.aes = list(fill = c("blue2","red3"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))+
+      ylim(1, 2)
+    
+    ## canopy, JV ratio
+    p6 <- ggplot(stDF2, aes(Position, JVratio, fill=CO2_treatment)) +
+      geom_boxplot(aes(Position, JVratio, 
+                       fill=CO2_treatment), alpha=1.0)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_blank(),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab("")+
+      ylab(expression(paste(J[max] * " / " * V[cmax])))+
+      scale_fill_manual(name=expression(paste(C[a] * " treatment")),
+                        limits=c("aCO2", "eCO2"),
+                        values=c("blue2", "red3"),
+                        labels=c(expression(paste(aC[a])), 
+                                 expression(paste(eC[a]))))+
+      scale_x_discrete(name="", 
+                       breaks=c("12345", "345", "45"), 
+                       labels=c("Full", "T+M", "Top"))+
+      guides(fill = guide_legend(override.aes = list(fill = c("blue2","red3"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))+
+      ylim(1, 2)
+    
+    ## leaf, Ci
+    p7 <- ggplot(stDF1, aes(Position, Ci_transition_Ac_Aj, fill=CO2_treatment)) +
+      geom_boxplot(aes(Position, Ci_transition_Ac_Aj, 
+                       fill=CO2_treatment), alpha=1.0)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab("")+
+      ylab(expression(paste("Transition " * C[i] * " (" * mu * "mol" * " " * mol^-1 * ")")))+
+      scale_fill_manual(name=expression(paste(C[a] * " treatment")),
+                        limits=c("aCO2", "eCO2"),
+                        values=c("blue2", "red3"),
+                        labels=c(expression(paste(aC[a])), 
+                                 expression(paste(eC[a]))))+
+      scale_x_discrete(name="", 
+                       breaks=c("up", "low"), 
+                       labels=c("Up", "Low"))+
+      guides(fill = guide_legend(override.aes = list(fill = c("blue2","red3"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))+
+      ylim(0, 600)
+    
+    ## canopy, Ci
+    p8 <- ggplot(stDF2, aes(Position, Ci_transition_Ac_Aj, fill=CO2_treatment)) +
+      geom_boxplot(aes(Position, Ci_transition_Ac_Aj, 
+                       fill=CO2_treatment), alpha=1.0)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_blank(),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab("")+
+      ylab(expression(paste("Transition " * C[i] * " (" * mu * "mol" * " " * mol^-1 * ")")))+
+      scale_fill_manual(name=expression(paste(C[a] * " treatment")),
+                        limits=c("aCO2", "eCO2"),
+                        values=c("blue2", "red3"),
+                        labels=c(expression(paste(aC[a])), 
+                                 expression(paste(eC[a]))))+
+      scale_x_discrete(name="", 
+                       breaks=c("12345", "345", "45"), 
+                       labels=c("Full", "T+M", "Top"))+
+      guides(fill = guide_legend(override.aes = list(fill = c("blue2","red3"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))+
+      ylim(0, 600)
+      
+      
+    legend_shared <- get_legend(p1 + theme(legend.position="bottom",
+                                           legend.box = 'vertical',
+                                           legend.box.just = 'left'))
+    
+    combined_plots <- plot_grid(p1, p2, p3, p4, p5, p6, p7, p8,
+                                labels=c("(a)", "(b)", "(c)", "(d)",
+                                         "(e)", "(f)", "(g)", "(h)"),
+                                ncol=2, align="vh", axis = "l",
+                                label_x=0.16, label_y=0.88,
+                                label_size = 18)
+    
+    pdf("output/A-Ca/biochemical_parameters_leaf_canopy_split.pdf", width=12, height=16)
+    plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
+    dev.off()  
+      
+  
+    
     ################################# plot delta A sensitivity #################################
     ###### Plot delta A at the Ca = 400 to 600 range and see the slope
     #### export biochemical parameter summary table
@@ -1573,7 +2039,7 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     
     #plot(p1)
     
-    pdf("output/A-Ca/ambient_A_sensitivity_plot.pdf", width=10, height=14)
+    pdf("output/A-Ca/predicted_ambient_A_sensitivity_plot.pdf", width=10, height=14)
     plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
     dev.off()  
     
