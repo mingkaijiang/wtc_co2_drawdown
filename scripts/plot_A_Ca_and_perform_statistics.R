@@ -181,11 +181,11 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_color_manual(name="Position",
                          limits=c("12345", "345", "45", "up", "low"),
                          values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                         labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Type",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"))+
@@ -223,11 +223,11 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_color_manual(name="Position",
                          limits=c("12345", "345", "45", "up", "low"),
                          values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                         labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Type",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"))+
@@ -262,11 +262,11 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_color_manual(name="Position",
                          limits=c("12345", "345", "45", "up", "low"),
                          values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                         labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Type",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"))+
@@ -304,11 +304,11 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_color_manual(name="Position",
                          limits=c("12345", "345", "45", "up", "low"),
                          values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                         labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Type",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"))+
@@ -342,11 +342,11 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_color_manual(name="Position",
                          limits=c("12345", "345", "45", "up", "low"),
                          values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                         labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Type",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"))+
@@ -379,11 +379,11 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_color_manual(name="Position",
                          limits=c("12345", "345", "45", "up", "low"),
                          values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                         labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Type",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"))+
@@ -444,10 +444,214 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     
     
     ### perform linear mixed effect model statistics
-    ### check CO2 effect at each canopy position
-    mod1 <- lmer(Vcmax~ CO2_treatment + Type + (1|Chamber), data=stDF)
-    summary(mod1)
+    ### check type effect, ignoring CO2 and position effect
+    mod1 <- lmer(Vcmax~ Type + (1|Chamber), data=stDF)
+    out1 <- anova(mod1)
+    lab1 <- summary(glht(mod1, linfct = mcp(Type = "Tukey")))
+    #eff.size1 <- round(lab1$test$coefficients[1], 1)
+    #eff.sig1 <- round(lab1$test$pvalues[1], 3)
+    #eff.error1 <- round(lab1$test$sigma[1], 1)
     
+
+    mod2 <- lmer(Jmax~ Type + (1|Chamber), data=stDF)
+    out2 <- anova(mod2)
+    lab2 <- summary(glht(mod2, linfct = mcp(Type = "Tukey")))
+    
+    
+    mod3 <- lmer(JVratio~ Type + (1|Chamber), data=stDF)
+    out3 <- anova(mod3)
+    lab3 <- summary(glht(mod3, linfct = mcp(Type = "Tukey")))
+    
+    mod4 <- lmer(Ci_transition_Ac_Aj~ Type + (1|Chamber), data=stDF)
+    out4 <- anova(mod4)
+    lab4 <- summary(glht(mod4, linfct = mcp(Type = "Tukey")))
+    
+    
+    ### fix jitter
+    set.seed(123)
+    
+    ### plotting
+    p1 <- ggplot(data=stDF) +
+      geom_boxplot(aes(Type, Vcmax),
+                   outlier.fill = "white", outlier.color = "white",
+                   outlier.size = 0.0, outlier.alpha = 0.0,
+                   fill="grey")+
+      geom_jitter(aes(Type, Vcmax, 
+                      fill=Position, 
+                      pch = Type), 
+                  size=4, width = 0.3)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab("")+
+      ylab(expression(paste(V[cmax], " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      scale_fill_manual(name="Position",
+                        limits=c("12345", "345", "45", "up", "low"),
+                        values=c("blue2", "red3", "purple", "orange", "green"),
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
+      scale_shape_manual(name="Scale",
+                         values=c(21, 24),
+                         labels=c("Canopy", "Leaf"),
+                         guide=F)+
+      scale_x_discrete(name="", 
+                       breaks=c("canopy", "leaf"), 
+                       labels=c("Canopy", "Leaf"))+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24),
+                                                     fill = c("blue2","red3", "purple",
+                                                              "orange", "darkgreen"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))+
+      ylim(0, 200)
+    
+    
+    p2 <- ggplot(data=stDF) +
+      geom_boxplot(aes(Type, Jmax),
+                   outlier.fill = "white", outlier.color = "white",
+                   outlier.size = 0.0, outlier.alpha = 0.0,
+                   fill="grey")+
+      geom_jitter(aes(Type, Jmax, 
+                      fill=Position, 
+                      pch = Type), 
+                  size=4, width = 0.3)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab("")+
+      ylab(expression(paste(J[max], " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+      scale_fill_manual(name="Position",
+                        limits=c("12345", "345", "45", "up", "low"),
+                        values=c("blue2", "red3", "purple", "orange", "green"),
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
+      scale_shape_manual(name="Scale",
+                         values=c(21, 24),
+                         labels=c("Canopy", "Leaf"),
+                         guide=F)+
+      scale_x_discrete(name="", 
+                       breaks=c("canopy", "leaf"), 
+                       labels=c("Canopy", "Leaf"))+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24),
+                                                     fill = c("blue2","red3", "purple",
+                                                              "orange", "darkgreen"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))+
+      ylim(0, 300)
+    
+    p3 <- ggplot(data=stDF) +
+      geom_boxplot(aes(Type, JVratio),
+                   outlier.fill = "white", outlier.color = "white",
+                   outlier.size = 0.0, outlier.alpha = 0.0,
+                   fill="grey")+
+      geom_jitter(aes(Type, JVratio, 
+                      fill=Position, 
+                      pch = Type), 
+                  size=4, width = 0.3)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab("")+
+      ylab(expression(paste(J[max] * " / " * V[cmax])))+
+      scale_fill_manual(name="Position",
+                        limits=c("12345", "345", "45", "up", "low"),
+                        values=c("blue2", "red3", "purple", "orange", "green"),
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
+      scale_shape_manual(name="Scale",
+                         values=c(21, 24),
+                         labels=c("Canopy", "Leaf"),
+                         guide=F)+
+      scale_x_discrete(name="", 
+                       breaks=c("canopy", "leaf"), 
+                       labels=c("Canopy", "Leaf"))+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24),
+                                                     fill = c("blue2","red3", "purple",
+                                                              "orange", "darkgreen"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))+
+      ylim(0, 3)
+    
+    p4 <- ggplot(data=stDF) +
+      geom_boxplot(aes(Type, Ci_transition_Ac_Aj),
+                   outlier.fill = "white", outlier.color = "white",
+                   outlier.size = 0.0, outlier.alpha = 0.0,
+                   fill="grey")+
+      geom_jitter(aes(Type, Ci_transition_Ac_Aj, 
+                      fill=Position, 
+                      pch = Type), 
+                  size=4, width = 0.3)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab("")+
+      ylab(expression(paste("Transition " * C[i] * " (" * mu * "mol" * " " * mol^-1 * ")")))+
+      scale_fill_manual(name="Position",
+                        limits=c("12345", "345", "45", "up", "low"),
+                        values=c("blue2", "red3", "purple", "orange", "green"),
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
+      scale_shape_manual(name="Scale",
+                         values=c(21, 24),
+                         labels=c("Canopy", "Leaf"),
+                         guide=F)+
+      scale_x_discrete(name="", 
+                       breaks=c("canopy", "leaf"), 
+                       labels=c("Canopy", "Leaf"))+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24),
+                                                     fill = c("blue2","red3", "purple",
+                                                              "orange", "darkgreen"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))+
+      ylim(0, 600)
+    
+    legend_shared <- get_legend(p1 + theme(legend.position="bottom",
+                                           legend.box = 'vertical',
+                                           legend.box.just = 'left'))
+    
+    combined_plots <- plot_grid(p1, p2, p3, p4, 
+                                labels=c("(a)", "(b)", "(c)", "(d)"),
+                                ncol=2, align="vh", axis = "l",
+                                label_x=0.16, label_y=0.95,
+                                label_size = 18)
+    
+    pdf("output/A-Ca/biochemical_parameter_plot_by_scale.pdf", width=10, height=10)
+    plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
+    dev.off()  
+    
+    
+    #####################
     ## aCO2 only: scale effect on Vcmax, Jmax, JV ratio, and Ci transition
     mod1 <- lmer(Vcmax~ Type + (1|Chamber), data=plotDF1)
     #mod1 <- lmer(Vcmax~ Type + (1|Position/Chamber), data=plotDF1)
@@ -610,17 +814,17 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     #  scale_fill_manual(name="Position",
     #                    limits=c("12345", "345", "45", "up", "low"),
     #                    values=c("blue2", "red3", "purple", "orange", "green"),
-    #                    labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+    #                    labels=c("Full", "T+M", "Top", "Up", "Low"))+
     #  scale_color_manual(name="Position",
     #                     limits=c("12345", "345", "45", "up", "low"),
     #                     values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-    #                     labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+    #                     labels=c("Full", "T+M", "Top", "Up", "Low"))+
     #  scale_shape_manual(name="Type",
     #                     values=c(21, 24),
     #                     labels=c("Canopy", "Leaf"))+
     #  scale_x_discrete(name="", 
     #                   breaks=c("12345", "345", "45", "up", "low"), 
-    #                   labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+    #                   labels=c("Full", "T+M", "Top", "Up", "Low"))+
     #  guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
     
     ### fix jitter
@@ -653,7 +857,7 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Scale",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"),
@@ -695,7 +899,7 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Scale",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"),
@@ -737,7 +941,7 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Scale",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"),
@@ -779,7 +983,7 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Scale",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"),
@@ -838,7 +1042,7 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Scale",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"),
@@ -880,7 +1084,7 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Scale",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"),
@@ -922,7 +1126,7 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Scale",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"),
@@ -964,7 +1168,7 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Scale",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"),
@@ -1160,7 +1364,7 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Scale",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"),
@@ -1197,7 +1401,7 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Scale",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"),
@@ -1233,7 +1437,7 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Scale",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"),
@@ -1272,7 +1476,7 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Scale",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"),
@@ -1310,7 +1514,7 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Scale",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"),
@@ -1346,7 +1550,7 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Scale",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"),
@@ -1835,17 +2039,17 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_color_manual(name="Position",
                          limits=c("12345", "345", "45", "up", "low"),
                          values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                         labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Measurements",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"))+
       scale_x_discrete(name="", 
                        breaks=c("12345", "345", "45", "up", "low"), 
-                       labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                       labels=c("Full", "T+M", "Top", "Up", "Low"))+
       guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
     
     
@@ -1871,17 +2075,17 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_color_manual(name="Position",
                          limits=c("12345", "345", "45", "up", "low"),
                          values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                         labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Measurements",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"))+
       scale_x_discrete(name="", 
                        breaks=c("12345", "345", "45", "up", "low"), 
-                       labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                       labels=c("Full", "T+M", "Top", "Up", "Low"))+
       guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
     
     
@@ -1907,17 +2111,17 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_color_manual(name="Position",
                          limits=c("12345", "345", "45", "up", "low"),
                          values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                         labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Measurements",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"))+
       scale_x_discrete(name="", 
                        breaks=c("12345", "345", "45", "up", "low"), 
-                       labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                       labels=c("Full", "T+M", "Top", "Up", "Low"))+
       guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
     
     
@@ -1943,17 +2147,17 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_color_manual(name="Position",
                          limits=c("12345", "345", "45", "up", "low"),
                          values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                         labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Measurements",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"))+
       scale_x_discrete(name="", 
                        breaks=c("12345", "345", "45", "up", "low"), 
-                       labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                       labels=c("Full", "T+M", "Top", "Up", "Low"))+
       guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
     
     
@@ -1979,17 +2183,17 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_color_manual(name="Position",
                          limits=c("12345", "345", "45", "up", "low"),
                          values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                         labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Measurements",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"))+
       scale_x_discrete(name="", 
                        breaks=c("12345", "345", "45", "up", "low"), 
-                       labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                       labels=c("Full", "T+M", "Top", "Up", "Low"))+
       guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
     
     
@@ -2015,17 +2219,17 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="Position",
                         limits=c("12345", "345", "45", "up", "low"),
                         values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_color_manual(name="Position",
                          limits=c("12345", "345", "45", "up", "low"),
                          values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                         labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Measurements",
                          values=c(21, 24),
                          labels=c("Canopy", "Leaf"))+
       scale_x_discrete(name="", 
                        breaks=c("12345", "345", "45", "up", "low"), 
-                       labels=c("Whole", "T+M", "Top", "Up", "Low"))+
+                       labels=c("Full", "T+M", "Top", "Up", "Low"))+
       guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
     
     
