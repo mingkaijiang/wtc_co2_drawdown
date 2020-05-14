@@ -113,12 +113,21 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       slpDF2$intercept[slpDF2$Identity==i] <- coef(lm.mod)[1]
       slpDF2$A400[slpDF2$Identity==i] <- coef(lm.mod)[2] * 400 + coef(lm.mod)[1]
       slpDF2$A600[slpDF2$Identity==i] <- coef(lm.mod)[2] * 600 + coef(lm.mod)[1]
+      
     }
     
     slpDF1$sens <- (slpDF1$A600 - slpDF1$A400) / slpDF1$A400
     slpDF2$sens <- (slpDF2$A600 - slpDF2$A400) / slpDF2$A400
     
     slpDF <- rbind(slpDF1, slpDF2)
+    
+    ### test statistics of the slope
+    mod1 <- lmer(slope~ Position + CO2_treatment + (1|Chamber), data=slpDF)
+    out1 <- anova(mod1)
+    lab1 <- summary(glht(mod1, linfct = mcp(Position = "Tukey")))
+    
+    
+    
     
     ### summarize slope
     outDF1 <- summaryBy(slope+intercept+A400+A600+sens~Position+Type+CO2_treatment,
@@ -398,7 +407,10 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
                                            legend.box.just = 'left'))
     
     combined_plots <- plot_grid(p1, p2, p5, p3, p4, p6, 
-                                labels="auto", ncol=3, align="vh", axis = "l")
+                                labels=c("(a)", "(b)", "(c)", "(d)", "(e)", "(f)"),
+                                ncol=3, align="vh", axis = "l",
+                                label_x=0.16, label_y=0.95,
+                                label_size = 18)
     
     pdf("output/A-Ca/A-Ca_plots.pdf", width=12, height=10)
     plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
@@ -2239,7 +2251,10 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
                                            legend.box.just = 'left'))
     
     combined_plots <- plot_grid(p1, p2, p3, p4, p5, p6, 
-                                labels="AUTO", ncol=2, align="vh", axis = "l")
+                                labels=c("(a)", "(b)", "(c)", "(d)", "(e)", "(f)"),
+                                ncol=2, align="vh", axis = "l",
+                                label_x=0.16, label_y=0.95,
+                                label_size = 18)
     
     #plot(p1)
     
