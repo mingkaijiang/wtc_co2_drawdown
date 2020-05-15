@@ -5,7 +5,7 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     #### Only based on a subset of data that is well-watered treatment
     
   
-    ################################# plot A-Ca for ambient #################################
+    ################################# plot A-Ca #################################
     #### read in leaf-scale data
     lDF1 <- read.csv("data/ACi_curves/HFE_Aci_2008-2009.csv",stringsAsFactors=FALSE)
     lDF2  <- read.csv("data/ACi_curves/HFE_Aci_lowcanopy_2008-2009.csv",stringsAsFactors=FALSE)
@@ -122,11 +122,9 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     slpDF <- rbind(slpDF1, slpDF2)
     
     ### test statistics of the slope
-    mod1 <- lmer(slope~ Position + CO2_treatment + (1|Chamber), data=slpDF)
+    mod1 <- lmer(slope~ Position * CO2_treatment + (1|Chamber), data=slpDF)
     out1 <- anova(mod1)
     lab1 <- summary(glht(mod1, linfct = mcp(Position = "Tukey")))
-    
-    
     
     
     ### summarize slope
@@ -406,15 +404,152 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
                                            legend.box = 'vertical',
                                            legend.box.just = 'left'))
     
-    combined_plots <- plot_grid(p1, p2, p5, p3, p4, p6, 
-                                labels=c("(a)", "(b)", "(c)", "(d)", "(e)", "(f)"),
-                                ncol=3, align="vh", axis = "l",
+    combined_plots <- plot_grid(p1, p2, p3, p4,  
+                                labels=c("(a)", "(b)", "(c)", "(d)"),
+                                ncol=2, align="vh", axis = "l",
                                 label_x=0.16, label_y=0.95,
                                 label_size = 18)
     
-    pdf("output/A-Ca/A-Ca_plots.pdf", width=12, height=10)
+    pdf("output/A-Ca/A-Ca_plots.pdf", width=8, height=10)
     plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
     dev.off() 
+    
+    
+    ################################# plot delta A sensitivity #################################
+    ###### Plot delta A at the Ca = 400 to 600 range and see the slope
+    #### export biochemical parameter summary table
+    mgDF <- rbind(ftDF1, ftDF2)
+    subDF1 <- subset(mgDF, Ca == "400")
+    subDF2 <- subset(mgDF, Ca == "600")
+    mgDF2 <- merge(subDF1, subDF2, by="Identity", keep.all=T)
+    mgDF3 <- mgDF2[,c("Identity", "Ca.x", "Ca.y", "Photo.x", "Photo.y", "Chamber.x", 
+                      "Position.x", "Type.x", "CO2_treatment.x")]
+    colnames(mgDF3) <- c("Identity", "Ca400", "Ca600", "A400", "A600",
+                         "Chamber", "Position", "Type", "CO2_treatment")
+    
+    ### normalized sensitivity to per CO2 concentration
+    mgDF3$A_sens <- with(mgDF3, (A600-A400)/(600-400))
+    
+    ### normalized sensitivity to A400
+    mgDF3$A_sens_norm <- with(mgDF3, (A600-A400)/A400)
+    
+    write.csv(mgDF3, "output/A-Ca/predicted_A_at_400_600_ppm.csv", row.names=F)
+    
+    plotDF2 <- summaryBy(A_sens+A_sens_norm~Position+Type+CO2_treatment,
+                         FUN=c(mean,se), keep.names=T, data=mgDF3)
+    
+    plotDF2$Position <- gsub("12345", "5_Full", plotDF2$Position)
+    plotDF2$Position <- gsub("345", "4_TM", plotDF2$Position)
+    plotDF2$Position <- gsub("45", "3_Top", plotDF2$Position)
+    plotDF2$Position <- gsub("low", "2_low", plotDF2$Position)
+    plotDF2$Position <- gsub("up", "1_up", plotDF2$Position)
+    
+    
+    ### test statistics
+    mod1 <- lmer(A_sens_norm ~ Position * CO2_treatment + (1|Chamber), data=mgDF3)
+    out1 <- anova(mod1)
+    lab1 <- summary(glht(mod1, linfct = mcp(Position = "Tukey")))
+    
+    
+    ################################# plotting
+   # p1 <- ggplot(plotDF2, aes(Position, A_sens.mean, fill=CO2_treatment)) +
+   #   geom_errorbar(aes(x=Position, ymin=A_sens.mean-A_sens.se,
+   #                     ymax=A_sens.mean+A_sens.se,
+   #                     col=CO2_treatment), 
+   #                 position=position_dodge(width=0.2),
+   #                 width=0.2)+
+   #   geom_point(aes(Position, A_sens.mean, 
+   #                  fill=CO2_treatment), 
+   #              position=position_dodge(width=0.2),
+   #              pch=21, size=4)+
+   #   theme_linedraw() +
+   #   theme(panel.grid.minor=element_blank(),
+   #         axis.text.x=element_text(size=12),
+   #         axis.title.x=element_text(size=14),
+   #         axis.text.y=element_text(size=12),
+   #         axis.title.y=element_text(size=14),
+   #         legend.text=element_text(size=12),
+   #         legend.title=element_text(size=14),
+   #         panel.grid.major=element_blank(),
+   #         legend.position="none",
+   #         legend.box = 'vertical',
+   #         legend.box.just = 'left')+
+   #   xlab("")+
+   #   ylab(expression(paste(delta,  "A / ", delta, CO[2], " (", mu, "mol ", m^-2, " ", s^-1, " ", ppm^-1, ")")))+
+   #   scale_fill_manual(name="",
+   #                     limits=c("aCO2", "eCO2"),
+   #                     values=c("blue2", "red3"),
+   #                     labels=c(expression(paste(aCO[2])),
+   #                              expression(paste(eCO[2]))))+
+   #   scale_color_manual(name="",
+   #                     limits=c("aCO2", "eCO2"),
+   #                     values=c("blue2", "red3"),
+   #                     labels=c(expression(paste(aCO[2])),
+   #                              expression(paste(eCO[2]))))+
+   #   scale_x_discrete(name="", 
+   #                    breaks=c("5_Full", "4_TM", "3_Top", "2_low", "1_up"), 
+   #                    labels=c("Full", "T+M", "Top", "Low", "Up"))
+    
+    p2 <- ggplot(plotDF2, aes(Position, A_sens_norm.mean, fill=CO2_treatment)) +
+      geom_errorbar(aes(x=Position, ymin=A_sens_norm.mean-A_sens_norm.se,
+                        ymax=A_sens_norm.mean+A_sens_norm.se,
+                        col=CO2_treatment), 
+                    position=position_dodge(width=0.2),
+                    width=0.2)+
+      geom_point(aes(Position, A_sens_norm.mean, 
+                     fill=CO2_treatment), 
+                 position=position_dodge(width=0.2),
+                 pch=21, size=4)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="bottom",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab("")+
+      ylab(expression(paste(delta,  "A / ", A[400])))+
+      scale_fill_manual(name="",
+                        limits=c("aCO2", "eCO2"),
+                        values=c("blue2", "red3"),
+                        labels=c(expression(paste(aCO[2])),
+                                 expression(paste(eCO[2]))))+
+      scale_color_manual(name="",
+                         limits=c("aCO2", "eCO2"),
+                         values=c("blue2", "red3"),
+                         labels=c(expression(paste(aCO[2])),
+                                  expression(paste(eCO[2]))))+
+      scale_x_discrete(name="", 
+                       breaks=c("5_Full", "4_TM", "3_Top", "2_low", "1_up"), 
+                       labels=c("Full", "T+M", "Top", "Low", "Up"))
+    
+  
+    
+    #legend_shared <- get_legend(p1 + theme(legend.position="bottom",
+    #                                       legend.box = 'vertical',
+    #                                       legend.box.just = 'left'))
+    #
+    #combined_plots <- plot_grid(p1, p2, 
+    #                            labels=c("(a)", "(b)"),
+    #                            ncol=1, align="vh", axis = "l",
+    #                            label_x=0.88, label_y=0.95,
+    #                            label_size = 18)
+    
+
+    pdf("output/A-Ca/predicted_A_sensitivity_plot.pdf", width=4, height=4)
+    #plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
+    plot(p2)
+    dev.off()  
+    
+    
+    
+    
+    
     
     
     ################################# plot statistics #################################
@@ -1931,336 +2066,4 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     dev.off()  
       
   
-    
-    ################################# plot delta A sensitivity #################################
-    ###### Plot delta A at the Ca = 400 to 600 range and see the slope
-    #### export biochemical parameter summary table
-    ### make a list of identify
-    id.list <- rep(c("up", "low", "12345", "345", "45"), each=3)
-    chamber.list <- rep(c(1, 3, 11), by = 5)
-    
-    ### prepare an output df
-    outDF2 <- data.frame(id.list, chamber.list, 
-                        NA, NA, NA, NA, NA, NA)
-    colnames(outDF2) <- c("Position", "Chamber", 
-                         "ALEAF_400","ALEAF_600",
-                         "Ac_400", "Ac_600",
-                         "Aj_400", "Aj_600")
-    
-    id.list <- unique(id.list)
-    
-    ### the for loop
-    ### ch01
-    for (i in 1:length(id.list)) {
-      ## subset each data
-      test <- subset(ch01DF, Position == id.list[i])
-      
-      ## fit
-      fit1 <- fitaci(test, fitmethod="bilinear", varnames = list(ALEAF = "Photo", 
-                                                                Tleaf = "Tleaf", 
-                                                                Ci = "Ci",
-                                                                PPFD = "PAR", 
-                                                                Rd = "Rd"),
-                     Tcorrect=T, fitTPU = F)
-      
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "ALEAF_400"] <- fit1$Photosyn(Ca=400)$ALEAF
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "ALEAF_600"] <- fit1$Photosyn(Ca=600)$ALEAF
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "Ac_400"] <- fit1$Photosyn(Ca=400)$Ac
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "Ac_600"] <- fit1$Photosyn(Ca=600)$Ac
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "Aj_400"] <- fit1$Photosyn(Ca=400)$Aj
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "1", "Aj_600"] <- fit1$Photosyn(Ca=600)$Aj
-    }
-   
-    
-    ### ch03
-    for (i in 1:length(id.list)) {
-      ## subset each data
-      test <- subset(ch03DF, Position == id.list[i])
-      
-      ## fit
-      fit1 <- fitaci(test, fitmethod="bilinear", varnames = list(ALEAF = "Photo", 
-                                                                 Tleaf = "Tleaf", 
-                                                                 Ci = "Ci",
-                                                                 PPFD = "PAR", 
-                                                                 Rd = "Rd"),
-                     Tcorrect=T, fitTPU = F)
-      
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "ALEAF_400"] <- fit1$Photosyn(Ca=400)$ALEAF
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "ALEAF_600"] <- fit1$Photosyn(Ca=600)$ALEAF
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "Ac_400"] <- fit1$Photosyn(Ca=400)$Ac
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "Ac_600"] <- fit1$Photosyn(Ca=600)$Ac
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "Aj_400"] <- fit1$Photosyn(Ca=400)$Aj
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "3", "Aj_600"] <- fit1$Photosyn(Ca=600)$Aj
-    }
-
-    ### ch11
-    for (i in 1:length(id.list)) {
-      ## subset each data
-      test <- subset(ch11DF, Position == id.list[i])
-      
-      ## fit
-      fit1 <- fitaci(test, fitmethod="bilinear", varnames = list(ALEAF = "Photo", 
-                                                                 Tleaf = "Tleaf", 
-                                                                 Ci = "Ci",
-                                                                 PPFD = "PAR", 
-                                                                 Rd = "Rd"),
-                     Tcorrect=T, fitTPU = F)
-      
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "ALEAF_400"] <- fit1$Photosyn(Ca=400)$ALEAF
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "ALEAF_600"] <- fit1$Photosyn(Ca=600)$ALEAF
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "Ac_400"] <- fit1$Photosyn(Ca=400)$Ac
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "Ac_600"] <- fit1$Photosyn(Ca=600)$Ac
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "Aj_400"] <- fit1$Photosyn(Ca=400)$Aj
-      outDF2[outDF2$Position == id.list[i] & outDF2$Chamber == "11", "Aj_600"] <- fit1$Photosyn(Ca=600)$Aj
-    }
-    
-    ### unnormalized sensitivity
-    outDF2$A_sens <- with(outDF2, (ALEAF_600-ALEAF_400)/(600-400))
-    outDF2$Aj_sens <- with(outDF2, (Aj_600-Aj_400)/(600-400))
-    outDF2$Ac_sens <- with(outDF2, (Ac_600-Ac_400)/(600-400))
-
-    ### normalized sensitivity
-    outDF2$A_sens_norm <- with(outDF2, (ALEAF_600-ALEAF_400)/ALEAF_400)
-    outDF2$Aj_sens_norm <- with(outDF2, (Aj_600-Aj_400)/Aj_400)
-    outDF2$Ac_sens_norm <- with(outDF2, (Ac_600-Ac_400)/Ac_400)
-    
-    ### Type
-    outDF2$Type <- c(rep("Leaf", 6), rep("Canopy", 9))
-    
-    write.csv(outDF2, "output/A-Ca/predicted_A_at_Ci_400_600_ppm.csv", row.names=F)
-    
-    ################################# plotting
-    p1 <- ggplot() +
-      geom_point(data=outDF2, aes(Position, A_sens, 
-                                  fill=as.factor(Position), 
-                                  pch = as.factor(Type)), alpha=1.0, size=4)+
-      theme_linedraw() +
-      theme(panel.grid.minor=element_blank(),
-            axis.text.x=element_text(size=12),
-            axis.title.x=element_text(size=14),
-            axis.text.y=element_text(size=12),
-            axis.title.y=element_text(size=14),
-            legend.text=element_text(size=12),
-            legend.title=element_text(size=14),
-            panel.grid.major=element_blank(),
-            legend.position="none",
-            legend.box = 'vertical',
-            legend.box.just = 'left')+
-      xlab("")+
-      ylab(expression(paste(delta,  "A / ", delta, CO[2], " (", mu, "mol ", m^-2, " ", s^-1, " ", ppm^-1, ")")))+
-      scale_fill_manual(name="Position",
-                        limits=c("12345", "345", "45", "up", "low"),
-                        values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      scale_color_manual(name="Position",
-                         limits=c("12345", "345", "45", "up", "low"),
-                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Measurements",
-                         values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
-      scale_x_discrete(name="", 
-                       breaks=c("12345", "345", "45", "up", "low"), 
-                       labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
-    
-    
-
-    p2 <- ggplot() +
-      geom_point(data=outDF2, aes(Position, A_sens_norm, 
-                                  fill=as.factor(Position), 
-                                  pch = as.factor(Type)), alpha=1.0, size=4)+
-      theme_linedraw() +
-      theme(panel.grid.minor=element_blank(),
-            axis.text.x=element_text(size=12),
-            axis.title.x=element_text(size=14),
-            axis.text.y=element_text(size=12),
-            axis.title.y=element_text(size=14),
-            legend.text=element_text(size=12),
-            legend.title=element_text(size=14),
-            panel.grid.major=element_blank(),
-            legend.position="none",
-            legend.box = 'vertical',
-            legend.box.just = 'left')+
-      xlab("")+
-      ylab(expression(paste(delta,  "A / ", A[400])))+
-      scale_fill_manual(name="Position",
-                        limits=c("12345", "345", "45", "up", "low"),
-                        values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      scale_color_manual(name="Position",
-                         limits=c("12345", "345", "45", "up", "low"),
-                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Measurements",
-                         values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
-      scale_x_discrete(name="", 
-                       breaks=c("12345", "345", "45", "up", "low"), 
-                       labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
-    
-    
-    
-    p3 <- ggplot() +
-      geom_point(data=outDF2, aes(Position, Ac_sens, 
-                                  fill=as.factor(Position), 
-                                  pch = as.factor(Type)), alpha=1.0, size=4)+
-      theme_linedraw() +
-      theme(panel.grid.minor=element_blank(),
-            axis.text.x=element_text(size=12),
-            axis.title.x=element_text(size=14),
-            axis.text.y=element_text(size=12),
-            axis.title.y=element_text(size=14),
-            legend.text=element_text(size=12),
-            legend.title=element_text(size=14),
-            panel.grid.major=element_blank(),
-            legend.position="none",
-            legend.box = 'vertical',
-            legend.box.just = 'left')+
-      xlab("")+
-      ylab(expression(paste(delta,  A[c], " / ", delta, CO[2], " (", mu, "mol ", m^-2, " ", s^-1, " ", ppm^-1, ")")))+
-      scale_fill_manual(name="Position",
-                        limits=c("12345", "345", "45", "up", "low"),
-                        values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      scale_color_manual(name="Position",
-                         limits=c("12345", "345", "45", "up", "low"),
-                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Measurements",
-                         values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
-      scale_x_discrete(name="", 
-                       breaks=c("12345", "345", "45", "up", "low"), 
-                       labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
-    
-    
-    
-    p4 <- ggplot() +
-      geom_point(data=outDF2, aes(Position, Ac_sens_norm, 
-                                  fill=as.factor(Position), 
-                                  pch = as.factor(Type)), alpha=1.0, size=4)+
-      theme_linedraw() +
-      theme(panel.grid.minor=element_blank(),
-            axis.text.x=element_text(size=12),
-            axis.title.x=element_text(size=14),
-            axis.text.y=element_text(size=12),
-            axis.title.y=element_text(size=14),
-            legend.text=element_text(size=12),
-            legend.title=element_text(size=14),
-            panel.grid.major=element_blank(),
-            legend.position="none",
-            legend.box = 'vertical',
-            legend.box.just = 'left')+
-      xlab("")+
-      ylab(expression(paste(delta,  A[c], " / ", A[c400])))+
-      scale_fill_manual(name="Position",
-                        limits=c("12345", "345", "45", "up", "low"),
-                        values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      scale_color_manual(name="Position",
-                         limits=c("12345", "345", "45", "up", "low"),
-                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Measurements",
-                         values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
-      scale_x_discrete(name="", 
-                       breaks=c("12345", "345", "45", "up", "low"), 
-                       labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
-    
-    
-    
-    p5 <- ggplot() +
-      geom_point(data=outDF2, aes(Position, Aj_sens, 
-                                  fill=as.factor(Position), 
-                                  pch = as.factor(Type)), alpha=1.0, size=4)+
-      theme_linedraw() +
-      theme(panel.grid.minor=element_blank(),
-            axis.text.x=element_text(size=12),
-            axis.title.x=element_text(size=14),
-            axis.text.y=element_text(size=12),
-            axis.title.y=element_text(size=14),
-            legend.text=element_text(size=12),
-            legend.title=element_text(size=14),
-            panel.grid.major=element_blank(),
-            legend.position="none",
-            legend.box = 'vertical',
-            legend.box.just = 'left')+
-      xlab("")+
-      ylab(expression(paste(delta,  A[j], " / ", delta, CO[2], " (", mu, "mol ", m^-2, " ", s^-1, " ", ppm^-1, ")")))+
-      scale_fill_manual(name="Position",
-                        limits=c("12345", "345", "45", "up", "low"),
-                        values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      scale_color_manual(name="Position",
-                         limits=c("12345", "345", "45", "up", "low"),
-                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Measurements",
-                         values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
-      scale_x_discrete(name="", 
-                       breaks=c("12345", "345", "45", "up", "low"), 
-                       labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
-    
-    
-    
-    p6 <- ggplot() +
-      geom_point(data=outDF2, aes(Position, Aj_sens_norm, 
-                                  fill=as.factor(Position), 
-                                  pch = as.factor(Type)), alpha=1.0, size=4)+
-      theme_linedraw() +
-      theme(panel.grid.minor=element_blank(),
-            axis.text.x=element_text(size=12),
-            axis.title.x=element_text(size=14),
-            axis.text.y=element_text(size=12),
-            axis.title.y=element_text(size=14),
-            legend.text=element_text(size=12),
-            legend.title=element_text(size=14),
-            panel.grid.major=element_blank(),
-            legend.position="none",
-            legend.box = 'vertical',
-            legend.box.just = 'left')+
-      xlab("")+
-      ylab(expression(paste(delta,  A[j], " / ", A[j400])))+
-      scale_fill_manual(name="Position",
-                        limits=c("12345", "345", "45", "up", "low"),
-                        values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      scale_color_manual(name="Position",
-                         limits=c("12345", "345", "45", "up", "low"),
-                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
-                         labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Measurements",
-                         values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
-      scale_x_discrete(name="", 
-                       breaks=c("12345", "345", "45", "up", "low"), 
-                       labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
-    
-    
-    
-    legend_shared <- get_legend(p1 + theme(legend.position="bottom",
-                                           legend.box = 'vertical',
-                                           legend.box.just = 'left'))
-    
-    combined_plots <- plot_grid(p1, p2, p3, p4, p5, p6, 
-                                labels=c("(a)", "(b)", "(c)", "(d)", "(e)", "(f)"),
-                                ncol=2, align="vh", axis = "l",
-                                label_x=0.16, label_y=0.95,
-                                label_size = 18)
-    
-    #plot(p1)
-    
-    pdf("output/A-Ca/predicted_ambient_A_sensitivity_plot.pdf", width=10, height=14)
-    plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
-    dev.off()  
-    
-    
 }
