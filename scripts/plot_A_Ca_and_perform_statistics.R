@@ -517,13 +517,13 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_fill_manual(name="",
                         limits=c("aCO2", "eCO2"),
                         values=c("blue2", "red3"),
-                        labels=c(expression(paste(aCO[2])),
-                                 expression(paste(eCO[2]))))+
+                        labels=c(expression(paste(aC[a])),
+                                 expression(paste(eC[a]))))+
       scale_color_manual(name="",
                          limits=c("aCO2", "eCO2"),
                          values=c("blue2", "red3"),
-                         labels=c(expression(paste(aCO[2])),
-                                  expression(paste(eCO[2]))))+
+                         labels=c(expression(paste(aC[a])),
+                                  expression(paste(eC[a]))))+
       scale_x_discrete(name="", 
                        breaks=c("5_Full", "4_TM", "3_Top", "2_low", "1_up"), 
                        labels=c("Full", "T+M", "Top", "Low", "Up"))
@@ -577,56 +577,54 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     stDF <- rbind(subDF.l, subDF.c)
     stDF <- merge(stDF, idDF, by="Identity", all=T)
     
-    ### separate into aCO2 and eCO2 DF
-    plotDF1 <- subset(stDF, CO2_treatment == "aCO2")
-    plotDF2 <- subset(stDF, CO2_treatment == "eCO2")
     
     ### convert into factors
     stDF$Type <- as.factor(stDF$Type)
     stDF$CO2_treatment <- as.factor(stDF$CO2_treatment)
-    plotDF1$Type <- as.factor(plotDF1$Type)
-    plotDF2$Type <- as.factor(plotDF2$Type)
-    plotDF1$Position <- as.factor(plotDF1$Position)
-    plotDF2$Position <- as.factor(plotDF2$Position)
-    
+ 
+    ### prepare plotDF
+    plotDF3 <- summaryBy(Vcmax+Jmax+Ci_transition_Ac_Aj+JVratio~Position+Type+CO2_treatment,
+                         FUN=c(mean,se), keep.names=T, data=stDF)
+    plotDF3$Position <- gsub("12345", "5_Full", plotDF3$Position)
+    plotDF3$Position <- gsub("345", "4_TM", plotDF3$Position)
+    plotDF3$Position <- gsub("45", "3_Top", plotDF3$Position)
+    plotDF3$Position <- gsub("low", "2_low", plotDF3$Position)
+    plotDF3$Position <- gsub("up", "1_up", plotDF3$Position)
     
     ### perform linear mixed effect model statistics
     ### check type effect, ignoring CO2 and position effect
-    mod1 <- lmer(Vcmax~ Type + (1|Chamber), data=stDF)
+    mod1 <- lmer(Vcmax~ Position + CO2_treatment + (1|Chamber), data=stDF)
     out1 <- anova(mod1)
-    lab1 <- summary(glht(mod1, linfct = mcp(Type = "Tukey")))
+    lab1 <- summary(glht(mod1, linfct = mcp(Position = "Tukey")))
     #eff.size1 <- round(lab1$test$coefficients[1], 1)
     #eff.sig1 <- round(lab1$test$pvalues[1], 3)
     #eff.error1 <- round(lab1$test$sigma[1], 1)
     
-
-    mod2 <- lmer(Jmax~ Type + (1|Chamber), data=stDF)
+    mod2 <- lmer(Jmax~ Position + CO2_treatment + (1|Chamber), data=stDF)
     out2 <- anova(mod2)
-    lab2 <- summary(glht(mod2, linfct = mcp(Type = "Tukey")))
+    lab2 <- summary(glht(mod2, linfct = mcp(Position = "Tukey")))
     
     
-    mod3 <- lmer(JVratio~ Type + (1|Chamber), data=stDF)
+    mod3 <- lmer(JVratio~ Position + CO2_treatment + (1|Chamber), data=stDF)
     out3 <- anova(mod3)
-    lab3 <- summary(glht(mod3, linfct = mcp(Type = "Tukey")))
+    lab3 <- summary(glht(mod3, linfct = mcp(Position = "Tukey")))
     
-    mod4 <- lmer(Ci_transition_Ac_Aj~ Type + (1|Chamber), data=stDF)
+    mod4 <- lmer(Ci_transition_Ac_Aj~ Position + CO2_treatment + (1|Chamber), data=stDF)
     out4 <- anova(mod4)
-    lab4 <- summary(glht(mod4, linfct = mcp(Type = "Tukey")))
+    lab4 <- summary(glht(mod4, linfct = mcp(Position = "Tukey")))
     
-    
-    ### fix jitter
-    set.seed(123)
     
     ### plotting
-    p1 <- ggplot(data=stDF) +
-      geom_boxplot(aes(Type, Vcmax),
-                   outlier.fill = "white", outlier.color = "white",
-                   outlier.size = 0.0, outlier.alpha = 0.0,
-                   fill="grey")+
-      geom_jitter(aes(Type, Vcmax, 
-                      fill=Position, 
-                      pch = Type), 
-                  size=4, width = 0.3)+
+    p1 <- ggplot(plotDF3, aes(Position, Vcmax.mean, fill=CO2_treatment)) +
+      geom_errorbar(aes(x=Position, ymin=Vcmax.mean-Vcmax.se,
+                        ymax=Vcmax.mean+Vcmax.se,
+                        col=CO2_treatment), 
+                    position=position_dodge(width=0.2),
+                    width=0.2)+
+      geom_point(aes(Position, Vcmax.mean, 
+                     fill=CO2_treatment), 
+                 position=position_dodge(width=0.2),
+                 pch=21, size=4)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -636,39 +634,36 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
-            legend.position="none",
+            legend.position="bottom",
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
       ylab(expression(paste(V[cmax], " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
-      scale_fill_manual(name="Position",
-                        limits=c("12345", "345", "45", "up", "low"),
-                        values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Scale",
-                         values=c(21, 24),
-                         labels=c("Canopy", "Leaf"),
-                         guide=F)+
+      scale_fill_manual(name="",
+                        limits=c("aCO2", "eCO2"),
+                        values=c("blue2", "red3"),
+                        labels=c(expression(paste(aC[a])),
+                                 expression(paste(eC[a]))))+
+      scale_color_manual(name="",
+                         limits=c("aCO2", "eCO2"),
+                         values=c("blue2", "red3"),
+                         labels=c(expression(paste(aC[a])),
+                                  expression(paste(eC[a]))))+
       scale_x_discrete(name="", 
-                       breaks=c("canopy", "leaf"), 
-                       labels=c("Canopy", "Leaf"))+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24),
-                                                     fill = c("blue2","red3", "purple",
-                                                              "orange", "darkgreen"),
-                                                     alpha=1.0),
-                                 nrow=2, byrow = T))+
-      ylim(0, 200)
+                       breaks=c("5_Full", "4_TM", "3_Top", "2_low", "1_up"), 
+                       labels=c("Full", "T+M", "Top", "Low", "Up"))+
+      ylim(0, 120)
     
-    
-    p2 <- ggplot(data=stDF) +
-      geom_boxplot(aes(Type, Jmax),
-                   outlier.fill = "white", outlier.color = "white",
-                   outlier.size = 0.0, outlier.alpha = 0.0,
-                   fill="grey")+
-      geom_jitter(aes(Type, Jmax, 
-                      fill=Position, 
-                      pch = Type), 
-                  size=4, width = 0.3)+
+    p2 <- ggplot(plotDF3, aes(Position, Jmax.mean, fill=CO2_treatment)) +
+      geom_errorbar(aes(x=Position, ymin=Jmax.mean-Jmax.se,
+                        ymax=Jmax.mean+Jmax.se,
+                        col=CO2_treatment), 
+                    position=position_dodge(width=0.2),
+                    width=0.2)+
+      geom_point(aes(Position, Jmax.mean, 
+                     fill=CO2_treatment), 
+                 position=position_dodge(width=0.2),
+                 pch=21, size=4)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -678,38 +673,36 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
-            legend.position="none",
+            legend.position="bottom",
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
       ylab(expression(paste(J[max], " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
-      scale_fill_manual(name="Position",
-                        limits=c("12345", "345", "45", "up", "low"),
-                        values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Scale",
-                         values=c(21, 24),
-                         labels=c("Canopy", "Leaf"),
-                         guide=F)+
+      scale_fill_manual(name="",
+                        limits=c("aCO2", "eCO2"),
+                        values=c("blue2", "red3"),
+                        labels=c(expression(paste(aC[a])),
+                                 expression(paste(eC[a]))))+
+      scale_color_manual(name="",
+                         limits=c("aCO2", "eCO2"),
+                         values=c("blue2", "red3"),
+                         labels=c(expression(paste(aC[a])),
+                                  expression(paste(eC[a]))))+
       scale_x_discrete(name="", 
-                       breaks=c("canopy", "leaf"), 
-                       labels=c("Canopy", "Leaf"))+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24),
-                                                     fill = c("blue2","red3", "purple",
-                                                              "orange", "darkgreen"),
-                                                     alpha=1.0),
-                                 nrow=2, byrow = T))+
-      ylim(0, 300)
+                       breaks=c("5_Full", "4_TM", "3_Top", "2_low", "1_up"), 
+                       labels=c("Full", "T+M", "Top", "Low", "Up"))+
+      ylim(0, 200)
     
-    p3 <- ggplot(data=stDF) +
-      geom_boxplot(aes(Type, JVratio),
-                   outlier.fill = "white", outlier.color = "white",
-                   outlier.size = 0.0, outlier.alpha = 0.0,
-                   fill="grey")+
-      geom_jitter(aes(Type, JVratio, 
-                      fill=Position, 
-                      pch = Type), 
-                  size=4, width = 0.3)+
+    p3 <- ggplot(plotDF3, aes(Position, JVratio.mean, fill=CO2_treatment)) +
+      geom_errorbar(aes(x=Position, ymin=JVratio.mean-JVratio.se,
+                        ymax=JVratio.mean+JVratio.se,
+                        col=CO2_treatment), 
+                    position=position_dodge(width=0.2),
+                    width=0.2)+
+      geom_point(aes(Position, JVratio.mean, 
+                     fill=CO2_treatment), 
+                 position=position_dodge(width=0.2),
+                 pch=21, size=4)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -719,38 +712,36 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
-            legend.position="none",
+            legend.position="bottom",
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
       ylab(expression(paste(J[max] * " / " * V[cmax])))+
-      scale_fill_manual(name="Position",
-                        limits=c("12345", "345", "45", "up", "low"),
-                        values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Scale",
-                         values=c(21, 24),
-                         labels=c("Canopy", "Leaf"),
-                         guide=F)+
+      scale_fill_manual(name="",
+                        limits=c("aCO2", "eCO2"),
+                        values=c("blue2", "red3"),
+                        labels=c(expression(paste(aC[a])),
+                                 expression(paste(eC[a]))))+
+      scale_color_manual(name="",
+                         limits=c("aCO2", "eCO2"),
+                         values=c("blue2", "red3"),
+                         labels=c(expression(paste(aC[a])),
+                                  expression(paste(eC[a]))))+
       scale_x_discrete(name="", 
-                       breaks=c("canopy", "leaf"), 
-                       labels=c("Canopy", "Leaf"))+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24),
-                                                     fill = c("blue2","red3", "purple",
-                                                              "orange", "darkgreen"),
-                                                     alpha=1.0),
-                                 nrow=2, byrow = T))+
-      ylim(0, 3)
+                       breaks=c("5_Full", "4_TM", "3_Top", "2_low", "1_up"), 
+                       labels=c("Full", "T+M", "Top", "Low", "Up"))+
+      ylim(1, 2)
     
-    p4 <- ggplot(data=stDF) +
-      geom_boxplot(aes(Type, Ci_transition_Ac_Aj),
-                   outlier.fill = "white", outlier.color = "white",
-                   outlier.size = 0.0, outlier.alpha = 0.0,
-                   fill="grey")+
-      geom_jitter(aes(Type, Ci_transition_Ac_Aj, 
-                      fill=Position, 
-                      pch = Type), 
-                  size=4, width = 0.3)+
+    p4 <- ggplot(plotDF3, aes(Position, Ci_transition_Ac_Aj.mean, fill=CO2_treatment)) +
+      geom_errorbar(aes(x=Position, ymin=Ci_transition_Ac_Aj.mean-Ci_transition_Ac_Aj.se,
+                        ymax=Ci_transition_Ac_Aj.mean+Ci_transition_Ac_Aj.se,
+                        col=CO2_treatment), 
+                    position=position_dodge(width=0.2),
+                    width=0.2)+
+      geom_point(aes(Position, Ci_transition_Ac_Aj.mean, 
+                     fill=CO2_treatment), 
+                 position=position_dodge(width=0.2),
+                 pch=21, size=4)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -760,28 +751,27 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
-            legend.position="none",
+            legend.position="bottom",
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
       ylab(expression(paste("Transition " * C[i] * " (" * mu * "mol" * " " * mol^-1 * ")")))+
-      scale_fill_manual(name="Position",
-                        limits=c("12345", "345", "45", "up", "low"),
-                        values=c("blue2", "red3", "purple", "orange", "green"),
-                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Scale",
-                         values=c(21, 24),
-                         labels=c("Canopy", "Leaf"),
-                         guide=F)+
+      scale_fill_manual(name="",
+                        limits=c("aCO2", "eCO2"),
+                        values=c("blue2", "red3"),
+                        labels=c(expression(paste(aC[a])),
+                                 expression(paste(eC[a]))))+
+      scale_color_manual(name="",
+                         limits=c("aCO2", "eCO2"),
+                         values=c("blue2", "red3"),
+                         labels=c(expression(paste(aC[a])),
+                                  expression(paste(eC[a]))))+
       scale_x_discrete(name="", 
-                       breaks=c("canopy", "leaf"), 
-                       labels=c("Canopy", "Leaf"))+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24),
-                                                     fill = c("blue2","red3", "purple",
-                                                              "orange", "darkgreen"),
-                                                     alpha=1.0),
-                                 nrow=2, byrow = T))+
-      ylim(0, 600)
+                       breaks=c("5_Full", "4_TM", "3_Top", "2_low", "1_up"), 
+                       labels=c("Full", "T+M", "Top", "Low", "Up"))+
+      ylim(100, 500)
+    
+    
     
     legend_shared <- get_legend(p1 + theme(legend.position="bottom",
                                            legend.box = 'vertical',
@@ -790,10 +780,10 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     combined_plots <- plot_grid(p1, p2, p3, p4, 
                                 labels=c("(a)", "(b)", "(c)", "(d)"),
                                 ncol=2, align="vh", axis = "l",
-                                label_x=0.16, label_y=0.95,
+                                label_x=0.88, label_y=0.95,
                                 label_size = 18)
     
-    pdf("output/A-Ca/biochemical_parameter_plot_by_scale.pdf", width=10, height=10)
+    pdf("output/A-Ca/biochemical_parameter_plot_by_position.pdf", width=10, height=10)
     plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
     dev.off()  
     
