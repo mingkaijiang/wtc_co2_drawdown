@@ -593,23 +593,23 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
     
     ### perform linear mixed effect model statistics
     ### check type effect, ignoring CO2 and position effect
-    mod1 <- lmer(Vcmax~ Position + CO2_treatment + (1|Chamber), data=stDF)
+    mod1 <- lmer(Vcmax~ Position * CO2_treatment + (1|Chamber), data=stDF)
     out1 <- anova(mod1)
     lab1 <- summary(glht(mod1, linfct = mcp(Position = "Tukey")))
     #eff.size1 <- round(lab1$test$coefficients[1], 1)
     #eff.sig1 <- round(lab1$test$pvalues[1], 3)
     #eff.error1 <- round(lab1$test$sigma[1], 1)
     
-    mod2 <- lmer(Jmax~ Position + CO2_treatment + (1|Chamber), data=stDF)
+    mod2 <- lmer(Jmax~ Position * CO2_treatment + (1|Chamber), data=stDF)
     out2 <- anova(mod2)
     lab2 <- summary(glht(mod2, linfct = mcp(Position = "Tukey")))
     
     
-    mod3 <- lmer(JVratio~ Position + CO2_treatment + (1|Chamber), data=stDF)
+    mod3 <- lmer(JVratio~ Position * CO2_treatment + (1|Chamber), data=stDF)
     out3 <- anova(mod3)
     lab3 <- summary(glht(mod3, linfct = mcp(Position = "Tukey")))
     
-    mod4 <- lmer(Ci_transition_Ac_Aj~ Position + CO2_treatment + (1|Chamber), data=stDF)
+    mod4 <- lmer(Ci_transition_Ac_Aj~ Position * CO2_treatment + (1|Chamber), data=stDF)
     out4 <- anova(mod4)
     lab4 <- summary(glht(mod4, linfct = mcp(Position = "Tukey")))
     
