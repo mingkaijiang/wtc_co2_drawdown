@@ -21,6 +21,10 @@ if(!dir.exists("output/eucface")) {
     dir.create("output/eucface", showWarnings = FALSE)
 }
 
+if(!dir.exists("output/simulated")) {
+    dir.create("output/simulated", showWarnings = FALSE)
+}
+
 #### Install packages
 if(!require(pacman))install.packages("pacman")
 pacman::p_load(dplyr, 

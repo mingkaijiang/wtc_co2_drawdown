@@ -3,20 +3,42 @@ compare_chamber_results_at_canopy_level <- function() {
     ### and the scaled-up flux based on a two-leaf model
     
     ### rea in files
+    ## aCO2
     ch01 <- read.csv("/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/outputs/wtc_two_leaf_1.csv")
-    ch02 <- read.csv("/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/outputs/wtc_two_leaf_2.csv")
     ch03 <- read.csv("/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/outputs/wtc_two_leaf_3.csv")
-    ch04 <- read.csv("/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/outputs/wtc_two_leaf_4.csv")
-    ch07 <- read.csv("/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/outputs/wtc_two_leaf_7.csv")
-    ch08 <- read.csv("/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/outputs/wtc_two_leaf_8.csv")
     ch11 <- read.csv("/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/outputs/wtc_two_leaf_11.csv")
-    ch12 <- read.csv("/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/outputs/wtc_two_leaf_12.csv")
     
+    ## eCO2
+    ch04 <- read.csv("/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/outputs/wtc_two_leaf_4.csv")
+    ch08 <- read.csv("/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/outputs/wtc_two_leaf_8.csv")
+
+    
+    ### merge by CO2 treatment
+    plotDF1 <- rbind(ch01, ch03, ch11)
+    plotDF2 <- rbind(ch04, ch08)
+    
+    ### fit linear coefficients
+    lm1 <- lm(An_can~An_obs, data=plotDF1[plotDF1$canopy=="12345",])
+    lm2 <- lm(An_can~An_obs, data=plotDF1[plotDF1$canopy=="345",])
+    lm3 <- lm(An_can~An_obs, data=plotDF1[plotDF1$canopy=="45",])
+    lm4 <- lm(An_can~An_obs, data=plotDF2[plotDF1$canopy=="12345",])
+    lm5 <- lm(An_can~An_obs, data=plotDF2[plotDF1$canopy=="345",])
+    lm6 <- lm(An_can~An_obs, data=plotDF2[plotDF1$canopy=="45",])
+    
+    
+    coef(lm1)[1]
     
     ### plot
-    p1 <- ggplot(ch01) +
-        geom_point(aes(An_obs, An_can, col=as.factor(ch01$canopy)),
-                   size=4)+
+    p1 <- ggplot(plotDF1) +
+        geom_point(aes(An_obs, An_can, col=as.factor(canopy)),
+                   size=2)+
+        geom_abline(intercept=coef(lm1)[1], 
+                    slope=coef(lm1)[2], lty=1, color="blue2")+
+        geom_abline(intercept=coef(lm2)[1], 
+                    slope=coef(lm2)[2], lty=1, color="red3")+
+        geom_abline(intercept=coef(lm3)[1], 
+                    slope=coef(lm3)[2], lty=1, color="orange")+
+        geom_abline(lty=2, color="grey")+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
@@ -28,20 +50,26 @@ compare_chamber_results_at_canopy_level <- function() {
               panel.grid.major=element_blank(),
               legend.position="none",
               legend.text.align=0)+
-        geom_abline(lty=2, color="grey")+
-        xlab(expression(paste(A[observed]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
-        ylab(expression(paste(A[scaled]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
+        xlab(expression(paste(A[obs]* " (" * mu * "mol " * CO[2] * " " * m^-2 * " " * s^-1 * ")")))+
+        ylab(expression(paste(A[sim]* " (" * mu * "mol " * CO[2] * " " * m^-2 * " " * s^-1 * ")")))+
         scale_color_manual(name="Canopy",
                            limits=c("12345", "345", "45"),
                            values=c("blue2", "red3", "orange"),
-                           labels=c("whole", "middle+bottom", "bottom"))+
+                           labels=c("Full", "T+M", "Top"))+
         xlim(-5,60)+
-        ylim(-5,60)+
-        ggtitle("Chamber 01")
+        ylim(-5,60)
     
-    p2 <- ggplot(ch02) +
-        geom_point(aes(An_obs, An_can, col=as.factor(ch02$canopy)),
-                   size=4)+
+    
+    p2 <- ggplot(plotDF2) +
+        geom_point(aes(An_obs, An_can, col=as.factor(canopy)),
+                   size=2)+
+        geom_abline(intercept=coef(lm4)[1], 
+                    slope=coef(lm4)[2], lty=1, color="blue2")+
+        geom_abline(intercept=coef(lm5)[1], 
+                    slope=coef(lm5)[2], lty=1, color="red3")+
+        geom_abline(intercept=coef(lm6)[1], 
+                    slope=coef(lm6)[2], lty=1, color="orange")+
+        geom_abline(lty=2, color="grey")+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
@@ -53,176 +81,27 @@ compare_chamber_results_at_canopy_level <- function() {
               panel.grid.major=element_blank(),
               legend.position="none",
               legend.text.align=0)+
-        geom_abline(lty=2, color="grey")+
-        xlab(expression(paste(A[observed]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
-        ylab(expression(paste(A[scaled]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
+        xlab(expression(paste(A[obs]* " (" * mu * "mol " * CO[2] * " " * m^-2 * " " * s^-1 * ")")))+
+        ylab(expression(paste(A[sim]* " (" * mu * "mol " * CO[2] * " " * m^-2 * " " * s^-1 * ")")))+
         scale_color_manual(name="Canopy",
                            limits=c("12345", "345", "45"),
                            values=c("blue2", "red3", "orange"),
-                           labels=c("whole", "middle+bottom", "bottom"))+
+                           labels=c("Full", "T+M", "Top"))+
         xlim(-5,60)+
-        ylim(-5,60)+
-        ggtitle("Chamber 02")
+        ylim(-5,60)
     
-    p3 <- ggplot(ch03) +
-        geom_point(aes(An_obs, An_can, col=as.factor(ch03$canopy)),
-                   size=4)+
-        theme_linedraw() +
-        theme(panel.grid.minor=element_blank(),
-              axis.text.x=element_text(size=12),
-              axis.title.x=element_text(size=12),
-              axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=12),
-              legend.text=element_text(size=12),
-              legend.title=element_text(size=14),
-              panel.grid.major=element_blank(),
-              legend.position="none",
-              legend.text.align=0)+
-        geom_abline(lty=2, color="grey")+
-        xlab(expression(paste(A[observed]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
-        ylab(expression(paste(A[scaled]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
-        scale_color_manual(name="Canopy",
-                           limits=c("12345", "345", "45"),
-                           values=c("blue2", "red3", "orange"),
-                           labels=c("whole", "middle+bottom", "bottom"))+
-        xlim(-5,60)+
-        ylim(-5,60)+
-        ggtitle("Chamber 03")
-    
-    p4 <- ggplot(ch04) +
-        geom_point(aes(An_obs, An_can, col=as.factor(ch04$canopy)),
-                   size=4)+
-        theme_linedraw() +
-        theme(panel.grid.minor=element_blank(),
-              axis.text.x=element_text(size=12),
-              axis.title.x=element_text(size=12),
-              axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=12),
-              legend.text=element_text(size=12),
-              legend.title=element_text(size=14),
-              panel.grid.major=element_blank(),
-              legend.position="none",
-              legend.text.align=0)+
-        geom_abline(lty=2, color="grey")+
-        xlab(expression(paste(A[observed]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
-        ylab(expression(paste(A[scaled]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
-        scale_color_manual(name="Canopy",
-                           limits=c("12345", "345", "45"),
-                           values=c("blue2", "red3", "orange"),
-                           labels=c("whole", "middle+bottom", "bottom"))+
-        xlim(-5,60)+
-        ylim(-5,60)+
-        ggtitle("Chamber 04")
-    
-    p7 <- ggplot(ch07) +
-        geom_point(aes(An_obs, An_can, col=as.factor(ch07$canopy)),
-                   size=4)+
-        theme_linedraw() +
-        theme(panel.grid.minor=element_blank(),
-              axis.text.x=element_text(size=12),
-              axis.title.x=element_text(size=12),
-              axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=12),
-              legend.text=element_text(size=12),
-              legend.title=element_text(size=14),
-              panel.grid.major=element_blank(),
-              legend.position="none",
-              legend.text.align=0)+
-        geom_abline(lty=2, color="grey")+
-        xlab(expression(paste(A[observed]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
-        ylab(expression(paste(A[scaled]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
-        scale_color_manual(name="Canopy",
-                           limits=c("12345", "345", "45"),
-                           values=c("blue2", "red3", "orange"),
-                           labels=c("whole", "middle+bottom", "bottom"))+
-        xlim(-5,60)+
-        ylim(-5,60)+
-        ggtitle("Chamber 07")
-    
-    p8 <- ggplot(ch08) +
-        geom_point(aes(An_obs, An_can, col=as.factor(ch08$canopy)),
-                   size=4)+
-        theme_linedraw() +
-        theme(panel.grid.minor=element_blank(),
-              axis.text.x=element_text(size=12),
-              axis.title.x=element_text(size=12),
-              axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=12),
-              legend.text=element_text(size=12),
-              legend.title=element_text(size=14),
-              panel.grid.major=element_blank(),
-              legend.position="none",
-              legend.text.align=0)+
-        geom_abline(lty=2, color="grey")+
-        xlab(expression(paste(A[observed]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
-        ylab(expression(paste(A[scaled]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
-        scale_color_manual(name="Canopy",
-                           limits=c("12345", "345", "45"),
-                           values=c("blue2", "red3", "orange"),
-                           labels=c("whole", "middle+bottom", "bottom"))+
-        xlim(-5,60)+
-        ylim(-5,60)+
-        ggtitle("Chamber 08")
-    
-    p11 <- ggplot(ch11) +
-        geom_point(aes(An_obs, An_can, col=as.factor(ch11$canopy)),
-                   size=4)+
-        theme_linedraw() +
-        theme(panel.grid.minor=element_blank(),
-              axis.text.x=element_text(size=12),
-              axis.title.x=element_text(size=12),
-              axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=12),
-              legend.text=element_text(size=12),
-              legend.title=element_text(size=14),
-              panel.grid.major=element_blank(),
-              legend.position="none",
-              legend.text.align=0)+
-        geom_abline(lty=2, color="grey")+
-        xlab(expression(paste(A[observed]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
-        ylab(expression(paste(A[scaled]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
-        scale_color_manual(name="Canopy",
-                           limits=c("12345", "345", "45"),
-                           values=c("blue2", "red3", "orange"),
-                           labels=c("whole", "middle+bottom", "bottom"))+
-        xlim(-5,60)+
-        ylim(-5,60)+
-        ggtitle("Chamber 11")
-    
-    p12 <- ggplot(ch12) +
-        geom_point(aes(An_obs, An_can, col=as.factor(ch12$canopy)),
-                   size=4)+
-        theme_linedraw() +
-        theme(panel.grid.minor=element_blank(),
-              axis.text.x=element_text(size=12),
-              axis.title.x=element_text(size=12),
-              axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=12),
-              legend.text=element_text(size=12),
-              legend.title=element_text(size=14),
-              panel.grid.major=element_blank(),
-              legend.position="none",
-              legend.text.align=0)+
-        geom_abline(lty=2, color="grey")+
-        xlab(expression(paste(A[observed]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
-        ylab(expression(paste(A[scaled]* " (umol "* CO[2], " ", m^-1, s^-1, ")")))+
-        scale_color_manual(name="Canopy",
-                           limits=c("12345", "345", "45"),
-                           values=c("blue2", "red3", "orange"),
-                           labels=c("whole", "middle+bottom", "bottom"))+
-        xlim(-5,60)+
-        ylim(-5,60)+
-        ggtitle("Chamber 12")
-    
-    combined_plots <- plot_grid(p1, p2, p3, p4, p7, p8, p11, p12, 
-                                labels="AUTO", ncol=2, align="vh", axis = "l")
+    combined_plots <- plot_grid(p1, p2, 
+                                labels=c("(a)", "(b)"),
+                                ncol=1, align="vh", axis = "l",
+                                label_x=0.16, label_y=0.95,
+                                label_size = 18)
 
     legend_shared <- get_legend(p1 + theme(legend.position="bottom",
                                            legend.box = 'vertical',
                                            legend.box.just = 'left'))
     
     
-    pdf("output/chamber_result_comparison_A_flux.pdf", width=6, height=12)
+    pdf("output/simulated/simulated_vs_observed_A_flux.pdf", width=4, height=6)
     plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
     dev.off()
     
@@ -641,7 +520,7 @@ compare_chamber_results_at_canopy_level <- function() {
         ggtitle("All")+
         theme(legend.direction = "vertical", legend.box = "horizontal")
     
-    p2 <- ggplot(plotDF[plotDF$canopy=="whole",]) +
+    p2 <- ggplot(plotDF[plotDF$canopy=="Full",]) +
         geom_point(aes(Ca, An, color=method),
                    size=1)+
         geom_smooth(aes(Ca, An, color=method),
@@ -666,7 +545,7 @@ compare_chamber_results_at_canopy_level <- function() {
         scale_fill_discrete(name="Method")+
         xlim(0,1600)+
         ylim(-5,60)+
-        ggtitle("Whole")+
+        ggtitle("Full")+
         theme(legend.direction = "vertical", legend.box = "horizontal")
     
     p3 <- ggplot(plotDF[plotDF$canopy=="m+b",]) +
@@ -723,7 +602,7 @@ compare_chamber_results_at_canopy_level <- function() {
         scale_fill_discrete(name="Method")+
         xlim(0,1600)+
         ylim(-5,60)+
-        ggtitle("Bottom")+
+        ggtitle("Top")+
         theme(legend.direction = "vertical", legend.box = "horizontal")
     
     pdf("output/grouped_result_comparison_A_vs_Ca_flux.pdf", width=16, height=6)

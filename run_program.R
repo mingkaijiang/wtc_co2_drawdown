@@ -94,7 +94,7 @@ plot_roger_2017_model_result_comparison()
 
 
 ############## compare modeled (leaf scaled-up) with canopy (CO2 drawdown) fluxes ##############
-#compare_chamber_results_at_canopy_level()
+compare_chamber_results_at_canopy_level()
 
 
 ########## End ############
