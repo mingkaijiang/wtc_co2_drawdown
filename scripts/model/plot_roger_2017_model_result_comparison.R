@@ -244,15 +244,16 @@ plot_roger_2017_model_result_comparison <- function() {
                                   expression(paste(V[cmax60]))))+
         ylim(0, 0.4)
     
-    ### add WTC result and compare
-    wtcDF <- read.csv("output/A-Ca/predicted_A_at_Ci_400_600_ppm.csv")
     
-    sumDF2 <- summaryBy(A_sens_norm~Source+Position, FUN=c(mean,se),
+    ### add WTC result and compare
+    wtcDF <- read.csv("output/A-Ca/predicted_A_at_400_600_ppm.csv")
+    
+    sumDF2 <- summaryBy(A_sens_norm~Type+Position, FUN=c(mean,se),
                         data=wtcDF, keep.names=T, na.rm=T)
     
     p6 <- ggplot(data=sumDF2, 
                  aes(Position, A_sens_norm.mean)) +
-        geom_bar(stat = "identity", aes(fill=Source, col=Position), 
+        geom_bar(stat = "identity", aes(fill=Type, col=Position), 
                  position="dodge", alpha=0.5) +
         geom_errorbar(aes(x=Position, ymin=A_sens_norm.mean-A_sens_norm.se, 
                           ymax=A_sens_norm.mean+A_sens_norm.se, 
@@ -281,14 +282,115 @@ plot_roger_2017_model_result_comparison <- function() {
                          labels=c("Whole", "T+M", "T", "Low", "Up"))+
         ylim(0, 0.4)
     
-    #plot(p6)
+    plot(p6)
     
     
-    pdf("output/A-Ca/Roger_model_sensitivity.pdf", width=8, height=6)
-    plot_grid(p5, p6, labels="", ncol=2, align="v", axis = "l")
+    #pdf("output/A-Ca/Roger_model_sensitivity.pdf", width=8, height=6)
+    #plot_grid(p5, p6, labels="", ncol=2, align="v", axis = "l")
+    #dev.off()
+    
+    
+    
+    #### alternative plot of Roger sensitivity
+    ## only plot Vcmax = 60
+    plotDF2$xlab1 <- paste0(plotDF2$Vcmax, "-", plotDF2$Position)    
+    plotDF2$xlab2 <- paste0(plotDF2$Vcmax, "-", plotDF2$Model)    
+    
+    plotDF2$xlab1 <- gsub("Vcmax45-Leaf", "1_Vcmax45-Leaf", plotDF2$xlab1)
+    plotDF2$xlab1 <- gsub("Vcmax45-Canopy", "2_Vcmax45-Canopy", plotDF2$xlab1)
+    plotDF2$xlab1 <- gsub("Vcmax60-Leaf", "3_Vcmax60-Leaf", plotDF2$xlab1)
+    plotDF2$xlab1 <- gsub("Vcmax60-Canopy", "4_Vcmax60-Canopy", plotDF2$xlab1)
+
+    ### plotting
+    p7 <- ggplot(data=plotDF2, 
+                 aes(x=xlab1, y=Sensitivity, group=xlab2)) +
+        geom_point(aes(shape=Position, fill=Model), 
+                   size=4, col="black")+
+        geom_line(aes(col=Model))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.text.x=element_text(size=12),
+              axis.title.x=element_text(size=14),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="bottom",
+              legend.box = 'vertical',
+              legend.box.just = 'left')+
+        ylab(expression(paste(delta * A * " / " * A[400])))+
+        scale_color_colorblind(name="Model",
+                               guide=guide_legend(nrow=3))+
+        scale_fill_colorblind(name="Model",
+                              guide=guide_legend(nrow=3,
+                                                 override.aes = list(shape = 21)))+
+        xlab("")+
+        scale_x_discrete(breaks=c("1_Vcmax45-Leaf", "2_Vcmax45-Canopy", 
+                                  "3_Vcmax60-Leaf", "4_Vcmax60-Canopy"),
+                         labels=c(expression(paste("Leaf ", V[cmax45])),
+                                  expression(paste("Canopy ", V[cmax45])),
+                                  expression(paste("Leaf ", V[cmax60])),
+                                  expression(paste("Canopy ", V[cmax60]))))+
+        scale_shape_manual(name="Type",
+                           values=c(21, 24),
+                           labels=c("Canopy", "Leaf"))+
+        ylim(0.0, 0.4)
+    
+    
+    ### prepare WTC results
+    sumDF3 <- summaryBy(A_sens_norm~Type+Position+CO2_treatment, FUN=c(mean,se),
+                        data=wtcDF, keep.names=T, na.rm=T)
+    
+    sumDF3$Position <- gsub("12345", "5_Full", sumDF3$Position)
+    sumDF3$Position <- gsub("345", "4_TM", sumDF3$Position)
+    sumDF3$Position <- gsub("45", "3_Top", sumDF3$Position)
+    sumDF3$Position <- gsub("low", "2_low", sumDF3$Position)
+    sumDF3$Position <- gsub("up", "1_up", sumDF3$Position)
+    
+    subDF1 <- subset(sumDF3, CO2_treatment == "aCO2")
+    subDF2 <- subset(sumDF3, CO2_treatment == "eCO2")
+    
+    p8 <- ggplot(data=subDF1, 
+                 aes(Position, A_sens_norm.mean)) +
+        geom_bar(stat = "identity", aes(fill=Position), 
+                 position="dodge") +
+        geom_errorbar(aes(x=Position, ymin=A_sens_norm.mean-A_sens_norm.se, 
+                          ymax=A_sens_norm.mean+A_sens_norm.se, 
+                          group=as.factor(Position)), 
+                      position=position_dodge(0.9), width=0.2) +
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.text.x=element_text(size=12),
+              axis.title.x=element_text(size=14),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="bottom",
+              legend.box = 'vertical',
+              legend.box.just = 'left')+
+        ylab(expression(paste(delta * A * " / " * A[400])))+
+        scale_fill_manual(name="Position",
+                          limits=c("5_Full", "4_TM", "3_Top", "2_low", "1_up"),
+                          values=c("blue2", "red3", "purple", "orange", "green"),
+                          labels=c("Full", "T+M", "Top", "Low", "Up"),
+                          guide=guide_legend(nrow=5))+
+        xlab("")+
+        scale_x_discrete(name="", 
+                         breaks=c("5_Full", "4_TM", "3_Top", "2_low", "1_up"), 
+                         labels=c("Full", "T+M", "Top", "Low", "Up"))+
+        ylim(0.0, 0.4)
+    
+    
+    
+    pdf("output/simulated/Roger_model_sensitivity.pdf", width=12, height=6)
+    plot_grid(p7, p8, ncol=2, align="v", axis = "l",
+              labels=c("(a)", "(b)"),
+              label_x=0.86, label_y=0.98,
+              label_size = 18)
     dev.off()
-    
-    
     
     
 }
