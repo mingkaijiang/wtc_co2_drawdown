@@ -67,9 +67,9 @@ cDF <- canopyDF
 plot_A_Ca_and_perform_statistics(cDF=canopyDF)
 
 
+############################# EucFACE results ######################
 ### EucFACE A-Ci curves
 plot_eucface_A_Ci()
-
 
 
 ############################# Roger 2017 results ######################

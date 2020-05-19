@@ -386,7 +386,7 @@ plot_roger_2017_model_result_comparison <- function() {
     
     
     pdf("output/simulated/Roger_model_sensitivity.pdf", width=12, height=6)
-    plot_grid(p7, p8, ncol=2, align="v", axis = "l",
+    plot_grid(p8, p7, ncol=2, align="v", axis = "l",
               labels=c("(a)", "(b)"),
               label_x=0.86, label_y=0.98,
               label_size = 18)
