@@ -27,7 +27,9 @@ leaf_ACI_processing <- function() {
 
     #### Fitting ACI curve at the finest resolution
     fits.all <- fitacis(myDF, group="Identity", 
-                        fitmethod="bilinear",Tcorrect=T, fitTPU=F)
+                        fitmethod="bilinear",Tcorrect=T, fitTPU=F,
+                        EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
+                        EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345)
     
     ### fit g1 value
     names(myDF)[names(myDF) == "RH_S"] <- "RH"
@@ -53,7 +55,9 @@ leaf_ACI_processing <- function() {
     ### calculate Ac_Aj transition Ci point
     for (i in unique(coefDF$Identity)) {
         testDF <- subset(myDF, Identity==i)
-        fit.i <- fitaci(testDF,fitmethod="bilinear",Tcorrect=T, fitTPU=F)
+        fit.i <- fitaci(testDF,fitmethod="bilinear",Tcorrect=T, fitTPU=F,
+                        EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
+                        EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345)
         out <- findCiTransition(fit.i)
         coefDF[coefDF$Identity==i,"Ac_Aj"] <- out[1]
     }
@@ -77,7 +81,9 @@ leaf_ACI_processing <- function() {
         test <- subset(myDF, Identity == id.list[i])
         
         ## fit
-        fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU=F)
+        fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU=F,
+                       EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
+                       EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345)
         fit2 <- fitBB(test, gsmodel="BBOpti")
         
         

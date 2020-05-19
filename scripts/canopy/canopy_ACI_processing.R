@@ -55,7 +55,9 @@ canopy_ACI_processing <- function(cDF) {
                                              Rd = "Rd"),
                        fitmethod="bilinear", 
                        Tcorrect=T,
-                       fitTPU=F)
+                       fitTPU=F,
+                       EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
+                       EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345)
         
         fit2 <- fitBB(test, varnames = list(ALEAF = "Norm_corr_CO2_flux", 
                                             GS = "gs", 
