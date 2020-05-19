@@ -730,7 +730,7 @@ plot_A_Ca_and_perform_statistics <- function(cDF) {
       scale_x_discrete(name="", 
                        breaks=c("5_Full", "4_TM", "3_Top", "2_low", "1_up"), 
                        labels=c("Full", "T+M", "Top", "Low", "Up"))+
-      ylim(1, 2)
+      ylim(0.5, 2)
     
     p4 <- ggplot(plotDF3, aes(Position, Ci_transition_Ac_Aj.mean, fill=CO2_treatment)) +
       geom_errorbar(aes(x=Position, ymin=Ci_transition_Ac_Aj.mean-Ci_transition_Ac_Aj.se,
