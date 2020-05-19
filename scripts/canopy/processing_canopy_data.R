@@ -186,7 +186,9 @@ processing_canopy_data <- function(leafDF) {
                                                               Tleaf="Tleaf", 
                                                               Ci = "Ci",
                                                               PPFD="PAR"),
-                        Tcorrect=T, fitTPU=F)
+                        Tcorrect=T, fitTPU=F,
+                        EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
+                        EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345)
     
     ### fit g1 value
     fits.bb <- fitBBs(myDF, varnames = list(ALEAF = "Photo", GS = "Cond", VPD = "VPD",
@@ -197,16 +199,22 @@ processing_canopy_data <- function(leafDF) {
     id.list <- c(111:125)
     
     ### prepare an output df
-    outDF <- data.frame(id.list, NA, NA, NA, NA, NA, 
+    outDF <- data.frame(id.list, 
+                        NA, NA, NA, NA, NA, NA, 
                         NA, NA, NA, NA, NA, NA,
                         NA, NA, NA, NA, NA, NA,
                         NA, NA, NA, NA, NA, NA,
+                        NA, NA, NA, NA, NA, NA, 
                         NA, NA, NA, NA, NA, NA)
-    colnames(outDF) <- c("Identity", "Chamber", "CO2_treatment", "Position", 
+    colnames(outDF) <- c("Identity", "Chamber", "CO2_treatment", "Height", "Date",
                          "RMSE", "Vcmax", "Vcmax.se", "Jmax", "Jmax.se", "Rd", "Rd.se",
-                         "Ci", "ALEAF", "GS", "ELEAF", "Ac", "Aj", "Ap", "Rd2", "VPD",
-                         "Tleaf", "Ca", "Cc", "PPFD", "Patm", 
-                         "Ci_transition_Ac_Aj","curve.fitting", 
+                         "Ci_400", "ALEAF_400", "GS_400", "ELEAF_400", 
+                         "Ac_400", "Aj_400", "Ap_400", 
+                         "Ci_600", "ALEAF_600", "GS_600", "ELEAF_600", 
+                         "Ac_600", "Aj_600", "Ap_600", 
+                         "Ci_transition_Ac_Aj",
+                         "Tleaf", "Ca", "Cc", "PPFD", "Patm", "VPD", 
+                         "curve.fitting", 
                          "GammaStar", "Km", "G1")
     
     
@@ -221,7 +229,10 @@ processing_canopy_data <- function(leafDF) {
                                                                    Tleaf="Tleaf", 
                                                                    Ci = "Ci",
                                                                    PPFD="PAR"),
-                       Tcorrect=T, fitTPU=F)
+                       Tcorrect=T, fitTPU=F,
+                       EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
+                       EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345)
+        
         fit2 <- fitBB(test, varnames = list(ALEAF = "Photo", GS = "Cond", VPD = "VPD",
                                             Ca = "Ca", RH = "RH"),
                       gsmodel="BBOpti")
@@ -241,14 +252,23 @@ processing_canopy_data <- function(leafDF) {
         outDF[outDF$Identity == i, "Rd"] <- fit1$pars[3,1]
         outDF[outDF$Identity == i, "Rd.se"] <- fit1$pars[3,2]
         
-        outDF[outDF$Identity == i, "Ci"] <- fit1$Photosyn(Ca=400)[1]
-        outDF[outDF$Identity == i, "ALEAF"] <- fit1$Photosyn(Ca=400)[2]
-        outDF[outDF$Identity == i, "GS"] <- fit1$Photosyn(Ca=400)[3]
-        outDF[outDF$Identity == i, "ELEAF"] <- fit1$Photosyn(Ca=400)[4]
-        outDF[outDF$Identity == i, "Ac"] <- fit1$Photosyn(Ca=400)[5]
-        outDF[outDF$Identity == i, "Aj"] <- fit1$Photosyn(Ca=400)[6]
-        outDF[outDF$Identity == i, "Ap"] <- fit1$Photosyn(Ca=400)[7]
-        outDF[outDF$Identity == i, "Rd2"] <- fit1$Photosyn(Ca=400)[8]
+        outDF[outDF$Identity == i, "Ci_400"] <- fit1$Photosyn(Ca=400)[1]
+        outDF[outDF$Identity == i, "ALEAF_400"] <- fit1$Photosyn(Ca=400)[2]
+        outDF[outDF$Identity == i, "GS_400"] <- fit1$Photosyn(Ca=400)[3]
+        outDF[outDF$Identity == i, "ELEAF_400"] <- fit1$Photosyn(Ca=400)[4]
+        outDF[outDF$Identity == i, "Ac_400"] <- fit1$Photosyn(Ca=400)[5]
+        outDF[outDF$Identity == i, "Aj_400"] <- fit1$Photosyn(Ca=400)[6]
+        outDF[outDF$Identity == i, "Ap_400"] <- fit1$Photosyn(Ca=400)[7]
+        
+        
+        outDF[outDF$Identity == i, "Ci_600"] <- fit1$Photosyn(Ca=600)[1]
+        outDF[outDF$Identity == i, "ALEAF_600"] <- fit1$Photosyn(Ca=600)[2]
+        outDF[outDF$Identity == i, "GS_600"] <- fit1$Photosyn(Ca=600)[3]
+        outDF[outDF$Identity == i, "ELEAF_600"] <- fit1$Photosyn(Ca=600)[4]
+        outDF[outDF$Identity == i, "Ac_600"] <- fit1$Photosyn(Ca=600)[5]
+        outDF[outDF$Identity == i, "Aj_600"] <- fit1$Photosyn(Ca=600)[6]
+        outDF[outDF$Identity == i, "Ap_600"] <- fit1$Photosyn(Ca=600)[7]
+        
         outDF[outDF$Identity == i, "VPD"] <- fit1$Photosyn(Ca=400)[9]
         outDF[outDF$Identity == i, "Tleaf"] <- fit1$Photosyn(Ca=400)[10]
         outDF[outDF$Identity == i, "Ca"] <- fit1$Photosyn(Ca=400)[11]
