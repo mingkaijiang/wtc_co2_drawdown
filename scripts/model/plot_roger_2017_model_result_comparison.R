@@ -295,15 +295,16 @@ plot_roger_2017_model_result_comparison <- function() {
     ## only plot Vcmax = 60
     plotDF2$xlab1 <- paste0(plotDF2$Vcmax, "-", plotDF2$Position)    
     plotDF2$xlab2 <- paste0(plotDF2$Vcmax, "-", plotDF2$Model)    
+    plotDF2$xlab3 <- paste0(plotDF2$Position, "-", plotDF2$Model)
     
-    plotDF2$xlab1 <- gsub("Vcmax45-Leaf", "1_Vcmax45-Leaf", plotDF2$xlab1)
-    plotDF2$xlab1 <- gsub("Vcmax45-Canopy", "2_Vcmax45-Canopy", plotDF2$xlab1)
-    plotDF2$xlab1 <- gsub("Vcmax60-Leaf", "3_Vcmax60-Leaf", plotDF2$xlab1)
-    plotDF2$xlab1 <- gsub("Vcmax60-Canopy", "4_Vcmax60-Canopy", plotDF2$xlab1)
+    plotDF2$xlab1 <- gsub("Vcmax45-Leaf", "2_Vcmax45-Leaf", plotDF2$xlab1)
+    plotDF2$xlab1 <- gsub("Vcmax45-Canopy", "4_Vcmax45-Canopy", plotDF2$xlab1)
+    plotDF2$xlab1 <- gsub("Vcmax60-Leaf", "1_Vcmax60-Leaf", plotDF2$xlab1)
+    plotDF2$xlab1 <- gsub("Vcmax60-Canopy", "3_Vcmax60-Canopy", plotDF2$xlab1)
 
     ### plotting
     p7 <- ggplot(data=plotDF2, 
-                 aes(x=xlab1, y=Sensitivity, group=xlab2)) +
+                 aes(x=xlab1, y=Sensitivity, group=xlab3)) +
         geom_point(aes(shape=Position, fill=Model), 
                    size=4, col="black")+
         geom_line(aes(col=Model))+
@@ -326,8 +327,8 @@ plot_roger_2017_model_result_comparison <- function() {
                               guide=guide_legend(nrow=3,
                                                  override.aes = list(shape = 21)))+
         xlab("")+
-        scale_x_discrete(breaks=c("1_Vcmax45-Leaf", "2_Vcmax45-Canopy", 
-                                  "3_Vcmax60-Leaf", "4_Vcmax60-Canopy"),
+        scale_x_discrete(breaks=c("2_Vcmax45-Leaf", "4_Vcmax45-Canopy", 
+                                  "1_Vcmax60-Leaf", "3_Vcmax60-Canopy"),
                          labels=c(expression(paste("Leaf ", V[cmax45])),
                                   expression(paste("Canopy ", V[cmax45])),
                                   expression(paste("Leaf ", V[cmax60])),
