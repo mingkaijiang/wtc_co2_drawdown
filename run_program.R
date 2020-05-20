@@ -56,16 +56,14 @@ canopyDF <- processing_canopy_data(leafACI=leafACI, plot.option = T)
 
 ############################# leaf & canopy result comparison ######################
 #### merge leaf and canopy raw data
+#### well-watered treatment only
 mgDF <- merge_leaf_and_canopy_raw_data(cDF=canopyDF)
 
 
 ####### Plot A-CA at each chamber, compare the shape of the curves
 ### need to go into function to plot
-
-### all data
 #plot_individual_A_Ca_curves(mgDF)
 
-### well-watered treatment
 ### include both A-Ca and A-Ci plots
 ### including statistics
 plot_A_Ca_and_perform_statistics(mgDF)
