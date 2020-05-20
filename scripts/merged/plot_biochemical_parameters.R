@@ -86,7 +86,7 @@ plot_biochemical_parameters <- function() {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="bottom",
+              legend.position="none",
               legend.box = 'vertical',
               legend.box.just = 'left')+
         xlab("")+
@@ -125,7 +125,7 @@ plot_biochemical_parameters <- function() {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="bottom",
+              legend.position="none",
               legend.box = 'vertical',
               legend.box.just = 'left')+
         xlab("")+
@@ -164,7 +164,7 @@ plot_biochemical_parameters <- function() {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="bottom",
+              legend.position="none",
               legend.box = 'vertical',
               legend.box.just = 'left')+
         xlab("")+
@@ -203,7 +203,7 @@ plot_biochemical_parameters <- function() {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="bottom",
+              legend.position="none",
               legend.box = 'vertical',
               legend.box.just = 'left')+
         xlab("")+
