@@ -134,35 +134,6 @@ leaf_ACI_processing <- function(plot.option) {
                             EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
                             EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345)
         
-        ### fit g1 value
-        #fits.bb <- fitBBs(myDF, group="Identity")
-        #
-        #### assign factors onto the dataframe
-        #coefDF <- coef(fits.all)
-        #id.list <- unique(coefDF$Identity)
-        #
-        #for (i in id.list) {
-        #    coefDF[coefDF$Identity==i, "Date"] <- unique(myDF[myDF$Identity==i, "Date"])
-        #    coefDF[coefDF$Identity==i, "chamber"] <- unique(myDF[myDF$Identity==i, "chamber"])
-        #    coefDF[coefDF$Identity==i, "Height"] <- unique(myDF[myDF$Identity==i, "Height"])
-        #    coefDF[coefDF$Identity==i, "CO2_treatment"] <- unique(myDF[myDF$Identity==i, "CO2_treatment"])
-        #}
-        #
-        #
-        #### add vcmax to jmax ratio
-        #coefDF$JVratio <- coefDF$Jmax/coefDF$Vcmax
-        #
-        #coefDF$Date <- as.Date(coefDF$Date)
-        #
-        #### calculate Ac_Aj transition Ci point
-        #for (i in unique(coefDF$Identity)) {
-        #    testDF <- subset(myDF, Identity==i)
-        #    fit.i <- fitaci(testDF,fitmethod="bilinear",Tcorrect=T, fitTPU=F,
-        #                    EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
-        #                    EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345)
-        #    out <- findCiTransition(fit.i)
-        #    coefDF[coefDF$Identity==i,"Ac_Aj"] <- out[1]
-        #}
         
         ### create pdf
         pdf("output/leaf/leaf_level_individual_chamber_result.pdf", height=24, width=20)

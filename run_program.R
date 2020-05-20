@@ -32,6 +32,10 @@ leafACI <- leaf_ACI_processing(plot.option = T)
 #plot_leaf_ACI_curves(plotDF=leafACI)
 
 
+#### create leaf-scale biochemical parameter summary table
+summarize_leaf_scale_biochemical_parameters(leafACI)
+
+
 ############################# processing canopy data #################################
 #### Data note:
 #### 1. Column canopy: 12345 - full canopy present
@@ -112,7 +116,7 @@ plot_eucface_A_Ci()
 
 
 ############## compare modeled (leaf scaled-up) with canopy (CO2 drawdown) fluxes ##############
-compare_chamber_results_at_canopy_level()
+compare_simulated_results_at_canopy_level()
 
 
 ########## End ############

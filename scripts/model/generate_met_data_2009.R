@@ -68,7 +68,6 @@ generate_met_data_2009 <- function() {
     myDF$time1 <- sub(".+? ", "", myDF$datetime)
     myDF$time2 <- sub(" .*", "", myDF$time)
     myDF$time3 <- str_sub(myDF$time2, start=-3)
-    #myDF$time <- paste0(myDF$time1, myDF$time3)
     myDF$time <- paste0(myDF$time1, ":00")
     
     myDF$datetime <- as.POSIXct(paste(myDF$date, myDF$time), format="%Y-%m-%d %H:%M:%S")
@@ -76,19 +75,70 @@ generate_met_data_2009 <- function() {
     myDF$time <- as.POSIXct(myDF$time, format="%H:%M:%S")
     
     myDF <- myDF[,!(colnames(myDF)%in% c("time1", "time2", "time3"))]
-    myDF <- myDF[myDF$Chamber%in%c(1,2,3,4,5,6,7,8,9,10,11,12),]  
-    hDF <- myDF[complete.cases(myDF$cmarea),]
+    
+    ### update names to improve readability
+    names(myDF)[names(myDF) == "vCo2"] <- "WTC_CO2"
+    names(myDF)[names(myDF) == "vT"] <- "WTC_T"
+    names(myDF)[names(myDF) == "DPLicorCh"] <- "WTC_dew_point"
+    names(myDF)[names(myDF) == "PARi"] <- "WTC_PAR"
+    names(myDF)[names(myDF) == "slope2"] <- "CO2_flux"
+    names(myDF)[names(myDF) == "nslope2"] <- "Norm_CO2_flux"
+    names(myDF)[names(myDF) == "cmarea"] <- "Leaf_area"
+    names(myDF)[names(myDF) == "k"] <- "Leak_coef"
+    names(myDF)[names(myDF) == "leak"] <- "Leak"
+    names(myDF)[names(myDF) == "corrflux"] <- "Corr_CO2_flux"
+    names(myDF)[names(myDF) == "ncorrflux"] <- "Norm_corr_CO2_flux"
+    
+    myDF <- myDF[,c("Chamber", "Canopy", "datetime", "date", "time", 
+                    "WTC_CO2", "WTC_T", "WTC_dew_point", "WTC_PAR", 
+                    "Tair", "Leaf_area", "Leak_coef", "Leak", 
+                    "CO2_flux", "Norm_CO2_flux", "Corr_CO2_flux", 
+                    "Norm_corr_CO2_flux")]
+    
+    ################################## add H2O flux #################################
+    ########################  using mergeall.text file ###########################
+    ##### read in raw data - this dataset does not have PAR 
+    myDF2 <- read.csv("data/canopy_drawdown/mergeall.csv")
+    
+    myDF2$date <- sub(" .*", "", myDF2$datetime)
+    myDF2$date <- as.Date(as.character(myDF2$date), format="%m/%d/%y")
+    myDF2$time1 <- sub(".+? ", "", myDF2$datetime)
+    myDF2$time <- paste0(myDF2$time1, ":00")
+    
+    myDF2$datetime <- as.POSIXct(paste(myDF2$date, myDF2$time), format="%Y-%m-%d %H:%M:%S")
+    myDF2$time <- strftime(myDF2$datetime, format="%H:%M:%S")
+    myDF2$time <- as.POSIXct(myDF2$time, format="%H:%M:%S")
+    
+    myDF2 <- myDF2[,!(colnames(myDF2)%in% c("time1"))]
+    
+    
+    ### merge two datasets
+    mgDF <- merge(myDF, myDF2, by.x=c("Chamber", "Canopy", "datetime"),
+                  by.y=c("chamber", "canopy", "datetime"),all=T)
+    
+    mgDF <- mgDF[,c("Chamber", "Canopy", "datetime", "date.x", "time.x", 
+                    "WTC_CO2", "WTC_T", "WTC_dew_point", "WTC_PAR", 
+                    "Tair.x", "Leaf_area", "Leak_coef", "Leak", 
+                    "CO2_flux", "Norm_CO2_flux", "Corr_CO2_flux", 
+                    "Norm_corr_CO2_flux", "CondWater")]
+    
+    colnames(mgDF) <- c("Chamber", "Canopy", "datetime", "date", "time", 
+                        "WTC_CO2", "WTC_T", "WTC_dew_point", "WTC_PAR", 
+                        "Tair", "Leaf_area", "Leak_coef", "Leak", 
+                        "CO2_flux", "Norm_CO2_flux", "Corr_CO2_flux", 
+                        "Norm_corr_CO2_flux", "FluxH2O")
+    
+    ### add volumn information - does not include the effect of cone top
+    ## note that chamber 11 = 49800 L
+    ## all else = 52800 L
+    ## output unit m3
+    mgDF$WTC_volume_m3 <- 52800 / 1000
+    mgDF$WTC_volume_m3[mgDF$Chamber == "11"] <- 49800 / 1000
+    
+    ### select 
+    myDF <- mgDF[mgDF$Chamber%in%c(1,2,3,4,5,6,7,8,9,10,11,12),]  
+    hDF <- myDF[complete.cases(myDF$Leaf_area),]
     hDF$DateTime <- hDF$datetime
-    
-    ### calculate hourly met data
-    #myDF$time1 <- sub(".+? ", "", myDF$datetime)
-    #myDF$hod <- as.numeric(sub(":.*", "", myDF$time1))
-    
-    #hDF <- summaryBy(vCo2+vT+Tair+DPLicorCh+PARi+cmarea+corrflux+ncorrflux~Chamber+Canopy+date+hod,
-    #                 data=myDF, FUN=mean, na.rm=T, keep.names=T)
-    #hDF <- hDF[complete.cases(hDF$cmarea),]
-    #hDF$time <- paste0(hDF$hod, ":00:00")
-    #hDF$DateTime <- as.POSIXct(paste(hDF$date, hDF$time), format="%Y-%m-%d %H:%M:%S")
     
     
     ########################  create chamber-specific met ###########################
@@ -111,56 +161,57 @@ generate_met_data_2009 <- function() {
     ch11.m <- merge(ch11, subDF4, by.x=c("DateTime"), by.y=c("DateTime"))
     ch12.m <- merge(ch12, subDF4, by.x=c("DateTime"), by.y=c("DateTime"))
     
+
     ## select output variable
     ch01.o <- ch01.m[,c("DateTime", "Chamber", "Canopy", "doy", "hod",
-                        "vCo2", "vT", "PARi", "cmarea", "corrflux", "ncorrflux",
-                        "vpd", "wind", "pressure")]
+                        "WTC_CO2", "WTC_T", "WTC_PAR", "Leaf_area", "CO2_flux", "Norm_CO2_flux",
+                        "FluxH2O", "vpd", "wind", "pressure")]
     ch02.o <- ch02.m[,c("DateTime", "Chamber", "Canopy", "doy", "hod",
-                        "vCo2", "vT", "PARi", "cmarea", "corrflux","ncorrflux",
-                        "vpd", "wind", "pressure")]
+                        "WTC_CO2", "WTC_T", "WTC_PAR", "Leaf_area", "CO2_flux", "Norm_CO2_flux",
+                        "FluxH2O", "vpd", "wind", "pressure")]
     ch03.o <- ch03.m[,c("DateTime", "Chamber", "Canopy", "doy", "hod",
-                        "vCo2", "vT", "PARi", "cmarea", "corrflux","ncorrflux",
-                        "vpd", "wind", "pressure")]    
+                        "WTC_CO2", "WTC_T", "WTC_PAR", "Leaf_area", "CO2_flux", "Norm_CO2_flux",
+                        "FluxH2O", "vpd", "wind", "pressure")]    
     ch04.o <- ch04.m[,c("DateTime", "Chamber", "Canopy", "doy", "hod",
-                        "vCo2", "vT", "PARi", "cmarea", "corrflux","ncorrflux",
-                        "vpd", "wind", "pressure")]
+                        "WTC_CO2", "WTC_T", "WTC_PAR", "Leaf_area", "CO2_flux", "Norm_CO2_flux",
+                        "FluxH2O", "vpd", "wind", "pressure")]
     ch07.o <- ch07.m[,c("DateTime", "Chamber", "Canopy", "doy", "hod",
-                        "vCo2", "vT", "PARi", "cmarea", "corrflux","ncorrflux",
-                        "vpd", "wind", "pressure")]
+                        "WTC_CO2", "WTC_T", "WTC_PAR", "Leaf_area", "CO2_flux", "Norm_CO2_flux",
+                        "FluxH2O", "vpd", "wind", "pressure")]
     ch08.o <- ch08.m[,c("DateTime", "Chamber", "Canopy", "doy", "hod",
-                        "vCo2", "vT", "PARi", "cmarea", "corrflux","ncorrflux",
-                        "vpd", "wind", "pressure")]
+                        "WTC_CO2", "WTC_T", "WTC_PAR", "Leaf_area", "CO2_flux", "Norm_CO2_flux",
+                        "FluxH2O", "vpd", "wind", "pressure")]
     ch11.o <- ch11.m[,c("DateTime", "Chamber", "Canopy", "doy", "hod",
-                        "vCo2", "vT", "PARi", "cmarea", "corrflux","ncorrflux",
-                        "vpd", "wind", "pressure")]
+                        "WTC_CO2", "WTC_T", "WTC_PAR", "Leaf_area", "CO2_flux", "Norm_CO2_flux",
+                        "FluxH2O", "vpd", "wind", "pressure")]
     ch12.o <- ch12.m[,c("DateTime", "Chamber", "Canopy", "doy", "hod",
-                        "vCo2", "vT", "PARi", "cmarea", "corrflux","ncorrflux",
-                        "vpd", "wind", "pressure")]
+                        "WTC_CO2", "WTC_T", "WTC_PAR", "Leaf_area", "CO2_flux", "Norm_CO2_flux",
+                        "FluxH2O", "vpd", "wind", "pressure")]
     
     ## reassign names
     colnames(ch01.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod",
-                          "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2",
+                          "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", 
                           "vpd", "wind", "pressure")
     colnames(ch02.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod",
-                          "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2",
+                          "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", 
                           "vpd", "wind", "pressure")
     colnames(ch03.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod",
-                          "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2",
+                          "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", 
                           "vpd", "wind", "pressure")
     colnames(ch04.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod",
-                          "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2",
+                          "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", 
                           "vpd", "wind", "pressure")
     colnames(ch07.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod",
-                          "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2",
+                          "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", 
                           "vpd", "wind", "pressure")
     colnames(ch08.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod",
-                          "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2",
+                          "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", 
                           "vpd", "wind", "pressure")
     colnames(ch11.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod",
-                          "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2",
+                          "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", 
                           "vpd", "wind", "pressure")
     colnames(ch12.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod",
-                          "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2",
+                          "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", 
                           "vpd", "wind", "pressure")
     
     ch01.o$T_treatment <- "ambient"
@@ -200,106 +251,48 @@ generate_met_data_2009 <- function() {
     ch12.o$pressure <- ch12.o$pressure * 1000.0
     
     
-    ### Add chamber-specific VPD data from cDF
-    cDF.sub <- subset(cDF, Chamber == "1")
-    ch01.m <- merge(ch01.o, cDF.sub, by.x=c("DateTime"), by.y=c("datetime"))
-    
-    cDF.sub <- subset(cDF, Chamber == "2")
-    ch02.m <- merge(ch02.o, cDF.sub, by.x=c("DateTime"), by.y=c("datetime"))
-    
-    cDF.sub <- subset(cDF, Chamber == "3")
-    ch03.m <- merge(ch03.o, cDF.sub, by.x=c("DateTime"), by.y=c("datetime"))
-    
-    cDF.sub <- subset(cDF, Chamber == "4")
-    ch04.m <- merge(ch04.o, cDF.sub, by.x=c("DateTime"), by.y=c("datetime"))
-    
-    cDF.sub <- subset(cDF, Chamber == "7")
-    ch07.m <- merge(ch07.o, cDF.sub, by.x=c("DateTime"), by.y=c("datetime"))
-    
-    cDF.sub <- subset(cDF, Chamber == "8")
-    ch08.m <- merge(ch08.o, cDF.sub, by.x=c("DateTime"), by.y=c("datetime"))
-    
-    cDF.sub <- subset(cDF, Chamber == "11")
-    ch11.m <- merge(ch11.o, cDF.sub, by.x=c("DateTime"), by.y=c("datetime"))
-    
-    cDF.sub <- subset(cDF, Chamber == "12")
-    ch12.m <- merge(ch12.o, cDF.sub, by.x=c("DateTime"), by.y=c("datetime"))
-    
-    ch01.m$FluxH2O <- ch01.m$H2O_flux_normalized * ch01.m$leafArea
-    ch02.m$FluxH2O <- ch02.m$H2O_flux_normalized * ch02.m$leafArea
-    ch03.m$FluxH2O <- ch03.m$H2O_flux_normalized * ch03.m$leafArea
-    ch04.m$FluxH2O <- ch04.m$H2O_flux_normalized * ch04.m$leafArea
-    ch07.m$FluxH2O <- ch07.m$H2O_flux_normalized * ch07.m$leafArea
-    ch08.m$FluxH2O <- ch08.m$H2O_flux_normalized * ch08.m$leafArea
-    ch11.m$FluxH2O <- ch11.m$H2O_flux_normalized * ch11.m$leafArea
-    ch12.m$FluxH2O <- ch12.m$H2O_flux_normalized * ch12.m$leafArea
+    ch01.o$NfluxH2O <- ch01.o$FluxH2O / ch01.o$leafArea
+    ch02.o$NfluxH2O <- ch02.o$FluxH2O / ch02.o$leafArea
+    ch03.o$NfluxH2O <- ch03.o$FluxH2O / ch03.o$leafArea
+    ch04.o$NfluxH2O <- ch04.o$FluxH2O / ch04.o$leafArea
+    ch07.o$NfluxH2O <- ch07.o$FluxH2O / ch07.o$leafArea
+    ch08.o$NfluxH2O <- ch08.o$FluxH2O / ch08.o$leafArea
+    ch11.o$NfluxH2O <- ch11.o$FluxH2O / ch11.o$leafArea
+    ch12.o$NfluxH2O <- ch12.o$FluxH2O / ch12.o$leafArea
     
     
     ## select output variable
-    ch01.o <- ch01.m[,c("DateTime", "Chamber", "Canopy.x", "doy", "hod", "year", 
-                        "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2", "FluxH2O", "H2O_flux_normalized",
-                        "vpd", "wind", "pressure", "T_treatment", "Water_treatment", "Tair", "VPD",)]
+    ch01.o <- ch01.o[,c("DateTime", "chamber", "Canopy", "doy", "hod", "year", 
+                        "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2", "FluxH2O", "NfluxH2O",
+                        "vpd", "wind", "pressure", "T_treatment", "Water_treatment")]
     
-    ch02.o <- ch02.m[,c("DateTime", "Chamber", "Canopy.x", "doy", "hod","year", 
-                        "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", "H2O_flux_normalized",
-                        "vpd", "wind", "pressure", "T_treatment", "Water_treatment", "Tair", "VPD")]
+    ch02.o <- ch02.o[,c("DateTime", "chamber", "Canopy", "doy", "hod","year", 
+                        "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", "NfluxH2O",
+                        "vpd", "wind", "pressure", "T_treatment", "Water_treatment")]
     
-    ch03.o <- ch03.m[,c("DateTime", "Chamber", "Canopy.x", "doy", "hod","year", 
-                        "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", "H2O_flux_normalized",
-                        "vpd", "wind", "pressure", "T_treatment", "Water_treatment", "Tair", "VPD")]
+    ch03.o <- ch03.o[,c("DateTime", "chamber", "Canopy", "doy", "hod","year", 
+                        "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", "NfluxH2O",
+                        "vpd", "wind", "pressure", "T_treatment", "Water_treatment")]
     
-    ch04.o <- ch04.m[,c("DateTime", "Chamber", "Canopy.x", "doy", "hod","year", 
-                        "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", "H2O_flux_normalized",
-                        "vpd", "wind", "pressure", "T_treatment", "Water_treatment", "Tair", "VPD")]
+    ch04.o <- ch04.o[,c("DateTime", "chamber", "Canopy", "doy", "hod","year", 
+                        "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", "NfluxH2O",
+                        "vpd", "wind", "pressure", "T_treatment", "Water_treatment")]
     
-    ch07.o <- ch07.m[,c("DateTime", "Chamber", "Canopy.x", "doy", "hod","year", 
-                        "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", "H2O_flux_normalized",
-                        "vpd", "wind", "pressure", "T_treatment", "Water_treatment", "Tair", "VPD")]
+    ch07.o <- ch07.o[,c("DateTime", "chamber", "Canopy", "doy", "hod","year", 
+                        "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", "NfluxH2O",
+                        "vpd", "wind", "pressure", "T_treatment", "Water_treatment")]
     
-    ch08.o <- ch08.m[,c("DateTime", "Chamber", "Canopy.x", "doy", "hod","year", 
-                        "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", "H2O_flux_normalized",
-                        "vpd", "wind", "pressure", "T_treatment", "Water_treatment", "Tair", "VPD")]
+    ch08.o <- ch08.o[,c("DateTime", "chamber", "Canopy", "doy", "hod","year", 
+                        "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", "NfluxH2O",
+                        "vpd", "wind", "pressure", "T_treatment", "Water_treatment")]
     
-    ch11.o <- ch11.m[,c("DateTime", "Chamber", "Canopy.x", "doy", "hod","year", 
-                        "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", "H2O_flux_normalized",
-                        "vpd", "wind", "pressure", "T_treatment", "Water_treatment", "Tair", "VPD")]
+    ch11.o <- ch11.o[,c("DateTime", "chamber", "Canopy", "doy", "hod","year", 
+                        "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", "NfluxH2O",
+                        "vpd", "wind", "pressure", "T_treatment", "Water_treatment")]
     
-    ch12.o <- ch12.m[,c("DateTime", "Chamber", "Canopy.x", "doy", "hod","year", 
-                        "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", "H2O_flux_normalized",
-                        "vpd", "wind", "pressure", "T_treatment", "Water_treatment", "Tair", "VPD")]
-    
-    
-    colnames(ch01.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod","year", 
-                          "Ca", "tair.amb", "par", "leafArea", "FluxCO2", "NfluxCO2", "FluxH2O", "NfluxH2O",
-                          "vpd.amb", "wind", "pressure", "T_treatment", "Water_treatment", "tair", "vpd")
-    
-    colnames(ch02.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod","year", 
-                          "Ca", "tair.amb", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", "NfluxH2O",
-                          "vpd.amb", "wind", "pressure", "T_treatment", "Water_treatment", "tair", "vpd")
-    
-    colnames(ch03.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod","year", 
-                          "Ca", "tair.amb", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", "NfluxH2O",
-                          "vpd.amb", "wind", "pressure", "T_treatment", "Water_treatment", "tair", "vpd")
-    
-    colnames(ch04.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod","year", 
-                          "Ca", "tair.amb", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", "NfluxH2O",
-                          "vpd.amb", "wind", "pressure", "T_treatment", "Water_treatment", "tair", "vpd")
-    
-    colnames(ch07.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod","year", 
-                          "Ca", "tair.amb", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", "NfluxH2O",
-                          "vpd.amb", "wind", "pressure", "T_treatment", "Water_treatment", "tair", "vpd")
-    
-    colnames(ch08.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod","year", 
-                          "Ca", "tair.amb", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", "NfluxH2O",
-                          "vpd.amb", "wind", "pressure", "T_treatment", "Water_treatment", "tair", "vpd")
-    
-    colnames(ch11.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod","year", 
-                          "Ca", "tair.amb", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", "NfluxH2O",
-                          "vpd.amb", "wind", "pressure", "T_treatment", "Water_treatment", "tair", "vpd")
-    
-    colnames(ch12.o) <- c("DateTime", "chamber", "Canopy", "doy", "hod","year", 
-                          "Ca", "tair.amb", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", "NfluxH2O",
-                          "vpd.amb", "wind", "pressure", "T_treatment", "Water_treatment", "tair", "vpd")
+    ch12.o <- ch12.o[,c("DateTime", "chamber", "Canopy", "doy", "hod","year", 
+                        "Ca", "tair", "par", "leafArea", "FluxCO2", "NfluxCO2","FluxH2O", "NfluxH2O",
+                        "vpd", "wind", "pressure", "T_treatment", "Water_treatment")]
     
     
     

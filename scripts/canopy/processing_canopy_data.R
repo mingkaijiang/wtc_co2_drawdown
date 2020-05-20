@@ -52,7 +52,7 @@ processing_canopy_data <- function(leafACI,
     myDF$time1 <- sub(".+? ", "", myDF$datetime)
     myDF$time2 <- sub(" .*", "", myDF$time)
     myDF$time3 <- str_sub(myDF$time2, start=-3)
-    myDF$time <- paste0(myDF$time1, ":00")#myDF$time3)
+    myDF$time <- paste0(myDF$time1, ":00")
     
     myDF$datetime <- as.POSIXct(paste(as.character(myDF$date), myDF$time), format="%Y-%m-%d %H:%M:%S")
     myDF$time <- strftime(myDF$datetime, format="%H:%M:%S")
