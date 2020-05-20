@@ -1,5 +1,5 @@
 
-leaf_ACI_processing <- function() {
+leaf_ACI_processing <- function(plot.option) {
     #### individual leaf ACi curve measurement processing
     #### Fit A-CI curve for each chamber
     #### two datasets: the first is upper canopy, and the second is lower canopy
@@ -24,43 +24,19 @@ leaf_ACI_processing <- function() {
                                         "ch11")) # aCO2, wet
     
     myDF$year <- year(myDF$Date)
-
-    #### Fitting ACI curve at the finest resolution
-    fits.all <- fitacis(myDF, group="Identity", 
-                        fitmethod="bilinear",Tcorrect=T, fitTPU=F,
-                        EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
-                        EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345)
     
-    ### fit g1 value
+    ### replace chamber names to keep it consistent with canopy labeling
+    myDF$chamber <- gsub("ch01", "1", myDF$chamber)
+    myDF$chamber <- gsub("ch03", "3", myDF$chamber)
+    myDF$chamber <- gsub("ch04", "4", myDF$chamber)
+    myDF$chamber <- gsub("ch08", "8", myDF$chamber)
+    myDF$chamber <- gsub("ch11", "11", myDF$chamber)
+    
+    ### replace names
     names(myDF)[names(myDF) == "RH_S"] <- "RH"
-    fits.bb <- fitBBs(myDF, group="Identity")
     
-    ### assign factors onto the dataframe
-    coefDF <- coef(fits.all)
-    id.list <- unique(coefDF$Identity)
-    
-    for (i in id.list) {
-        coefDF[coefDF$Identity==i, "Date"] <- unique(myDF[myDF$Identity==i, "Date"])
-        coefDF[coefDF$Identity==i, "chamber"] <- unique(myDF[myDF$Identity==i, "chamber"])
-        coefDF[coefDF$Identity==i, "Height"] <- unique(myDF[myDF$Identity==i, "Height"])
-        coefDF[coefDF$Identity==i, "CO2_treatment"] <- unique(myDF[myDF$Identity==i, "CO2_treatment"])
-    }
-    
-    
-    ### add vcmax to jmax ratio
-    coefDF$JVratio <- coefDF$Jmax/coefDF$Vcmax
-    
-    coefDF$Date <- as.Date(coefDF$Date)
-
-    ### calculate Ac_Aj transition Ci point
-    for (i in unique(coefDF$Identity)) {
-        testDF <- subset(myDF, Identity==i)
-        fit.i <- fitaci(testDF,fitmethod="bilinear",Tcorrect=T, fitTPU=F,
-                        EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
-                        EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345)
-        out <- findCiTransition(fit.i)
-        coefDF[coefDF$Identity==i,"Ac_Aj"] <- out[1]
-    }
+    ### ID list
+    id.list <- unique(myDF$Identity)
     
     ### prepare an output df
     outDF <- data.frame(id.list, 
@@ -70,7 +46,7 @@ leaf_ACI_processing <- function() {
                         NA, NA, NA, NA, NA, NA,
                         NA, NA, NA, NA, NA, NA, 
                         NA, NA, NA, NA, NA, NA)
-    colnames(outDF) <- c("Identity", "Chamber", "CO2_treatment", "Height", "Date",
+    colnames(outDF) <- c("Identity", "Chamber", "CO2_treatment", "Position", "Date",
                          "RMSE", "Vcmax", "Vcmax.se", "Jmax", "Jmax.se", "Rd", "Rd.se",
                          "Ci_400", "ALEAF_400", "GS_400", "ELEAF_400", 
                          "Ac_400", "Aj_400", "Ap_400", 
@@ -96,7 +72,7 @@ leaf_ACI_processing <- function() {
         ## get information on identity
         outDF[outDF$Identity == id.list[i], "CO2_treatment"] <- unique(test$CO2_treatment)
         outDF[outDF$Identity == id.list[i], "Chamber"] <- unique(test$chamber)
-        outDF[outDF$Identity == id.list[i], "Height"] <- unique(test$Height)
+        outDF[outDF$Identity == id.list[i], "Position"] <- unique(test$Height)
         outDF[outDF$Identity == id.list[i], "curve.fitting"] <- fit1$fitmethod
         outDF[outDF$Identity == id.list[i], "Date"] <- unique(test$Date)
         
@@ -149,20 +125,60 @@ leaf_ACI_processing <- function() {
     
     
     
-    
-    ### create pdf
-    pdf("output/leaf/leaf_level_individual_chamber_result.pdf", height=24, width=20)
-    par(mfrow=c(8,5))
-    #1,3,11, 4, 8
-
-    ### make plot
-    for (i in 1:40) {
-        plot(fits.all[[i]], main=paste0(outDF$Chamber[i], ", ", outDF$Height[i], ", ",
-                                        outDF$CO2_treatment[i]))
-        abline(v=c(320), lwd=2, lty=3)
+    ################################### Plotting script ################################
+    if (plot.option == T) {
+        
+        #### Fitting ACI curve at the finest resolution
+        fits.all <- fitacis(myDF, group="Identity", 
+                            fitmethod="bilinear",Tcorrect=T, fitTPU=F,
+                            EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
+                            EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345)
+        
+        ### fit g1 value
+        #fits.bb <- fitBBs(myDF, group="Identity")
+        #
+        #### assign factors onto the dataframe
+        #coefDF <- coef(fits.all)
+        #id.list <- unique(coefDF$Identity)
+        #
+        #for (i in id.list) {
+        #    coefDF[coefDF$Identity==i, "Date"] <- unique(myDF[myDF$Identity==i, "Date"])
+        #    coefDF[coefDF$Identity==i, "chamber"] <- unique(myDF[myDF$Identity==i, "chamber"])
+        #    coefDF[coefDF$Identity==i, "Height"] <- unique(myDF[myDF$Identity==i, "Height"])
+        #    coefDF[coefDF$Identity==i, "CO2_treatment"] <- unique(myDF[myDF$Identity==i, "CO2_treatment"])
+        #}
+        #
+        #
+        #### add vcmax to jmax ratio
+        #coefDF$JVratio <- coefDF$Jmax/coefDF$Vcmax
+        #
+        #coefDF$Date <- as.Date(coefDF$Date)
+        #
+        #### calculate Ac_Aj transition Ci point
+        #for (i in unique(coefDF$Identity)) {
+        #    testDF <- subset(myDF, Identity==i)
+        #    fit.i <- fitaci(testDF,fitmethod="bilinear",Tcorrect=T, fitTPU=F,
+        #                    EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
+        #                    EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345)
+        #    out <- findCiTransition(fit.i)
+        #    coefDF[coefDF$Identity==i,"Ac_Aj"] <- out[1]
+        #}
+        
+        ### create pdf
+        pdf("output/leaf/leaf_level_individual_chamber_result.pdf", height=24, width=20)
+        par(mfrow=c(8,5))
+        #1,3,11, 4, 8
+        
+        ### make plot
+        for (i in 1:40) {
+            plot(fits.all[[i]], main=paste0(outDF$Chamber[i], ", ", outDF$Height[i], ", ",
+                                            outDF$CO2_treatment[i]))
+            abline(v=c(320), lwd=2, lty=3)
+        }
+        
+        dev.off()
     }
-    
-    dev.off()
+    ################################### end plotting script #################################
     
     
     ### return 

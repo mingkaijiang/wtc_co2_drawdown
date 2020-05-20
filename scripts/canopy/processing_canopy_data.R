@@ -1,4 +1,4 @@
-processing_canopy_data <- function(leafDF) {
+processing_canopy_data <- function(leafACI) {
     #### There are two possible datasets,
     #### they should be almost identical.
     #### The dataset "mergeall.text" is a potentially processed file,
@@ -77,6 +77,11 @@ processing_canopy_data <- function(leafDF) {
                     "Tair", "Leaf_area", "Leak_coef", "Leak", 
                     "CO2_flux", "Norm_CO2_flux", "Corr_CO2_flux", 
                     "Norm_corr_CO2_flux")]
+    ########################  end set-up variables ###########################
+    
+    
+    
+    ############################  calculations ###############################
     
     ### add VPD 
     ## Saturation Vapor Pressure (es) = 0.6108 * exp(17.27 * T / (T + 237.3))
@@ -105,13 +110,15 @@ processing_canopy_data <- function(leafDF) {
     #require(plantecophys)
     #myDF$VPD2 <- RHtoVPD(myDF$RH, myDF$Tair, Pa = 101)
     
+    ############################  end calculations ###############################
+    
+    #############################  quality control ###############################
+    
     ### merge with H2O flux dataset
     myDF <- merge_with_H2O_flux_dataset(myDF)
     
     ### ignore unreasonable data
     myDF <- subset(myDF, Norm_corr_CO2_flux >= -2)
-    
-    ########################  quality control ###########################
     
     ### check canopy data structure
     #canopy_data_check_and_plot(myDF)
@@ -131,7 +138,7 @@ processing_canopy_data <- function(leafDF) {
 
     ### read in leaf-scale g1 value to represent canopy g1
     ### i.e. assuming same g1 value for leaf and canopy
-    outDF <- add_leaf_g1_to_canopy_data(leafDF=leafDF, canopyDF=outDF)
+    outDF <- add_leaf_g1_to_canopy_data(leafACI=leafACI, canopyDF=outDF)
     
     ### alterantive way of calculating gs
     outDF$gs <- (1+(outDF$G1/sqrt(outDF$VPD))) * (outDF$Norm_corr_CO2_flux/outDF$WTC_CO2)
@@ -147,6 +154,10 @@ processing_canopy_data <- function(leafDF) {
     canopy_data_per_second_check_and_plot(inDF=outDF)
     
     
+    ###################################  end Ci ########################################
+    
+    
+    ################################  filtering data ###################################
     ### filter according to PAR
     outDF <- subset(outDF, WTC_PAR >= 1000)
 
@@ -157,6 +168,7 @@ processing_canopy_data <- function(leafDF) {
     
     outDF <- merge(outDF, idDF, by="ID", all=T)
     
+    ### assume Tleaf is WTC T
     outDF$Tleaf <- outDF$WTC_T 
     
     
@@ -169,8 +181,11 @@ processing_canopy_data <- function(leafDF) {
                      "Cond_water", "WTC_volume_m3", "Norm_H2O_flux",
                      "gs1", "G1", "gs", "Norm_H2O_flux2", "Ci", "Tleaf")]
     
+    ################################  end filtering data ###################################
     
     
+    
+    ###################################  Fit ACi ##########################################
     #### Fitting ACI curve at the finest resolution
     myDF <- rtDF[,c("Identity", "Chamber", "Canopy", "date", "RH",
                       "Norm_corr_CO2_flux", "WTC_CO2", "Norm_H2O_flux", 
@@ -180,20 +195,6 @@ processing_canopy_data <- function(leafDF) {
     colnames(myDF) <- c("Identity", "Chamber", "Position", "Date", "RH",
                         "Photo", "Ca", "Cond", 
                         "Ci", "Tair", "Tleaf", "PAR", "VPD")
-    
-    fits.all <- fitacis(myDF, group="Identity", 
-                        fitmethod="bilinear", varnames = list(ALEAF="Photo",
-                                                              Tleaf="Tleaf", 
-                                                              Ci = "Ci",
-                                                              PPFD="PAR"),
-                        Tcorrect=T, fitTPU=F,
-                        EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
-                        EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345)
-    
-    ### fit g1 value
-    fits.bb <- fitBBs(myDF, varnames = list(ALEAF = "Photo", GS = "Cond", VPD = "VPD",
-                                            Ca = "Ca", RH = "RH"),
-                      group="Identity")
     
     ### create DF for fit aci parameters
     id.list <- c(111:125)
@@ -216,8 +217,6 @@ processing_canopy_data <- function(leafDF) {
                          "Tleaf", "Ca", "Cc", "PPFD", "Patm", "VPD", 
                          "curve.fitting", 
                          "GammaStar", "Km", "G1")
-    
-    
     
     ### the for loop
     for (i in id.list) {
@@ -293,21 +292,38 @@ processing_canopy_data <- function(leafDF) {
     write.csv(outDF, "output/canopy/canopy_scale_parameters.csv", row.names=F)
     
     
-    ### create pdf
-    pdf("output/canopy/canopy_level_individual_chamber_result.pdf", height=24, width=20)
-    par(mfrow=c(5,3))
-    #1,3,11, 4, 8
-    
-    ### make plot
-    for (i in 1:15) {
-        plot(fits.all[[i]], main=paste0(outDF$Chamber[i], ", ", outDF$Position[i], ", ",
-                                        outDF$CO2_treatment[i]),
-             xlim=c(0, 1200))
-        abline(v=c(320), lwd=2, lty=3)
+    ################################# Plotting fit Aci params #################################
+    if (plot.option == T) {
+        fits.all <- fitacis(myDF, group="Identity", 
+                            fitmethod="bilinear", varnames = list(ALEAF="Photo",
+                                                                  Tleaf="Tleaf", 
+                                                                  Ci = "Ci",
+                                                                  PPFD="PAR"),
+                            Tcorrect=T, fitTPU=F,
+                            EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
+                            EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345)
+        
+        ### fit g1 value
+        fits.bb <- fitBBs(myDF, varnames = list(ALEAF = "Photo", GS = "Cond", VPD = "VPD",
+                                                Ca = "Ca", RH = "RH"),
+                          group="Identity")
+        ### create pdf
+        pdf("output/canopy/canopy_level_individual_chamber_result.pdf", height=24, width=20)
+        par(mfrow=c(5,3))
+        #1,3,11, 4, 8
+        
+        ### make plot
+        for (i in 1:15) {
+            plot(fits.all[[i]], main=paste0(outDF$Chamber[i], ", ", outDF$Position[i], ", ",
+                                            outDF$CO2_treatment[i]),
+                 xlim=c(0, 1200))
+            abline(v=c(320), lwd=2, lty=3)
+        }
+        
+        dev.off()
     }
     
-    dev.off()
-    
+    ################################# End Plotting fit Aci params #################################
     
     ### return output
     return(rtDF)

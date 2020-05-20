@@ -23,11 +23,13 @@ source("prepare.R")
 ###                                3. layer effect (i.e. top and bottom layers)
 ###                                4. save stats and figures
 ###                                5. output parameters for leaf and canopy comparison
-leaf_aciDF <- leaf_ACI_processing()
+leafACI <- leaf_ACI_processing(plot.option = T)
 
-#### Make some plots
-### go into function to plot!
-#plot_leaf_ACI_curves(plotDF=leaf_aciDF)
+#### Make some plots for leaf-scale data only
+#### not used in the main text
+#### can delete after the manuscript is fully written. 
+#### go into function to plot!
+#plot_leaf_ACI_curves(plotDF=leafACI)
 
 
 ############################# processing canopy data #################################
@@ -41,7 +43,7 @@ leaf_aciDF <- leaf_ACI_processing()
 #### 3. Need to correct for tree size, according to Drake's method
 ####    i.e. normalized to per leaf area (more details in the code)
 
-canopyDF <- processing_canopy_data(leafDF=leaf_aciDF)
+canopyDF <- processing_canopy_data(leafACI=leafACI)
 
 ############################# fit canopy A-CI curve  #################################
 #### Fit canopy level A-Ci curves to:
@@ -50,7 +52,7 @@ canopyDF <- processing_canopy_data(leafDF=leaf_aciDF)
 ###                                3. position effect (whole, top, middle and bottom)
 ###                                4. save stats and figures
 ###                                5. output parameters for leaf and canopy comparison
-canopy_aciDF <- canopy_ACI_processing(cDF=canopyDF)
+canopyACI <- canopy_ACI_processing(cDF=canopyDF)
 
 
 ############################# leaf & canopy result comparison ######################
@@ -67,7 +69,7 @@ cDF <- canopyDF
 plot_A_Ca_and_perform_statistics(cDF=canopyDF)
 
 
-############################# EucFACE results ######################
+############################# EucFACE results ##########################
 ### EucFACE A-Ci curves
 plot_eucface_A_Ci()
 
