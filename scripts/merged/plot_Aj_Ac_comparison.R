@@ -38,6 +38,24 @@ plot_Aj_Ac_comparison <- function() {
     plotDF1 <- subset(stDF, CO2_treatment=="aCO2")
     plotDF2 <- subset(stDF, CO2_treatment=="eCO2")
     
+    ### fit linear regression and add R2 and slope to the plot
+    lm1 <- lm(Ac_400~Aj_400, data=plotDF1)
+    a1 <- round(coefficients(lm1)[2],2)
+    r1 <- round(summary(lm1)$adj.r.squared,2)
+    
+    lm2 <- lm(Ac_400~Aj_400, data=plotDF2)
+    a2 <- round(coefficients(lm2)[2],2)
+    r2 <- round(summary(lm2)$adj.r.squared,2)
+    
+    lm3 <- lm(Ac_600~Aj_600, data=plotDF1)
+    a3 <- round(coefficients(lm3)[2],2)
+    r3 <- round(summary(lm3)$adj.r.squared,2)
+    
+    lm4 <- lm(Ac_600~Aj_600, data=plotDF2)
+    a4 <- round(coefficients(lm4)[2],2)
+    r4 <- round(summary(lm4)$adj.r.squared,2)
+    
+    
     ### plotting script
     p1 <- ggplot(stDF, aes(Aj_400, Ac_400)) +
         geom_point(data=stDF, aes(Aj_400, Ac_400,
@@ -76,7 +94,7 @@ plot_Aj_Ac_comparison <- function() {
                                    nrow=2, byrow = T))+
         ylim(0, 40)+
         xlim(0, 40)
-    
+
     
     p2 <- ggplot(plotDF1, aes(Aj_400, Ac_400)) +
         geom_point(data=plotDF1, aes(Aj_400, Ac_400,
@@ -115,7 +133,10 @@ plot_Aj_Ac_comparison <- function() {
                                    nrow=2, byrow = T))+
         ylim(0, 50)+
         xlim(0, 50)+
-        ggtitle(expression(paste(aC[a])))
+        ggtitle(expression(paste(aC[a])))+
+        annotate(geom="text", x=30, y=10, 
+                 label = "atop(a == 1.04, r^2 == 0.9)", parse = TRUE, size=10)
+    
     
     p3 <- ggplot(plotDF2, aes(Aj_400, Ac_400)) +
         geom_point(data=plotDF2, aes(Aj_400, Ac_400,
@@ -154,7 +175,10 @@ plot_Aj_Ac_comparison <- function() {
                                    nrow=2, byrow = T))+
         ylim(0, 50)+
         xlim(0, 50)+
-        ggtitle(expression(paste(eC[a])))
+        ggtitle(expression(paste(eC[a])))+
+        annotate(geom="text", x=30, y=10, 
+                 label = "atop(a == 1.05, r^2 == 0.9)", parse = TRUE, size=10)
+    
     
     
     
@@ -194,7 +218,10 @@ plot_Aj_Ac_comparison <- function() {
                                                        alpha=1.0),
                                    nrow=2, byrow = T))+
         ylim(0, 70)+
-        xlim(0, 70)
+        xlim(0, 70)+
+        annotate(geom="text", x=40, y=10, 
+                 label = "atop(a == 1.27, r^2 == 0.9)", parse = TRUE, size=10)
+    
     
     p5 <- ggplot(plotDF2, aes(Aj_600, Ac_600)) +
         geom_point(data=plotDF2, aes(Aj_600, Ac_600,
@@ -232,7 +259,10 @@ plot_Aj_Ac_comparison <- function() {
                                                        alpha=1.0),
                                    nrow=2, byrow = T))+
         ylim(0, 70)+
-        xlim(0, 70)
+        xlim(0, 70)+
+        annotate(geom="text", x=40, y=10, 
+                 label = "atop(a == 1.28, r^2 == 0.9)", parse = TRUE, size=10)
+    
     
 
     #### plot legends
@@ -250,5 +280,264 @@ plot_Aj_Ac_comparison <- function() {
     plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
     dev.off()  
     
+   
+    #######################################################################################
+    #### plot A600/A400 ratio
+    stDF$A600_over_A400 <- with(stDF, ALEAF_600/ALEAF_400)
+    stDF$Ac600_over_Ac400 <- with(stDF, Ac_600/Ac_400)
+    stDF$Aj600_over_Aj400 <- with(stDF, Aj_600/Aj_400)
+    
+    ### subset
+    subDF1 <- stDF[,c("A600_over_A400", "CO2_treatment", "Chamber", "Position", "Type")]
+    subDF2 <- stDF[,c("Ac600_over_Ac400", "CO2_treatment", "Chamber", "Position", "Type")]
+    subDF3 <- stDF[,c("Aj600_over_Aj400", "CO2_treatment", "Chamber", "Position", "Type")]
+    
+    subDF1$lab <- "A"
+    subDF2$lab <- "Ac"
+    subDF3$lab <- "Aj"
+    
+    colnames(subDF1) <- colnames(subDF2) <- colnames(subDF3) <- c("ratio", "CO2_treatment", "Chamber", "Position", "Type", "lab")
+    
+    plotDF1 <- rbind(subDF1, subDF2, subDF3)
+    
+    ### summary By
+    plotDF2 <- summaryBy(ratio~Position+lab, 
+                         FUN=c(mean, se), data=plotDF1, keep.names=T)
+    
+    ### plotting
+    p1 <- ggplot(data=plotDF2[plotDF2$Position=="45",], 
+                 aes(lab, ratio.mean)) +
+        geom_bar(stat = "identity", aes(fill=lab), 
+                 position="dodge") +
+        geom_errorbar(aes(x=lab, ymin=ratio.mean-ratio.se, 
+                          ymax=ratio.mean+ratio.se), 
+                      position=position_dodge(0.9), width=0.2) +
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.text.x=element_text(size=12),
+              axis.title.x=element_text(size=14),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              legend.box = 'vertical',
+              legend.box.just = 'left',
+              plot.title = element_text(size=16, face="bold", 
+                                        hjust = 0.5))+
+        ylab(expression(paste(A[600] * " / " * A[400])))+
+        scale_fill_manual(name="",
+                          breaks=c("A", "Ac", "Aj"),
+                          labels=c("A", expression(paste(A[c])),
+                                   expression(paste(A[j]))),
+                          values = colorblind_pal()(3 + 1)[-1])+
+        xlab("")+
+        scale_x_discrete(breaks=c("A", "Ac", "Aj"),
+                         labels=c("A", expression(paste(A[c])),
+                                  expression(paste(A[j]))))+
+        ylim(0, 2)+
+        ggtitle("Canopy-scale")
+    
+    p2 <- ggplot(data=plotDF2[plotDF2$Position=="345",], 
+                 aes(lab, ratio.mean)) +
+        geom_bar(stat = "identity", aes(fill=lab), 
+                 position="dodge") +
+        geom_errorbar(aes(x=lab, ymin=ratio.mean-ratio.se, 
+                          ymax=ratio.mean+ratio.se), 
+                      position=position_dodge(0.9), width=0.2) +
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.text.x=element_text(size=12),
+              axis.title.x=element_text(size=14),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              legend.box = 'vertical',
+              legend.box.just = 'left',
+              plot.title = element_text(size=16, face="bold", 
+                                        hjust = 0.5))+
+        ylab(expression(paste(A[600] * " / " * A[400])))+
+        scale_fill_manual(name="",
+                          breaks=c("A", "Ac", "Aj"),
+                          labels=c("A", expression(paste(A[c])),
+                                   expression(paste(A[j]))),
+                          values = colorblind_pal()(3 + 1)[-1])+
+        xlab("")+
+        scale_x_discrete(breaks=c("A", "Ac", "Aj"),
+                         labels=c("A", expression(paste(A[c])),
+                                  expression(paste(A[j]))))+
+        ylim(0, 2)
+    
+    p3 <- ggplot(data=plotDF2[plotDF2$Position=="12345",], 
+                 aes(lab, ratio.mean)) +
+        geom_bar(stat = "identity", aes(fill=lab), 
+                 position="dodge") +
+        geom_errorbar(aes(x=lab, ymin=ratio.mean-ratio.se, 
+                          ymax=ratio.mean+ratio.se), 
+                      position=position_dodge(0.9), width=0.2) +
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.text.x=element_text(size=12),
+              axis.title.x=element_text(size=14),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              legend.box = 'vertical',
+              legend.box.just = 'left',
+              plot.title = element_text(size=16, face="bold", 
+                                        hjust = 0.5))+
+        ylab(expression(paste(A[600] * " / " * A[400])))+
+        scale_fill_manual(name="",
+                          breaks=c("A", "Ac", "Aj"),
+                          labels=c("A", expression(paste(A[c])),
+                                   expression(paste(A[j]))),
+                          values = colorblind_pal()(3 + 1)[-1])+
+        xlab("")+
+        scale_x_discrete(breaks=c("A", "Ac", "Aj"),
+                         labels=c("A", expression(paste(A[c])),
+                                  expression(paste(A[j]))))+
+        ylim(0, 2)
+    
+    
+    p4 <- ggplot(data=plotDF2[plotDF2$Position=="up",], 
+                 aes(lab, ratio.mean)) +
+        geom_bar(stat = "identity", aes(fill=lab), 
+                 position="dodge") +
+        geom_errorbar(aes(x=lab, ymin=ratio.mean-ratio.se, 
+                          ymax=ratio.mean+ratio.se), 
+                      position=position_dodge(0.9), width=0.2) +
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.text.x=element_text(size=12),
+              axis.title.x=element_text(size=14),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              legend.box = 'vertical',
+              legend.box.just = 'left',
+              plot.title = element_text(size=16, face="bold", 
+                                        hjust = 0.5))+
+        ylab(expression(paste(A[600] * " / " * A[400])))+
+        scale_fill_manual(name="",
+                          breaks=c("A", "Ac", "Aj"),
+                          labels=c("A", expression(paste(A[c])),
+                                   expression(paste(A[j]))),
+                          values = colorblind_pal()(3 + 1)[-1])+
+        xlab("")+
+        scale_x_discrete(breaks=c("A", "Ac", "Aj"),
+                         labels=c("A", expression(paste(A[c])),
+                                  expression(paste(A[j]))))+
+        ylim(0, 2)+
+        ggtitle("Leaf-scale")
+    
+    p5 <- ggplot(data=plotDF2[plotDF2$Position=="low",], 
+                 aes(lab, ratio.mean)) +
+        geom_bar(stat = "identity", aes(fill=lab), 
+                 position="dodge") +
+        geom_errorbar(aes(x=lab, ymin=ratio.mean-ratio.se, 
+                          ymax=ratio.mean+ratio.se), 
+                      position=position_dodge(0.9), width=0.2) +
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.text.x=element_text(size=12),
+              axis.title.x=element_text(size=14),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              legend.box = 'vertical',
+              legend.box.just = 'left',
+              plot.title = element_text(size=16, face="bold", 
+                                        hjust = 0.5))+
+        ylab(expression(paste(A[600] * " / " * A[400])))+
+        scale_fill_manual(name="",
+                          breaks=c("A", "Ac", "Aj"),
+                          labels=c("A", expression(paste(A[c])),
+                                   expression(paste(A[j]))),
+                          values = colorblind_pal()(3 + 1)[-1])+
+        xlab("")+
+        scale_x_discrete(breaks=c("A", "Ac", "Aj"),
+                         labels=c("A", expression(paste(A[c])),
+                                  expression(paste(A[j]))))+
+        ylim(0, 2)
+    
+    
+    legend_shared <- get_legend(p1 + theme(legend.position="bottom",
+                                           legend.box = 'vertical',
+                                           legend.box.just = 'left'))
+    
+    combined_plots <- plot_grid(p1, p4, p2, p5, p3,
+                                labels=c("(a)", "(d)", "(b)", "(e)", "(c)"),
+                                label_x=0.86, label_y=0.86,
+                                ncol=2, align="vh", axis = "l")
+    
+    #plot(p1)
+    
+    pdf("output/biochemical_parameters/relative_contribution_Ac_Aj.pdf", width=8, height=10)
+    plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
+    dev.off()  
+    
+    
+    
+    
+    ######################## combine all results together
+    ###
+    plotDF3 <- summaryBy(ratio~lab, 
+                         FUN=c(mean, se), data=plotDF1, keep.names=T)
+    
+    p1 <- ggplot(data=plotDF3, 
+                 aes(lab, ratio.mean)) +
+        geom_bar(stat = "identity", aes(fill=lab), 
+                 position="dodge") +
+        geom_errorbar(aes(x=lab, ymin=ratio.mean-ratio.se, 
+                          ymax=ratio.mean+ratio.se), 
+                      position=position_dodge(0.9), width=0.2) +
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.text.x=element_text(size=12),
+              axis.title.x=element_text(size=14),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              legend.box = 'vertical',
+              legend.box.just = 'left',
+              plot.title = element_text(size=16, face="bold", 
+                                        hjust = 0.5))+
+        ylab(expression(paste(A[600] * " / " * A[400])))+
+        scale_fill_manual(name="",
+                          breaks=c("A", "Ac", "Aj"),
+                          labels=c("A", expression(paste(A[c])),
+                                   expression(paste(A[j]))),
+                          values = colorblind_pal()(3 + 1)[-1])+
+        xlab("")+
+        scale_x_discrete(breaks=c("A", "Ac", "Aj"),
+                         labels=c("A", expression(paste(A[c])),
+                                  expression(paste(A[j]))))+
+        ylim(0, 2)
+    
+
+    pdf("output/biochemical_parameters/relative_contribution_Ac_Aj_all_merged.pdf", width=4, height=4)
+    plot(p1)
+    dev.off()  
+    
+    
+    ###############################################################################
+    #### look at A, Vcmax and Jmax, following Rogers & Humphries 2000, GCB Figure 1
+
     
 }
