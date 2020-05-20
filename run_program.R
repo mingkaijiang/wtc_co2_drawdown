@@ -85,14 +85,14 @@ plot_biochemical_parameters()
 plot_Aj_Ac_comparison()
 
 
-############################# EucFACE results ##########################
-### EucFACE A-Ci curves
-plot_eucface_A_Ci()
-
-
 ############################# Roger 2017 results ######################
 ###
 plot_roger_2017_model_result_comparison()
+
+
+############################# EucFACE results ##########################
+### EucFACE A-Ci curves
+plot_eucface_A_Ci()
 
 
 

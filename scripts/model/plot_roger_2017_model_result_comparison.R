@@ -116,7 +116,7 @@ plot_roger_2017_model_result_comparison <- function() {
     
     #plot(p1)
     
-    pdf("output/A-Ca/Roger_model_output.pdf", width=10, height=10)
+    pdf("output/simulated/Roger_model_output.pdf", width=10, height=10)
     plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
     dev.off()  
     
@@ -246,7 +246,7 @@ plot_roger_2017_model_result_comparison <- function() {
     
     
     ### add WTC result and compare
-    wtcDF <- read.csv("output/A-Ca/predicted_A_at_400_600_ppm.csv")
+    wtcDF <- read.csv("output/A-Ca/linear_predicted_A_at_400_600_ppm.csv")
     
     sumDF2 <- summaryBy(A_sens_norm~Type+Position, FUN=c(mean,se),
                         data=wtcDF, keep.names=T, na.rm=T)
@@ -275,15 +275,14 @@ plot_roger_2017_model_result_comparison <- function() {
         scale_fill_colorblind(name="Level")+
         scale_color_colorblind(name="Position",
                                breaks=c("12345", "345", "45", "low", "up"),
-                               labels=c("Whole", "T+M", "T", "Low", "Up"),
+                               labels=c("Full", "T+M", "T", "Low", "Up"),
                                guide=guide_legend(nrow=3))+
         xlab("")+
         scale_x_discrete(breaks=c("12345", "345", "45", "low", "up"),
-                         labels=c("Whole", "T+M", "T", "Low", "Up"))+
+                         labels=c("Full", "T+M", "T", "Low", "Up"))+
         ylim(0, 0.4)
     
-    plot(p6)
-    
+    #plot(p6)
     
     #pdf("output/A-Ca/Roger_model_sensitivity.pdf", width=8, height=6)
     #plot_grid(p5, p6, labels="", ncol=2, align="v", axis = "l")
