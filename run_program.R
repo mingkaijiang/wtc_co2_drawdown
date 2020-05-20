@@ -42,8 +42,7 @@ leafACI <- leaf_ACI_processing(plot.option = T)
 ####    there were time-series breaks in the measurements (more details in the code)
 #### 3. Need to correct for tree size, according to Drake's method
 ####    i.e. normalized to per leaf area (more details in the code)
-
-canopyDF <- processing_canopy_data(leafACI=leafACI)
+canopyDF <- processing_canopy_data(leafACI=leafACI, plot.option = T)
 
 ############################# fit canopy A-CI curve  #################################
 #### Fit canopy level A-Ci curves to:
@@ -52,21 +51,29 @@ canopyDF <- processing_canopy_data(leafACI=leafACI)
 ###                                3. position effect (whole, top, middle and bottom)
 ###                                4. save stats and figures
 ###                                5. output parameters for leaf and canopy comparison
-canopyACI <- canopy_ACI_processing(cDF=canopyDF)
+#canopyACI <- canopy_ACI_processing(cDF=canopyDF)
 
 
 ############################# leaf & canopy result comparison ######################
+#### merge leaf and canopy raw data
+mgDF <- merge_leaf_and_canopy_raw_data(cDF=canopyDF)
+
+
 ####### Plot A-CA at each chamber, compare the shape of the curves
 ### need to go into function to plot
-cDF <- canopyDF
 
 ### all data
-#plot_individual_A_Ca_curves(cDF=canopyDF)
+#plot_individual_A_Ca_curves(mgDF)
 
 ### well-watered treatment
 ### include both A-Ca and A-Ci plots
 ### including statistics
-plot_A_Ca_and_perform_statistics(cDF=canopyDF)
+plot_A_Ca_and_perform_statistics(mgDF)
+
+#### plot Aj on the x-axis and Ac on the y-axis
+### include both canopy and leaf scales
+### include both aCO2 and eCO2 treatment
+plot_Aj_Ac_comparison()
 
 
 ############################# EucFACE results ##########################

@@ -1,4 +1,5 @@
-processing_canopy_data <- function(leafACI) {
+processing_canopy_data <- function(leafACI,
+                                   plot.option) {
     #### There are two possible datasets,
     #### they should be almost identical.
     #### The dataset "mergeall.text" is a potentially processed file,
