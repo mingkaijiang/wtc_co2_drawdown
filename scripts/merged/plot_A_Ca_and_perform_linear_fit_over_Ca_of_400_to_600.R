@@ -1,4 +1,4 @@
-plot_A_Ca_and_perform_statistics <- function(mgDF) {
+plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
     #### This script plots A-CA curve for leaf and canopy data on to the same plot
     #### and compare the shapes
     #### which can be related to Rogers et al. 2017 conceptual figure

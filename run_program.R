@@ -64,9 +64,20 @@ mgDF <- merge_leaf_and_canopy_raw_data(cDF=canopyDF)
 ### need to go into function to plot
 #plot_individual_A_Ca_curves(mgDF)
 
-### include both A-Ca and A-Ci plots
-### including statistics
-plot_A_Ca_and_perform_statistics(mgDF)
+### include both A-Ca curves over 0 - 1200 and 350 to 650 range
+### for Ca range of 350 - 650, fitted a linear curve
+### results include A sensitivity over the Ca range of 400 to 600
+### i.e. delta A / A400
+plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600(mgDF)
+
+### same as above for the sensitivity, 
+### but A400 and A600 predicted by the fitaci function, hence non-linear
+plot_A_Ca_sensitivity_based_on_fitaci_function()
+
+
+### plot biochemical parameters based on fitaci results
+plot_biochemical_parameters()
+
 
 #### plot Aj on the x-axis and Ac on the y-axis
 ### include both canopy and leaf scales
