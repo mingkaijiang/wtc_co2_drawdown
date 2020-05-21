@@ -109,7 +109,14 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
                        data=ftDF2)
     
     
-    ### plot
+    ### prepare Ci-Ca ratio
+    plotDF1$CiCa <- with(plotDF1, Ci/Ca)
+    plotDF2$CiCa <- with(plotDF2, Ci/Ca)
+    
+    subDF1$CiCa <- with(subDF1, Ci/Ca)
+    subDF2$CiCa <- with(subDF2, Ci/Ca)
+    
+    ### plot  A-Ca full range
     p1 <- ggplot(data=plotDF1, aes(Ca, Photo, group=Position)) +
       geom_point(data=plotDF1, aes(fill=as.factor(Position), 
                                   pch = as.factor(Type)), alpha=0.6)+
@@ -122,7 +129,7 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
-            axis.title.x=element_blank(),
+            axis.title.x=element_text(size=14),
             axis.text.y=element_text(size=12),
             axis.title.y=element_text(size=14),
             legend.text=element_text(size=12),
@@ -149,7 +156,7 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
       guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
     
     
-    ## plot
+    ## plot A-Ca sub range
     p2 <- ggplot() +
       geom_point(data=subDF1, aes(Ca, Photo, 
                                   fill=as.factor(Position), 
@@ -164,9 +171,9 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
-            axis.title.x=element_blank(),
+            axis.title.x=element_text(size=14),
             axis.text.y=element_text(size=12),
-            axis.title.y=element_blank(),
+            axis.title.y=element_text(size=14),
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
@@ -230,7 +237,7 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
       guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
     
     
-    ## plot
+    ## plot A-Ca sub range for eCO2 treatment
     p4 <- ggplot() +
       geom_point(data=subDF2, aes(Ca, Photo, 
                                   fill=as.factor(Position), 
@@ -247,7 +254,7 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
             axis.text.x=element_text(size=12),
             axis.title.x=element_text(size=14),
             axis.text.y=element_text(size=12),
-            axis.title.y=element_blank(),
+            axis.title.y=element_text(size=14),
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
@@ -283,9 +290,9 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
-            axis.title.x=element_blank(),
+            axis.title.x=element_text(size=14),
             axis.text.y=element_text(size=12),
-            axis.title.y=element_blank(),
+            axis.title.y=element_text(size=14),
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
@@ -310,6 +317,7 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
       guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
     
     
+    ### plot A-Ci sub range eCO2
     p6 <- ggplot() +
       geom_point(data=subDF2, aes(Ci, Photo, 
                                   fill=as.factor(Position), 
@@ -322,7 +330,7 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
             axis.text.x=element_text(size=12),
             axis.title.x=element_text(size=14),
             axis.text.y=element_text(size=12),
-            axis.title.y=element_blank(),
+            axis.title.y=element_text(size=14),
             legend.text=element_text(size=12),
             legend.title=element_text(size=14),
             panel.grid.major=element_blank(),
@@ -347,18 +355,97 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
       guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
     
     
+    
+    ### plot Ci-Ca under aCa
+    p7 <- ggplot(data=subDF1, aes(Ca, Ci, group=Position)) +
+      geom_point(data=subDF1, aes(fill=as.factor(Position), 
+                                   pch = as.factor(Type)), alpha=0.6)+
+      #geom_smooth(method='lm',
+      #            aes(col=Position),
+      #            se=T)+
+      geom_abline(slope=1, intercept=0, col="black", lty=2)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab(expression(paste(C[a], " (", mu, "mol ", mol^-1, ")")))+
+      ylab(expression(paste(C[i], " (", mu, "mol ", mol^-1, ")")))+
+      scale_fill_manual(name="Position",
+                        limits=c("12345", "345", "45", "up", "low"),
+                        values=c("blue2", "red3", "purple", "orange", "green"),
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
+      scale_color_manual(name="Position",
+                         limits=c("12345", "345", "45", "up", "low"),
+                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
+                         labels=c("Full", "T+M", "Top", "Up", "Low"))+
+      scale_shape_manual(name="Type",
+                         values=c(21, 24),
+                         labels=c("Canopy", "Leaf"))+
+      xlim(350,650)+
+      ylim(0, 650)+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+    
+    
+    ### plot Ci-Ca
+    p8 <- ggplot(data=subDF2, aes(Ca, Ci, group=Position)) +
+      geom_point(data=subDF2, aes(fill=as.factor(Position), 
+                                   pch = as.factor(Type)), alpha=0.6)+
+      #geom_smooth(method='lm',
+      #            aes(col=Position),
+      #            se=T)+
+      geom_abline(slope=1, intercept=0, col="black", lty=2)+
+      theme_linedraw() +
+      theme(panel.grid.minor=element_blank(),
+            axis.text.x=element_text(size=12),
+            axis.title.x=element_text(size=14),
+            axis.text.y=element_text(size=12),
+            axis.title.y=element_text(size=14),
+            legend.text=element_text(size=12),
+            legend.title=element_text(size=14),
+            panel.grid.major=element_blank(),
+            legend.position="none",
+            legend.box = 'vertical',
+            legend.box.just = 'left')+
+      xlab(expression(paste(C[a], " (", mu, "mol ", mol^-1, ")")))+
+      ylab(expression(paste(C[i], " (", mu, "mol ", mol^-1, ")")))+
+      scale_fill_manual(name="Position",
+                        limits=c("12345", "345", "45", "up", "low"),
+                        values=c("blue2", "red3", "purple", "orange", "green"),
+                        labels=c("Full", "T+M", "Top", "Up", "Low"))+
+      scale_color_manual(name="Position",
+                         limits=c("12345", "345", "45", "up", "low"),
+                         values=c("blue2", "red3", "purple", "orange", "darkgreen"),
+                         labels=c("Full", "T+M", "Top", "Up", "Low"))+
+      scale_shape_manual(name="Type",
+                         values=c(21, 24),
+                         labels=c("Canopy", "Leaf"))+
+      xlim(350,650)+
+      ylim(0, 650)+
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+    
+
+    
     ### output
     legend_shared <- get_legend(p1 + theme(legend.position="bottom",
                                            legend.box = 'vertical',
                                            legend.box.just = 'left'))
     
-    combined_plots <- plot_grid(p1, p2, p3, p4,  
-                                labels=c("(a)", "(b)", "(c)", "(d)"),
-                                ncol=2, align="vh", axis = "l",
+    combined_plots <- plot_grid(p1, p2, p7, 
+                                p3, p4, p8, 
+                                labels=c("(a)", "(b)", "(c)", "(d)", "(e)", "(f)"),
+                                ncol=3, align="vh", axis = "l",
                                 label_x=0.16, label_y=0.95,
                                 label_size = 18)
     
-    pdf("output/A-Ca/A-Ca_plots.pdf", width=8, height=10)
+    pdf("output/A-Ca/A-Ca_plots.pdf", width=12, height=8)
     plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
     dev.off() 
     

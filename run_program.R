@@ -33,7 +33,7 @@ leafACI <- leaf_ACI_processing(plot.option = T)
 
 
 #### create leaf-scale biochemical parameter summary table
-summarize_leaf_scale_biochemical_parameters(leafACI)
+summarize_leaf_scale_biochemical_parameters()
 
 
 ############################# processing canopy data #################################

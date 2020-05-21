@@ -374,7 +374,7 @@ plot_roger_2017_model_result_comparison <- function() {
         ylab(expression(paste(delta * A * " / " * A[400])))+
         scale_fill_manual(name="Position",
                           limits=c("5_Full", "4_TM", "3_Top", "2_low", "1_up"),
-                          values=c("blue2", "red3", "purple", "orange", "green"),
+                          values=c("blue2", "red3", "purple", "green", "orange"),
                           labels=c("Full", "T+M", "Top", "Low", "Up"),
                           guide=guide_legend(nrow=5))+
         xlab("")+
