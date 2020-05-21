@@ -76,7 +76,7 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600(mgDF)
 
 ### same as above for the sensitivity, 
 ### but A400 and A600 predicted by the fitaci function, hence non-linear
-plot_A_Ca_sensitivity_based_on_fitaci_function()
+plot_A_Ca_sensitivity_based_on_fitaci_function_result()
 
 
 ### plot biochemical parameters based on fitaci results

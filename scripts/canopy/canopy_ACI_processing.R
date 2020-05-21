@@ -72,7 +72,10 @@ canopy_ACI_processing <- function(cDF) {
                                             Ca = "WTC_CO2", 
                                             RH = "RH"),
                       gsmodel="BBOpti")
-            
+        
+        ### list parameters for photosyn function input
+        g1 <- coef(fit2)[2]
+        
         ## assign to list
         outlist[[i]] <- fit1
         
@@ -93,22 +96,22 @@ canopy_ACI_processing <- function(cDF) {
         outDF[outDF$Identity == id.list[i], "Rd.se"] <- fit1$pars[3,2]
         
         
-        outDF[outDF$Identity == id.list[i], "Ci_400"] <- fit1$Photosyn(Ca=400)[1]
-        outDF[outDF$Identity == id.list[i], "ALEAF_400"] <- fit1$Photosyn(Ca=400)[2]
-        outDF[outDF$Identity == id.list[i], "GS_400"] <- fit1$Photosyn(Ca=400)[3]
-        outDF[outDF$Identity == id.list[i], "ELEAF_400"] <- fit1$Photosyn(Ca=400)[4]
-        outDF[outDF$Identity == id.list[i], "Ac_400"] <- fit1$Photosyn(Ca=400)[5]
-        outDF[outDF$Identity == id.list[i], "Aj_400"] <- fit1$Photosyn(Ca=400)[6]
-        outDF[outDF$Identity == id.list[i], "Ap_400"] <- fit1$Photosyn(Ca=400)[7]
+        outDF[outDF$Identity == id.list[i], "Ci_400"] <- fit1$Photosyn(Ca=400, g1=g1)[1]
+        outDF[outDF$Identity == id.list[i], "ALEAF_400"] <- fit1$Photosyn(Ca=400, g1=g1)[2]
+        outDF[outDF$Identity == id.list[i], "GS_400"] <- fit1$Photosyn(Ca=400, g1=g1)[3]
+        outDF[outDF$Identity == id.list[i], "ELEAF_400"] <- fit1$Photosyn(Ca=400, g1=g1)[4]
+        outDF[outDF$Identity == id.list[i], "Ac_400"] <- fit1$Photosyn(Ca=400, g1=g1)[5]
+        outDF[outDF$Identity == id.list[i], "Aj_400"] <- fit1$Photosyn(Ca=400, g1=g1)[6]
+        outDF[outDF$Identity == id.list[i], "Ap_400"] <- fit1$Photosyn(Ca=400, g1=g1)[7]
         
         
-        outDF[outDF$Identity == id.list[i], "Ci_600"] <- fit1$Photosyn(Ca=600)[1]
-        outDF[outDF$Identity == id.list[i], "ALEAF_600"] <- fit1$Photosyn(Ca=600)[2]
-        outDF[outDF$Identity == id.list[i], "GS_600"] <- fit1$Photosyn(Ca=600)[3]
-        outDF[outDF$Identity == id.list[i], "ELEAF_600"] <- fit1$Photosyn(Ca=600)[4]
-        outDF[outDF$Identity == id.list[i], "Ac_600"] <- fit1$Photosyn(Ca=600)[5]
-        outDF[outDF$Identity == id.list[i], "Aj_600"] <- fit1$Photosyn(Ca=600)[6]
-        outDF[outDF$Identity == id.list[i], "Ap_600"] <- fit1$Photosyn(Ca=600)[7]
+        outDF[outDF$Identity == id.list[i], "Ci_600"] <- fit1$Photosyn(Ca=600, g1=g1)[1]
+        outDF[outDF$Identity == id.list[i], "ALEAF_600"] <- fit1$Photosyn(Ca=600, g1=g1)[2]
+        outDF[outDF$Identity == id.list[i], "GS_600"] <- fit1$Photosyn(Ca=600, g1=g1)[3]
+        outDF[outDF$Identity == id.list[i], "ELEAF_600"] <- fit1$Photosyn(Ca=600, g1=g1)[4]
+        outDF[outDF$Identity == id.list[i], "Ac_600"] <- fit1$Photosyn(Ca=600, g1=g1)[5]
+        outDF[outDF$Identity == id.list[i], "Aj_600"] <- fit1$Photosyn(Ca=600, g1=g1)[6]
+        outDF[outDF$Identity == id.list[i], "Ap_600"] <- fit1$Photosyn(Ca=600, g1=g1)[7]
         
         outDF[outDF$Identity == id.list[i], "VPD"] <- fit1$Photosyn()[9]
         outDF[outDF$Identity == id.list[i], "Tleaf"] <- fit1$Photosyn()[10]

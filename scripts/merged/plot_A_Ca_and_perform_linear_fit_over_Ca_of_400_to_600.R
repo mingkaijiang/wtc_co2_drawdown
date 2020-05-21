@@ -116,6 +116,12 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
     subDF1$CiCa <- with(subDF1, Ci/Ca)
     subDF2$CiCa <- with(subDF2, Ci/Ca)
     
+    ### prepare Ci Ca summary table and output
+    rawCi <- rbind(subDF1, subDF2)
+    outCi <- summaryBy(CiCa~Position+Type+CO2_treatment, FUN=c(mean, se),
+                       data=rawCi, keep.names=T)
+    write.csv(outCi, "output/A-Ca/CiCa_summary_table.csv", row.names=F)
+    
     ### plot  A-Ca full range
     p1 <- ggplot(data=plotDF1, aes(Ca, Photo, group=Position)) +
       geom_point(data=plotDF1, aes(fill=as.factor(Position), 
