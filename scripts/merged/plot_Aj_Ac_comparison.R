@@ -336,9 +336,10 @@ plot_Aj_Ac_comparison <- function() {
         scale_x_discrete(breaks=c("A", "Ac", "Aj"),
                          labels=c("A", expression(paste(A[c])),
                                   expression(paste(A[j]))))+
-        ylim(0, 2)+
+        #ylim(0, 2)+
+        coord_cartesian(ylim = c(1, 1.5)) +
         ggtitle("Canopy-scale")
-    
+
     p2 <- ggplot(data=plotDF2[plotDF2$Position=="345",], 
                  aes(lab, ratio.mean)) +
         geom_bar(stat = "identity", aes(fill=lab), 
@@ -370,7 +371,8 @@ plot_Aj_Ac_comparison <- function() {
         scale_x_discrete(breaks=c("A", "Ac", "Aj"),
                          labels=c("A", expression(paste(A[c])),
                                   expression(paste(A[j]))))+
-        ylim(0, 2)
+        #ylim(0, 2)+
+        coord_cartesian(ylim = c(1, 1.5)) 
     
     p3 <- ggplot(data=plotDF2[plotDF2$Position=="12345",], 
                  aes(lab, ratio.mean)) +
@@ -403,7 +405,8 @@ plot_Aj_Ac_comparison <- function() {
         scale_x_discrete(breaks=c("A", "Ac", "Aj"),
                          labels=c("A", expression(paste(A[c])),
                                   expression(paste(A[j]))))+
-        ylim(0, 2)
+        #ylim(0, 2)+
+        coord_cartesian(ylim = c(1, 1.5)) 
     
     
     p4 <- ggplot(data=plotDF2[plotDF2$Position=="up",], 
@@ -437,7 +440,8 @@ plot_Aj_Ac_comparison <- function() {
         scale_x_discrete(breaks=c("A", "Ac", "Aj"),
                          labels=c("A", expression(paste(A[c])),
                                   expression(paste(A[j]))))+
-        ylim(0, 2)+
+        #ylim(0, 2)+
+        coord_cartesian(ylim = c(1, 1.5)) +
         ggtitle("Leaf-scale")
     
     p5 <- ggplot(data=plotDF2[plotDF2$Position=="low",], 
@@ -471,7 +475,8 @@ plot_Aj_Ac_comparison <- function() {
         scale_x_discrete(breaks=c("A", "Ac", "Aj"),
                          labels=c("A", expression(paste(A[c])),
                                   expression(paste(A[j]))))+
-        ylim(0, 2)
+        #ylim(0, 2)+
+        coord_cartesian(ylim = c(1, 1.5)) 
     
     
     legend_shared <- get_legend(p1 + theme(legend.position="bottom",
@@ -528,7 +533,8 @@ plot_Aj_Ac_comparison <- function() {
         scale_x_discrete(breaks=c("A", "Ac", "Aj"),
                          labels=c("A", expression(paste(A[c])),
                                   expression(paste(A[j]))))+
-        ylim(0, 2)
+        #ylim(0, 2)+
+        coord_cartesian(ylim = c(1, 1.5)) 
     
 
     pdf("output/biochemical_parameters/relative_contribution_Ac_Aj_all_merged.pdf", width=4, height=4)

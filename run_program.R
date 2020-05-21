@@ -48,6 +48,9 @@ summarize_leaf_scale_biochemical_parameters()
 ####    i.e. normalized to per leaf area (more details in the code)
 canopyDF <- processing_canopy_data(leafACI=leafACI, plot.option = T)
 
+
+plot_chamber_leaf_area(canopyDF)
+
 ############################# fit canopy A-CI curve  #################################
 #### Fit canopy level A-Ci curves to:
 ###                                1. generate parameters to compare against leaf scale A-Ci
