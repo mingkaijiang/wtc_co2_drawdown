@@ -48,7 +48,7 @@ summarize_leaf_scale_biochemical_parameters()
 ####    i.e. normalized to per leaf area (more details in the code)
 canopyDF <- processing_canopy_data(leafACI=leafACI, plot.option = T)
 
-
+#### plot leaf area and biomass based on final harvest data
 plot_chamber_leaf_area(canopyDF)
 
 ############################# fit canopy A-CI curve  #################################

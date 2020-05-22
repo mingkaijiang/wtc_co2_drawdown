@@ -17,6 +17,16 @@ plot_chamber_leaf_area <- function(canopyDF) {
     plotDF2$Canopy <- gsub("45", "3_Top", plotDF2$Canopy)
     
     
+    
+    #### read in biomass DF and process it
+    bDF <- biomass_data_processing()
+    
+    ### come back to 
+    ### 1. investigate why leaf biomass is so large
+    ### 2. split the DF to prepare the plotting DFs
+    ### 3. plot biomass and SLA. 
+    
+    
     p1 <- ggplot(data=plotDF2, 
                  aes(Canopy, Leaf_area.mean, group=CO2_treatment)) +
         geom_bar(stat = "identity", aes(fill=Canopy, alpha=CO2_treatment), 
