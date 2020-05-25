@@ -582,7 +582,7 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
     #                            label_size = 18)
     
 
-    pdf("output/A-Ca/linear_predicted_A_sensitivity_plot.pdf", width=4, height=4)
+    pdf("output/A-Ca/linear_predicted_A_sensitivity_plot_400_600.pdf", width=4, height=4)
     #plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
     plot(p2)
     dev.off()  

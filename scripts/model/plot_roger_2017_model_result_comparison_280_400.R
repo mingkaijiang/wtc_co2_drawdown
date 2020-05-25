@@ -205,7 +205,7 @@ plot_roger_2017_model_result_comparison_280_400 <- function() {
         scale_shape_manual(name="Type",
                            values=c(21, 24),
                            labels=c("Canopy", "Leaf"))+
-        ylim(0.0, 0.5)
+        ylim(0.0, 0.6)
     
     
     ### prepare WTC results
@@ -251,11 +251,11 @@ plot_roger_2017_model_result_comparison_280_400 <- function() {
         scale_x_discrete(name="", 
                          breaks=c("5_Full", "4_TM", "3_Top", "2_low", "1_up"), 
                          labels=c("Full", "T+M", "Top", "Low", "Up"))+
-        ylim(0.0, 0.4)
+        ylim(0.0, 0.6)
     
     
     
-    pdf("output/simulated/Roger_model_sensitivity.pdf", width=12, height=6)
+    pdf("output/simulated/Roger_model_sensitivity_280_400.pdf", width=12, height=6)
     plot_grid(p8, p7, ncol=2, align="v", axis = "l",
               labels=c("(a)", "(b)"),
               label_x=0.86, label_y=0.98,

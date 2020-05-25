@@ -77,6 +77,8 @@ mgDF <- merge_leaf_and_canopy_raw_data(cDF=canopyDF)
 ### i.e. delta A / A400
 plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600(mgDF)
 
+plot_A_Ca_and_perform_linear_fit_over_Ca_of_280_to_400(mgDF)
+
 ### same as above for the sensitivity, 
 ### but A400 and A600 predicted by the fitaci function, hence non-linear
 plot_A_Ca_sensitivity_based_on_fitaci_function_result()
