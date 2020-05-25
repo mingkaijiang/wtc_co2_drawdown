@@ -45,13 +45,16 @@ leaf_ACI_processing <- function(plot.option) {
                         NA, NA, NA, NA, NA, NA,
                         NA, NA, NA, NA, NA, NA,
                         NA, NA, NA, NA, NA, NA, 
-                        NA, NA, NA, NA, NA, NA)
+                        NA, NA, NA, NA, NA, NA,
+                        NA, NA, NA, NA, NA, NA, NA)
     colnames(outDF) <- c("Identity", "Chamber", "CO2_treatment", "Position", "Date",
                          "RMSE", "Vcmax", "Vcmax.se", "Jmax", "Jmax.se", "Rd", "Rd.se",
                          "Ci_400", "ALEAF_400", "GS_400", "ELEAF_400", 
                          "Ac_400", "Aj_400", "Ap_400", 
                          "Ci_600", "ALEAF_600", "GS_600", "ELEAF_600", 
                          "Ac_600", "Aj_600", "Ap_600", 
+                         "Ci_280", "ALEAF_280", "GS_280", "ELEAF_280", 
+                         "Ac_280", "Aj_280", "Ap_280", 
                          "Ci_transition_Ac_Aj",
                          "Tleaf", "Ca", "Cc", "PPFD", "Patm", "VPD", 
                          "curve.fitting", 
@@ -103,6 +106,15 @@ leaf_ACI_processing <- function(plot.option) {
         outDF[outDF$Identity == id.list[i], "Ac_600"] <- fit1$Photosyn(Ca=600, g1=g1)[5]
         outDF[outDF$Identity == id.list[i], "Aj_600"] <- fit1$Photosyn(Ca=600, g1=g1)[6]
         outDF[outDF$Identity == id.list[i], "Ap_600"] <- fit1$Photosyn(Ca=600, g1=g1)[7]
+        
+        
+        outDF[outDF$Identity == id.list[i], "Ci_280"] <- fit1$Photosyn(Ca=280, g1=g1)[1]
+        outDF[outDF$Identity == id.list[i], "ALEAF_280"] <- fit1$Photosyn(Ca=280, g1=g1)[2]
+        outDF[outDF$Identity == id.list[i], "GS_280"] <- fit1$Photosyn(Ca=280, g1=g1)[3]
+        outDF[outDF$Identity == id.list[i], "ELEAF_280"] <- fit1$Photosyn(Ca=280, g1=g1)[4]
+        outDF[outDF$Identity == id.list[i], "Ac_280"] <- fit1$Photosyn(Ca=280, g1=g1)[5]
+        outDF[outDF$Identity == id.list[i], "Aj_280"] <- fit1$Photosyn(Ca=280, g1=g1)[6]
+        outDF[outDF$Identity == id.list[i], "Ap_280"] <- fit1$Photosyn(Ca=280, g1=g1)[7]
         
         outDF[outDF$Identity == id.list[i], "VPD"] <- fit1$Photosyn(Ca=400, g1=g1)[9]
         outDF[outDF$Identity == id.list[i], "Tleaf"] <- fit1$Photosyn(Ca=400, g1=g1)[10]
