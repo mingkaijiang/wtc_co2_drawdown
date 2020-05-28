@@ -21,6 +21,8 @@ plot_chamber_leaf_area <- function(canopyDF) {
     #### read in biomass DF and process it
     bDF <- biomass_data_processing()
     
+    
+    
     ### come back to 
     ### 1. investigate why leaf biomass is so large
     ### 2. split the DF to prepare the plotting DFs

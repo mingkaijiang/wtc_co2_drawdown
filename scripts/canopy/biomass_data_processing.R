@@ -46,7 +46,7 @@ biomass_data_processing <- function() {
         outDF$Branch[outDF$Chamber==i&outDF$Position=="12345"] <- sum(subDF$Branch[subDF$Chamber==i], na.rm=T)
         outDF$LA[outDF$Chamber==i&outDF$Position=="12345"] <- sum(subDF$LA[subDF$Chamber==i], na.rm=T)
         outDF$SLA[outDF$Chamber==i&outDF$Position=="12345"] <- mean(subDF$SLA[subDF$Chamber==i], na.rm=T)
-        
+
         
         ### position 345
         outDF$Leaf[outDF$Chamber==i&outDF$Position=="345"] <- sum(subDF2$Wleaf[subDF2$Chamber==i], na.rm=T)
