@@ -93,6 +93,9 @@ plot_biochemical_parameters()
 ### include both aCO2 and eCO2 treatment
 plot_Aj_Ac_comparison()
 
+### plot Aj vs. Ac, based on mate simulation result
+plot_Aj_Ac_comparison_of_MATE_result()
+
 
 ############################# Roger 2017 results ######################
 ###
