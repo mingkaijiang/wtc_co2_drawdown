@@ -154,14 +154,18 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
                          limits=c("12345", "345", "45", "up", "low"),
                          values=c("blue2", "red3", "purple", "orange", "darkgreen"),
                          labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Type",
+      scale_shape_manual(name="",
                          values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
+                         guide=F)+
       xlim(0,1250)+
       ylim(-5,50)+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24),
+                                                     fill = c("blue2","red3", "purple",
+                                                              "orange", "darkgreen"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))
     
-    
+
     ## plot A-Ca sub range
     p2 <- ggplot() +
       geom_point(data=subDF1, aes(Ca, Photo, 
@@ -198,10 +202,15 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
                          labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Type",
                          values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
+                         labels=c("Canopy", "Leaf"),
+                         guide=F)+
       xlim(350,650)+
       ylim(-5,40)+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24),
+                                                     fill = c("blue2","red3", "purple",
+                                                              "orange", "darkgreen"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))
     
     ### elevated CO2 treatment
     p3 <- ggplot(data=plotDF2, aes(Ca, Photo, group=Position)) +
@@ -237,10 +246,15 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
                          labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Type",
                          values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
+                         labels=c("Canopy", "Leaf"),
+                         guide=F)+
       xlim(0,1250)+
       ylim(-5,50)+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24),
+                                                     fill = c("blue2","red3", "purple",
+                                                              "orange", "darkgreen"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))
     
     
     ## plot A-Ca sub range for eCO2 treatment
@@ -279,10 +293,15 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
                          labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Type",
                          values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
+                         labels=c("Canopy", "Leaf"),
+                         guide=F)+
       xlim(350,650)+
       ylim(-5,40)+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24),
+                                                     fill = c("blue2","red3", "purple",
+                                                              "orange", "darkgreen"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))
     
     
     ## plot A-Ci
@@ -317,10 +336,15 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
                          labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Type",
                          values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
+                         labels=c("Canopy", "Leaf"),
+                         guide=F)+
       xlim(150,600)+
       ylim(-5,40)+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24),
+                                                     fill = c("blue2","red3", "purple",
+                                                              "orange", "darkgreen"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))
     
     
     ### plot A-Ci sub range eCO2
@@ -355,10 +379,15 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
                          labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Type",
                          values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
+                         labels=c("Canopy", "Leaf"),
+                         guide=F)+
       xlim(150,600)+
       ylim(-5,40)+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24),
+                                                     fill = c("blue2","red3", "purple",
+                                                              "orange", "darkgreen"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))
     
     
     
@@ -394,10 +423,15 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
                          labels=c("Full", "T+M", "Top", "Up", "Low"))+
       scale_shape_manual(name="Type",
                          values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
+                         labels=c("Canopy", "Leaf"),
+                         guide=F)+
       xlim(350,650)+
       ylim(0, 650)+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24),
+                                                     fill = c("blue2","red3", "purple",
+                                                              "orange", "darkgreen"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))
     
     
     ### plot Ci-Ca
@@ -430,29 +464,83 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
                          limits=c("12345", "345", "45", "up", "low"),
                          values=c("blue2", "red3", "purple", "orange", "darkgreen"),
                          labels=c("Full", "T+M", "Top", "Up", "Low"))+
-      scale_shape_manual(name="Type",
+      scale_shape_manual(name="",
                          values=c(21, 24),
-                         labels=c("Canopy", "Leaf"))+
+                         labels=c("Canopy", "Leaf"),
+                         guide=F)+
       xlim(350,650)+
       ylim(0, 650)+
-      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24))))
+      guides(fill = guide_legend(override.aes = list(shape = c(21, 21, 21, 24, 24),
+                                                     fill = c("blue2","red3", "purple",
+                                                              "orange", "darkgreen"),
+                                                     alpha=1.0),
+                                 nrow=2, byrow = T))
     
 
     
     ### output
+    #legend_shared <- get_legend(p1 + theme(legend.position="bottom",
+    #                                       legend.box = 'vertical',
+    #                                       legend.box.just = 'left'))
+    #
+    #combined_plots <- plot_grid(p1, p2, p7, 
+    #                            p3, p4, p8, 
+    #                            labels=c("(a)", "(b)", "(c)", "(d)", "(e)", "(f)"),
+    #                            ncol=3, align="vh", axis = "l",
+    #                            label_x=0.16, label_y=0.95,
+    #                            label_size = 18)
+    #
+    #pdf("output/A-Ca/A-Ca_plots.pdf", width=12, height=8)
+    #plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
+    #dev.off() 
+    
+    
+    
+    ### make individual plots
     legend_shared <- get_legend(p1 + theme(legend.position="bottom",
                                            legend.box = 'vertical',
                                            legend.box.just = 'left'))
     
-    combined_plots <- plot_grid(p1, p2, p7, 
-                                p3, p4, p8, 
-                                labels=c("(a)", "(b)", "(c)", "(d)", "(e)", "(f)"),
-                                ncol=3, align="vh", axis = "l",
+    combined_plots <- plot_grid(p1, p3, 
+                                labels=c("(a)", "(b)"),
+                                ncol=2, align="vh", axis = "l",
                                 label_x=0.16, label_y=0.95,
                                 label_size = 18)
     
-    pdf("output/A-Ca/A-Ca_plots.pdf", width=12, height=8)
-    plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
+    pdf("output/A-Ca/A-Ca_plots.pdf", width=8, height=4)
+    plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.3))
+    dev.off() 
+    
+    
+    ### make individual plots
+    legend_shared <- get_legend(p2 + theme(legend.position="bottom",
+                                           legend.box = 'vertical',
+                                           legend.box.just = 'left'))
+    
+    combined_plots <- plot_grid(p2, p4, 
+                                labels=c("(a)", "(b)"),
+                                ncol=2, align="vh", axis = "l",
+                                label_x=0.2, label_y=0.95,
+                                label_size = 18)
+    
+    pdf("output/A-Ca/A-Ca_over_350_650_plots.pdf", width=6, height=4)
+    plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.3))
+    dev.off() 
+    
+    
+    ### make individual plots
+    legend_shared <- get_legend(p7 + theme(legend.position="bottom",
+                                           legend.box = 'vertical',
+                                           legend.box.just = 'left'))
+    
+    combined_plots <- plot_grid(p7, p8, 
+                                labels=c("(a)", "(b)"),
+                                ncol=2, align="vh", axis = "l",
+                                label_x=0.25, label_y=0.95,
+                                label_size = 18)
+    
+    pdf("output/A-Ca/A-Ci_over_350_650_plots.pdf", width=6, height=4)
+    plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.3))
     dev.off() 
     
     
