@@ -112,7 +112,10 @@ plot_roger_2017_model_result_comparison <- function() {
                                            legend.box.just = 'left'))
     
     combined_plots <- plot_grid(p1, p2, p3, p4, 
-                                labels="AUTO", ncol=2, align="vh", axis = "l")
+                                labels=c("(a)", "(b)", "(c)", "(d)"),
+                                ncol=2, align="vh", axis = "l",
+                                label_x=0.16, label_y=0.95,
+                                label_size = 18)
     
     #plot(p1)
     
