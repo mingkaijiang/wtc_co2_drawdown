@@ -57,8 +57,10 @@ plot_Aj_Ac_comparison_of_MATE_result <- function() {
     plotDF$A400[plotDF$CO2_treatment=="eCO2"] <- 400 * coef(lm2)[2] + coef(lm2)[1]
     plotDF$A600[plotDF$CO2_treatment=="eCO2"] <- 600 * coef(lm2)[2] + coef(lm2)[1]
     
-    plotDF$A_sens1 <- with(plotDF, (A400-A280)/A280)
-    plotDF$A_sens2 <- with(plotDF, (A600-A400)/A400)
+    #plotDF$A_sens1 <- with(plotDF, (A400-A280)/A280)
+    #plotDF$A_sens2 <- with(plotDF, (A600-A400)/A400)
+    plotDF$A_sens1 <- with(plotDF, A400/A280)
+    plotDF$A_sens2 <- with(plotDF, A600/A400)
     
     
     plotDF$Ac280[plotDF$CO2_treatment=="aCO2"] <- 280 * coef(lm7)[2] + coef(lm7)[1]
@@ -69,9 +71,10 @@ plot_Aj_Ac_comparison_of_MATE_result <- function() {
     plotDF$Ac400[plotDF$CO2_treatment=="eCO2"] <- 400 * coef(lm6)[2] + coef(lm6)[1]
     plotDF$Ac600[plotDF$CO2_treatment=="eCO2"] <- 600 * coef(lm6)[2] + coef(lm6)[1]
     
-    plotDF$Ac_sens1 <- with(plotDF, (Ac400-Ac280)/Ac280)
-    plotDF$Ac_sens2 <- with(plotDF, (Ac600-Ac400)/Ac400)
-    
+    #plotDF$Ac_sens1 <- with(plotDF, (Ac400-Ac280)/Ac280)
+    #plotDF$Ac_sens2 <- with(plotDF, (Ac600-Ac400)/Ac400)
+    plotDF$Ac_sens1 <- with(plotDF, Ac400/Ac280)
+    plotDF$Ac_sens2 <- with(plotDF, Ac600/Ac400)
     
     plotDF$Aj280[plotDF$CO2_treatment=="aCO2"] <- 280 * coef(lm11)[2] + coef(lm11)[1]
     plotDF$Aj400[plotDF$CO2_treatment=="aCO2"] <- 400 * coef(lm9)[2] + coef(lm9)[1]
@@ -81,9 +84,10 @@ plot_Aj_Ac_comparison_of_MATE_result <- function() {
     plotDF$Aj400[plotDF$CO2_treatment=="eCO2"] <- 400 * coef(lm10)[2] + coef(lm10)[1]
     plotDF$Aj600[plotDF$CO2_treatment=="eCO2"] <- 600 * coef(lm10)[2] + coef(lm10)[1]
     
-    plotDF$Aj_sens1 <- with(plotDF, (Aj400-Aj280)/Aj280)
-    plotDF$Aj_sens2 <- with(plotDF, (Aj600-Aj400)/Aj400)
-    
+    #plotDF$Aj_sens1 <- with(plotDF, (Aj400-Aj280)/Aj280)
+    #plotDF$Aj_sens2 <- with(plotDF, (Aj600-Aj400)/Aj400)
+    plotDF$Aj_sens1 <- with(plotDF, Aj400/Aj280)
+    plotDF$Aj_sens2 <- with(plotDF, Aj600/Aj400)
     
     ### plotting script
     subDF1 <- plotDF[,c("CO2_treatment", "A_sens1", "A_sens2")]
@@ -129,9 +133,8 @@ plot_Aj_Ac_comparison_of_MATE_result <- function() {
         scale_alpha_manual(breaks=c("aCO2", "eCO2"),
                            values=c(0.5, 1.0),
                            labels=c(expression(aC[a]),
-                                    expression(eC[a])))
-    
-    plot(p1)
+                                    expression(eC[a])))+
+        coord_cartesian(ylim = c(1, 1.5))
     
     pdf("output/biochemical_parameters/relative_contribution_Ac_Aj_MATE.pdf", width=4, height=4)
     plot(p1)
