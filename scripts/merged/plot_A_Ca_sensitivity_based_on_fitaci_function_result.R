@@ -78,7 +78,23 @@ plot_A_Ca_sensitivity_based_on_fitaci_function_result <- function() {
   
   
   ### test statistics
-  mod1 <- lmer(A_sens_norm ~ FPos + FCa + (1|Chamber), data=stDF)
+  mod1 <- lmer(Vcmax ~ FPos * FCa + (1|Chamber), data=stDF)
+  out1 <- anova(mod1)
+  lab1 <- summary(glht(mod1, linfct = mcp(FPos = "Tukey")))
+  
+  mod1 <- lmer(Jmax ~ FPos * FCa + (1|Chamber), data=stDF)
+  out1 <- anova(mod1)
+  lab1 <- summary(glht(mod1, linfct = mcp(FPos = "Tukey")))
+  
+  mod1 <- lmer(JVratio ~ FPos * FCa + (1|Chamber), data=stDF)
+  out1 <- anova(mod1)
+  lab1 <- summary(glht(mod1, linfct = mcp(FPos = "Tukey")))
+  
+  mod1 <- lmer(Ci_transition_Ac_Aj ~ FPos * FCa + (1|Chamber), data=stDF)
+  out1 <- anova(mod1)
+  lab1 <- summary(glht(mod1, linfct = mcp(FPos = "Tukey")))
+  
+  mod1 <- lmer(A_sens_norm ~ FPos * FCa + (1|Chamber), data=stDF)
   out1 <- anova(mod1)
   lab1 <- summary(glht(mod1, linfct = mcp(FPos = "Tukey")))
   
