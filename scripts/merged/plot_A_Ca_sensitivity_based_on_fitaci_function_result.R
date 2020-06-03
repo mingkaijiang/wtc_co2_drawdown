@@ -50,8 +50,13 @@ plot_A_Ca_sensitivity_based_on_fitaci_function_result <- function() {
   
   
   ### summarize
-  plotDF <- summaryBy(A_sens+A_sens_norm~Position+Type+CO2_treatment,
+  plotDF <- summaryBy(Vcmax+Jmax+JVratio+Ci_transition_Ac_Aj+A_sens+A_sens_norm~Position+Type+CO2_treatment,
                        FUN=c(mean,se), keep.names=T, data=stDF)
+  
+  
+  write.csv(plotDF, "output/leaf/leaf_and_canopy_scale_parameter_summary_table.csv",
+            row.names=F)
+  
   
   
   plotDF$Position <- gsub("12345", "5_Full", plotDF$Position)
@@ -59,15 +64,26 @@ plot_A_Ca_sensitivity_based_on_fitaci_function_result <- function() {
   plotDF$Position <- gsub("45", "3_Top", plotDF$Position)
   plotDF$Position <- gsub("low", "2_low", plotDF$Position)
   plotDF$Position <- gsub("up", "1_up", plotDF$Position)
-    
-    
+  
+  ### prepare data set for performing statistics
+  stDF$FCa[stDF$CO2_treatment=="aCO2"] <- "aC"
+  stDF$FCa[stDF$CO2_treatment=="eCO2"] <- "eC"
+  
+  stDF$FPos <- gsub("12345", "5_Full", stDF$Position)
+  stDF$FPos <- gsub("345", "4_TM", stDF$Position)
+  stDF$FPos <- gsub("45", "3_Top", stDF$Position)
+  stDF$FPos <- gsub("low", "2_low", stDF$Position)
+  stDF$FPos <- gsub("up", "1_up", stDF$Position)
+  
+  
+  
   ### test statistics
-  mod1 <- lmer(A_sens_norm ~ Position * CO2_treatment + (1|Chamber), data=stDF)
+  mod1 <- lmer(A_sens_norm ~ FPos + FCa + (1|Chamber), data=stDF)
   out1 <- anova(mod1)
-  lab1 <- summary(glht(mod1, linfct = mcp(Position = "Tukey")))
+  lab1 <- summary(glht(mod1, linfct = mcp(FPos = "Tukey")))
   
     
-    ################################# plotting
+  ################################# plotting
    p1 <- ggplot(plotDF, aes(Position, A_sens.mean, fill=CO2_treatment)) +
      geom_errorbar(aes(x=Position, ymin=A_sens.mean-A_sens.se,
                        ymax=A_sens.mean+A_sens.se,

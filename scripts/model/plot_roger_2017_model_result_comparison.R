@@ -214,38 +214,38 @@ plot_roger_2017_model_result_comparison <- function() {
     
     
     ### plotting
-    p5 <- ggplot(data=sumDF, 
-                 aes(Vcmax, Sensitivity.mean)) +
-        geom_bar(stat = "identity", aes(fill=Position), 
-                 position="dodge", alpha=0.5) +
-        geom_errorbar(aes(x=Vcmax, ymin=Sensitivity.mean-Sensitivity.se, 
-                          ymax=Sensitivity.mean+Sensitivity.se, 
-                          group=as.factor(Position)), 
-                      position=position_dodge(0.9), width=0.2) +
-        geom_point(data=plotDF2, 
-                   mapping=aes(x=Vcmax, y=Sensitivity, group=Position, col=Model), 
-                   size=4, 
-                   position = position_jitterdodge(0.9))+
-        theme_linedraw() +
-        theme(panel.grid.minor=element_blank(),
-              axis.text.x=element_text(size=12),
-              axis.title.x=element_text(size=14),
-              axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=14),
-              legend.text=element_text(size=12),
-              legend.title=element_text(size=14),
-              panel.grid.major=element_blank(),
-              legend.position="bottom",
-              legend.box = 'vertical',
-              legend.box.just = 'left')+
-        ylab(expression(paste(delta * A * " / " * A[400])))+
-        scale_fill_colorblind(name="Level")+
-        scale_color_colorblind(guide=guide_legend(nrow=3))+
-        xlab("")+
-        scale_x_discrete(breaks=c("Vcmax45", "Vcmax60"),
-                         labels=c(expression(paste(V[cmax45])),
-                                  expression(paste(V[cmax60]))))+
-        ylim(0, 0.4)
+    #p5 <- ggplot(data=sumDF, 
+    #             aes(Vcmax, Sensitivity.mean)) +
+    #    geom_bar(stat = "identity", aes(fill=Position), 
+    #             position="dodge", alpha=0.5) +
+    #    geom_errorbar(aes(x=Vcmax, ymin=Sensitivity.mean-Sensitivity.se, 
+    #                      ymax=Sensitivity.mean+Sensitivity.se, 
+    #                      group=as.factor(Position)), 
+    #                  position=position_dodge(0.9), width=0.2) +
+    #    geom_point(data=plotDF2, 
+    #               mapping=aes(x=Vcmax, y=Sensitivity, group=Position, col=Model), 
+    #               size=4, 
+    #               position = position_jitterdodge(0.9))+
+    #    theme_linedraw() +
+    #    theme(panel.grid.minor=element_blank(),
+    #          axis.text.x=element_text(size=12),
+    #          axis.title.x=element_text(size=14),
+    #          axis.text.y=element_text(size=12),
+    #          axis.title.y=element_text(size=14),
+    #          legend.text=element_text(size=12),
+    #          legend.title=element_text(size=14),
+    #          panel.grid.major=element_blank(),
+    #          legend.position="bottom",
+    #          legend.box = 'vertical',
+    #          legend.box.just = 'left')+
+    #    ylab(expression(paste(delta * A * " / " * A[400])))+
+    #    scale_fill_colorblind(name="Level")+
+    #    scale_color_colorblind(guide=guide_legend(nrow=3))+
+    #    xlab("")+
+    #    scale_x_discrete(breaks=c("Vcmax45", "Vcmax60"),
+    #                     labels=c(expression(paste(V[cmax45])),
+    #                              expression(paste(V[cmax60]))))+
+    #    ylim(0, 0.4)
     
     
     ### add WTC result and compare
@@ -299,14 +299,50 @@ plot_roger_2017_model_result_comparison <- function() {
     plotDF2$xlab2 <- paste0(plotDF2$Vcmax, "-", plotDF2$Model)    
     plotDF2$xlab3 <- paste0(plotDF2$Position, "-", plotDF2$Model)
     
-    plotDF2$xlab1 <- gsub("Vcmax45-Leaf", "2_Vcmax45-Leaf", plotDF2$xlab1)
+    plotDF2$xlab1 <- gsub("Vcmax45-Leaf", "3_Vcmax45-Leaf", plotDF2$xlab1)
     plotDF2$xlab1 <- gsub("Vcmax45-Canopy", "4_Vcmax45-Canopy", plotDF2$xlab1)
     plotDF2$xlab1 <- gsub("Vcmax60-Leaf", "1_Vcmax60-Leaf", plotDF2$xlab1)
-    plotDF2$xlab1 <- gsub("Vcmax60-Canopy", "3_Vcmax60-Canopy", plotDF2$xlab1)
+    plotDF2$xlab1 <- gsub("Vcmax60-Canopy", "2_Vcmax60-Canopy", plotDF2$xlab1)
 
     ### plotting
+    #p7 <- ggplot(data=plotDF2, 
+    #             aes(x=xlab1, y=Sensitivity, group=xlab3)) +
+    #    geom_point(aes(shape=Position, fill=Model), 
+    #               size=4, col="black")+
+    #    geom_line(aes(col=Model))+
+    #    theme_linedraw() +
+    #    theme(panel.grid.minor=element_blank(),
+    #          axis.text.x=element_text(size=12),
+    #          axis.title.x=element_text(size=14),
+    #          axis.text.y=element_text(size=12),
+    #          axis.title.y=element_text(size=14),
+    #          legend.text=element_text(size=12),
+    #          legend.title=element_text(size=14),
+    #          panel.grid.major=element_blank(),
+    #          legend.position="bottom",
+    #          legend.box = 'vertical',
+    #          legend.box.just = 'left')+
+    #    ylab(expression(paste(delta * A * " / " * A[400])))+
+    #    scale_color_colorblind(name="Model",
+    #                           guide=guide_legend(nrow=3))+
+    #    scale_fill_colorblind(name="Model",
+    #                          guide=guide_legend(nrow=3,
+    #                                             override.aes = list(shape = 21)))+
+    #    xlab("")+
+    #    scale_x_discrete(breaks=c("3_Vcmax45-Leaf", "4_Vcmax45-Canopy", 
+    #                              "1_Vcmax60-Leaf", "2_Vcmax60-Canopy"),
+    #                     labels=c(expression(paste("Leaf ", V[cmax45])),
+    #                              expression(paste("Canopy ", V[cmax45])),
+    #                              expression(paste("Leaf ", V[cmax60])),
+    #                              expression(paste("Canopy ", V[cmax60]))))+
+    #    scale_shape_manual(name="Type",
+    #                       values=c(21, 24),
+    #                       labels=c("Canopy", "Leaf"))+
+    #    ylim(0.0, 0.4)
+    
+    
     p7 <- ggplot(data=plotDF2, 
-                 aes(x=xlab1, y=Sensitivity, group=xlab3)) +
+                 aes(x=xlab1, y=Sensitivity, group=xlab2)) +
         geom_point(aes(shape=Position, fill=Model), 
                    size=4, col="black")+
         geom_line(aes(col=Model))+
@@ -329,8 +365,8 @@ plot_roger_2017_model_result_comparison <- function() {
                               guide=guide_legend(nrow=3,
                                                  override.aes = list(shape = 21)))+
         xlab("")+
-        scale_x_discrete(breaks=c("2_Vcmax45-Leaf", "4_Vcmax45-Canopy", 
-                                  "1_Vcmax60-Leaf", "3_Vcmax60-Canopy"),
+        scale_x_discrete(breaks=c("3_Vcmax45-Leaf", "4_Vcmax45-Canopy", 
+                                  "1_Vcmax60-Leaf", "2_Vcmax60-Canopy"),
                          labels=c(expression(paste("Leaf ", V[cmax45])),
                                   expression(paste("Canopy ", V[cmax45])),
                                   expression(paste("Leaf ", V[cmax60])),
@@ -340,6 +376,7 @@ plot_roger_2017_model_result_comparison <- function() {
                            labels=c("Canopy", "Leaf"))+
         ylim(0.0, 0.4)
     
+    #plot(p7)
     
     ### prepare WTC results
     sumDF3 <- summaryBy(A_sens_norm~Type+Position+CO2_treatment, FUN=c(mean,se),
@@ -388,7 +425,7 @@ plot_roger_2017_model_result_comparison <- function() {
     
     
     
-    pdf("output/simulated/Roger_model_sensitivity.pdf", width=12, height=6)
+    pdf("output/simulated/Roger_model_sensitivity_400_600.pdf", width=12, height=6)
     plot_grid(p8, p7, ncol=2, align="v", axis = "l",
               labels=c("(a)", "(b)"),
               label_x=0.86, label_y=0.98,

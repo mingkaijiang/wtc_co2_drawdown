@@ -172,8 +172,44 @@ plot_roger_2017_model_result_comparison_280_400 <- function() {
     plotDF2$xlab1 <- gsub("Vcmax60-Canopy", "3_Vcmax60-Canopy", plotDF2$xlab1)
 
     ### plotting
+    #p7 <- ggplot(data=plotDF2, 
+    #             aes(x=xlab1, y=Sensitivity, group=xlab3)) +
+    #    geom_point(aes(shape=Position, fill=Model), 
+    #               size=4, col="black")+
+    #    geom_line(aes(col=Model))+
+    #    theme_linedraw() +
+    #    theme(panel.grid.minor=element_blank(),
+    #          axis.text.x=element_text(size=12),
+    #          axis.title.x=element_text(size=14),
+    #          axis.text.y=element_text(size=12),
+    #          axis.title.y=element_text(size=14),
+    #          legend.text=element_text(size=12),
+    #          legend.title=element_text(size=14),
+    #          panel.grid.major=element_blank(),
+    #          legend.position="bottom",
+    #          legend.box = 'vertical',
+    #          legend.box.just = 'left')+
+    #    ylab(expression(paste(delta * A * " / " * A[280])))+
+    #    scale_color_colorblind(name="Model",
+    #                           guide=guide_legend(nrow=3))+
+    #    scale_fill_colorblind(name="Model",
+    #                          guide=guide_legend(nrow=3,
+    #                                             override.aes = list(shape = 21)))+
+    #    xlab("")+
+    #    scale_x_discrete(breaks=c("2_Vcmax45-Leaf", "4_Vcmax45-Canopy", 
+    #                              "1_Vcmax60-Leaf", "3_Vcmax60-Canopy"),
+    #                     labels=c(expression(paste("Leaf ", V[cmax45])),
+    #                              expression(paste("Canopy ", V[cmax45])),
+    #                              expression(paste("Leaf ", V[cmax60])),
+    #                              expression(paste("Canopy ", V[cmax60]))))+
+    #    scale_shape_manual(name="Type",
+    #                       values=c(21, 24),
+    #                       labels=c("Canopy", "Leaf"))+
+    #    ylim(0.0, 0.6)
+    
+    
     p7 <- ggplot(data=plotDF2, 
-                 aes(x=xlab1, y=Sensitivity, group=xlab3)) +
+                 aes(x=xlab1, y=Sensitivity, group=xlab2)) +
         geom_point(aes(shape=Position, fill=Model), 
                    size=4, col="black")+
         geom_line(aes(col=Model))+
@@ -189,15 +225,15 @@ plot_roger_2017_model_result_comparison_280_400 <- function() {
               legend.position="bottom",
               legend.box = 'vertical',
               legend.box.just = 'left')+
-        ylab(expression(paste(delta * A * " / " * A[280])))+
+        ylab(expression(paste(delta * A * " / " * A[400])))+
         scale_color_colorblind(name="Model",
                                guide=guide_legend(nrow=3))+
         scale_fill_colorblind(name="Model",
                               guide=guide_legend(nrow=3,
                                                  override.aes = list(shape = 21)))+
         xlab("")+
-        scale_x_discrete(breaks=c("2_Vcmax45-Leaf", "4_Vcmax45-Canopy", 
-                                  "1_Vcmax60-Leaf", "3_Vcmax60-Canopy"),
+        scale_x_discrete(breaks=c("3_Vcmax45-Leaf", "4_Vcmax45-Canopy", 
+                                  "1_Vcmax60-Leaf", "2_Vcmax60-Canopy"),
                          labels=c(expression(paste("Leaf ", V[cmax45])),
                                   expression(paste("Canopy ", V[cmax45])),
                                   expression(paste("Leaf ", V[cmax60])),

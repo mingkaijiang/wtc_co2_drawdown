@@ -70,9 +70,13 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
     slpDF <- rbind(slpDF1, slpDF2)
     
     ### test statistics of the slope
-    mod1 <- lmer(slope~ Position * CO2_treatment + (1|Chamber), data=slpDF)
-    out1 <- anova(mod1)
-    lab1 <- summary(glht(mod1, linfct = mcp(Position = "Tukey")))
+    #mod1 <- lmer(slope~ Position * CO2_treatment + (1|Chamber), data=slpDF)
+    #out1 <- anova(mod1)
+    #lab1 <- summary(glht(mod1, linfct = mcp(Position = "Tukey")))
+    
+    mod2 <- lmer(sens~ Position + (1|Chamber), data=slpDF[slpDF$CO2_treatment=="aCO2",])
+    out2 <- anova(mod2)
+    lab2 <- summary(glht(mod2, linfct = mcp(Position = "Tukey")))
     
     
     ### summarize slope
