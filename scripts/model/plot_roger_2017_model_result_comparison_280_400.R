@@ -166,10 +166,10 @@ plot_roger_2017_model_result_comparison_280_400 <- function() {
     plotDF2$xlab2 <- paste0(plotDF2$Vcmax, "-", plotDF2$Model)    
     plotDF2$xlab3 <- paste0(plotDF2$Position, "-", plotDF2$Model)
     
-    plotDF2$xlab1 <- gsub("Vcmax45-Leaf", "2_Vcmax45-Leaf", plotDF2$xlab1)
+    plotDF2$xlab1 <- gsub("Vcmax45-Leaf", "3_Vcmax45-Leaf", plotDF2$xlab1)
     plotDF2$xlab1 <- gsub("Vcmax45-Canopy", "4_Vcmax45-Canopy", plotDF2$xlab1)
     plotDF2$xlab1 <- gsub("Vcmax60-Leaf", "1_Vcmax60-Leaf", plotDF2$xlab1)
-    plotDF2$xlab1 <- gsub("Vcmax60-Canopy", "3_Vcmax60-Canopy", plotDF2$xlab1)
+    plotDF2$xlab1 <- gsub("Vcmax60-Canopy", "2_Vcmax60-Canopy", plotDF2$xlab1)
 
     ### plotting
     #p7 <- ggplot(data=plotDF2, 
@@ -225,7 +225,7 @@ plot_roger_2017_model_result_comparison_280_400 <- function() {
               legend.position="bottom",
               legend.box = 'vertical',
               legend.box.just = 'left')+
-        ylab(expression(paste(delta * A * " / " * A[400])))+
+        ylab(expression(paste(delta * A * " / " * A[280])))+
         scale_color_colorblind(name="Model",
                                guide=guide_legend(nrow=3))+
         scale_fill_colorblind(name="Model",
@@ -256,6 +256,12 @@ plot_roger_2017_model_result_comparison_280_400 <- function() {
     
     subDF1 <- subset(sumDF3, CO2_treatment == "aCO2")
     subDF2 <- subset(sumDF3, CO2_treatment == "eCO2")
+    
+    mod2 <- lmer(A_sens_norm~ Position + (1|Chamber), data=wtcDF[wtcDF$CO2_treatment=="aCO2",])
+    out2 <- anova(mod2)
+    lab2 <- summary(glht(mod2, linfct = mcp(Position = "Tukey")))
+    
+    
     
     p8 <- ggplot(data=subDF1, 
                  aes(Position, A_sens_norm.mean)) +
@@ -288,7 +294,6 @@ plot_roger_2017_model_result_comparison_280_400 <- function() {
                          breaks=c("5_Full", "4_TM", "3_Top", "2_low", "1_up"), 
                          labels=c("Full", "T+M", "Top", "Low", "Up"))+
         ylim(0.0, 0.6)
-    
     
     
     pdf("output/simulated/Roger_model_sensitivity_280_400.pdf", width=12, height=6)

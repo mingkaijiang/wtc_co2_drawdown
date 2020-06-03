@@ -376,8 +376,6 @@ plot_roger_2017_model_result_comparison <- function() {
                            labels=c("Canopy", "Leaf"))+
         ylim(0.0, 0.4)
     
-    #plot(p7)
-    
     ### prepare WTC results
     sumDF3 <- summaryBy(A_sens_norm~Type+Position+CO2_treatment, FUN=c(mean,se),
                         data=wtcDF, keep.names=T, na.rm=T)
@@ -421,7 +419,12 @@ plot_roger_2017_model_result_comparison <- function() {
         scale_x_discrete(name="", 
                          breaks=c("5_Full", "4_TM", "3_Top", "2_low", "1_up"), 
                          labels=c("Full", "T+M", "Top", "Low", "Up"))+
-        ylim(0.0, 0.4)
+        ylim(0.0, 0.4)+
+        annotate("text", x = 1, y = 0.33, size = 8, label = "atop(bold(a))", parse = TRUE)+
+        annotate("text", x = 2, y = 0.33, size = 8, label = "atop(bold(b))", parse = TRUE)+
+        annotate("text", x = 3, y = 0.33, size = 8, label = "atop(bold(a))", parse = TRUE)+
+        annotate("text", x = 4, y = 0.33, size = 8, label = "atop(bold(b))", parse = TRUE)+
+        annotate("text", x = 5, y = 0.33, size = 8, label = "atop(bold(b))", parse = TRUE)
     
     
     
