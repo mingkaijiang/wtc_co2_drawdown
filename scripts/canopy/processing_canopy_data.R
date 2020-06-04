@@ -154,7 +154,6 @@ processing_canopy_data <- function(leafACI,
     ### plotting CO2 and H2O flux at per second rate for each chamber
     canopy_data_per_second_check_and_plot(inDF=outDF)
     
-    
     ###################################  end Ci ########################################
     
     

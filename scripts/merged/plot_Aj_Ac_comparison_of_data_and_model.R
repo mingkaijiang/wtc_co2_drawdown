@@ -192,10 +192,23 @@ plot_Aj_Ac_comparison_of_data_and_model <- function() {
     
     ### merge by CO2 treatment
     plotDF1 <- rbind(ch01, ch03, ch11)
-    subDF <- subset(plotDF1, Ca<=650&Ca>=350)
+    subDF <- subset(plotDF1, Ca<=700&Ca>=300)
+    
+    lm1 <- lm(An_can~Ca, data=subDF)
+    lm2 <- lm(An_sun~Ca, data=subDF)
+    lm3 <- lm(An_sha~Ca, data=subDF)
     
     
-    ################################ end MATE Ac vs. Aj ################################
+    ### prepare a storage DF
+    plotDF <- data.frame(NA, NA, NA, 
+                           NA, NA, NA, 
+                           NA, NA, NA)
+    colnames(plotDF) <- c("A400", "A600", "A_sens", 
+                          "Asun400", "Asun600", "Asun_sens",
+                          "Asha400", "Asha600", "Asha_sens")
+    
+    
+    ################################ end two-leaf model ################################
     ####################################################################################
     
     

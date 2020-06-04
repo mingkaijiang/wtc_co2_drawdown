@@ -48,6 +48,9 @@ summarize_leaf_scale_biochemical_parameters()
 ####    i.e. normalized to per leaf area (more details in the code)
 canopyDF <- processing_canopy_data(leafACI=leafACI, plot.option = T)
 
+#### check goodness-of-fit for inferred gs with normalized H2O flux
+check_goodness_of_fit_for_H2O_flux(canopyDF)
+
 #### plot leaf area and biomass based on final harvest data
 plot_chamber_leaf_area(canopyDF)
 
