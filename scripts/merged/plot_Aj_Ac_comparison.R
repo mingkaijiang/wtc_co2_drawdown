@@ -133,9 +133,9 @@ plot_Aj_Ac_comparison <- function() {
                                    nrow=2, byrow = T))+
         ylim(0, 50)+
         xlim(0, 50)+
-        ggtitle(expression(paste(aC[a])))+
+        #ggtitle(expression(paste(aC[a])))+
         annotate(geom="text", x=30, y=10, 
-                 label = "atop(a == 1.04, r^2 == 0.9)", parse = TRUE, size=10)
+                 label = "atop(a == 1.04, r^2 == 0.9)", parse = TRUE, size=8)
     
     
     p3 <- ggplot(plotDF2, aes(Aj_400, Ac_400)) +
@@ -175,9 +175,9 @@ plot_Aj_Ac_comparison <- function() {
                                    nrow=2, byrow = T))+
         ylim(0, 50)+
         xlim(0, 50)+
-        ggtitle(expression(paste(eC[a])))+
+        #ggtitle(expression(paste(eC[a])))+
         annotate(geom="text", x=30, y=10, 
-                 label = "atop(a == 1.05, r^2 == 0.9)", parse = TRUE, size=10)
+                 label = "atop(a == 1.05, r^2 == 0.9)", parse = TRUE, size=8)
     
     
     
@@ -220,7 +220,7 @@ plot_Aj_Ac_comparison <- function() {
         ylim(0, 70)+
         xlim(0, 70)+
         annotate(geom="text", x=40, y=10, 
-                 label = "atop(a == 1.27, r^2 == 0.9)", parse = TRUE, size=10)
+                 label = "atop(a == 1.27, r^2 == 0.9)", parse = TRUE, size=8)
     
     
     p5 <- ggplot(plotDF2, aes(Aj_600, Ac_600)) +
@@ -261,7 +261,7 @@ plot_Aj_Ac_comparison <- function() {
         ylim(0, 70)+
         xlim(0, 70)+
         annotate(geom="text", x=40, y=10, 
-                 label = "atop(a == 1.28, r^2 == 0.9)", parse = TRUE, size=10)
+                 label = "atop(a == 1.28, r^2 == 0.9)", parse = TRUE, size=8)
     
     
 
@@ -270,14 +270,15 @@ plot_Aj_Ac_comparison <- function() {
                                            legend.box = 'vertical',
                                            legend.box.just = 'left'))
     
-    combined_plots <- plot_grid(p2, p3, p4, p5,
-                                labels=c("(a)", "(b)", "(c)", "(d)"),
+    combined_plots <- plot_grid(p2, p4, 
+                                labels=c("(a)", "(b)"),#, 
+                                         #"(c)", "(d)"),
                                 ncol=2, align="vh", axis = "l",
-                                label_x=0.16, label_y=0.88,
+                                label_x=0.16, label_y=0.95,
                                 label_size = 18)
     
-    pdf("output/biochemical_parameters/Ac_vs_Aj_comparison.pdf", width=10, height=12)
-    plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
+    pdf("output/biochemical_parameters/Ac_vs_Aj_comparison.pdf", width=8, height=4)
+    plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.2))
     dev.off()  
     
    

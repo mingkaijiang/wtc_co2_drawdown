@@ -179,6 +179,28 @@ plot_Aj_Ac_comparison_of_data_and_model <- function() {
     ####################################################################################
     
     
+    
+    
+    ####################################################################################
+    ############################ start two-leaf model ##################################
+    
+    ### rea in simulated files
+    ## aCO2
+    ch01 <- read.csv("/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/outputs/wtc_two_leaf_1.csv")
+    ch03 <- read.csv("/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/outputs/wtc_two_leaf_3.csv")
+    ch11 <- read.csv("/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/outputs/wtc_two_leaf_11.csv")
+    
+    ### merge by CO2 treatment
+    plotDF1 <- rbind(ch01, ch03, ch11)
+    subDF <- subset(plotDF1, Ca<=650&Ca>=350)
+    
+    
+    ################################ end MATE Ac vs. Aj ################################
+    ####################################################################################
+    
+    
+    ####################################################################################
+    ################################# Plotting script ##################################
     #### prepare plotting DF
     plotDF1 <- mateDF[,c("Position", "lab", "ratio2", "ratio.se")]
     colnames(plotDF1) <- c("Position", "lab", "ratio.mean", "ratio.se")
@@ -195,8 +217,6 @@ plot_Aj_Ac_comparison_of_data_and_model <- function() {
     plotDF$ratio.se <- as.numeric(plotDF$ratio.se)
     
     
-    ####################################################################################
-    ################################# Plotting script ##################################
     ### WTC leaf up
     p1 <- ggplot(data=plotDF, 
                  aes(lab, ratio.mean, group=Position)) +
@@ -234,11 +254,45 @@ plot_Aj_Ac_comparison_of_data_and_model <- function() {
         #ylim(0, 2)+
         coord_cartesian(ylim = c(1, 1.5)) 
     
-    plot(p1)
+    
+    p2 <- ggplot(data=plotDF, 
+                 aes(Position, ratio.mean, group=lab)) +
+        geom_bar(stat = "identity", aes(fill=lab), 
+                 position="dodge") +
+        geom_errorbar(aes(x=Position, ymin=ratio.mean-ratio.se, 
+                          ymax=ratio.mean+ratio.se), 
+                      position=position_dodge(0.9), width=0.2) +
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.text.x=element_text(size=12),
+              axis.title.x=element_text(size=14),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right",
+              legend.box = 'vertical',
+              legend.box.just = 'left',
+              plot.title = element_text(size=16, face="bold", 
+                                        hjust = 0.5))+
+        ylab(expression(paste(A[600] * " / " * A[400])))+
+        scale_x_discrete(breaks=c("1_up", "2_low", "3_Full", "4_MATE"),
+                          labels=c("Up", 
+                                   "Low",
+                                   "Full",
+                                   "MATE"))+
+        scale_fill_manual(name="",
+                          breaks=c("A", "Ac", "Aj"),
+                          labels=c("A", expression(paste(A[c])),
+                                   expression(paste(A[j]))),
+                          values = colorblind_pal()(3 + 1)[-1])+
+        xlab("")+
+        coord_cartesian(ylim = c(1, 1.5)) 
     
     
     pdf("output/biochemical_parameters/relative_contribution_Ac_Aj_WTC_MATE.pdf", width=6, height=4)
-    plot(p1)
+    plot(p2)
     dev.off()  
     
     

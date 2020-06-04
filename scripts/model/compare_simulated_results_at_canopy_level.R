@@ -158,7 +158,7 @@ compare_simulated_results_at_canopy_level <- function() {
     
     combined_plots <- plot_grid(p1, p2, 
                                 labels=c("(a)", "(b)"),
-                                ncol=1, align="vh", axis = "l",
+                                ncol=2, align="vh", axis = "l",
                                 label_x=0.16, label_y=0.95,
                                 label_size = 18)
     
@@ -167,8 +167,8 @@ compare_simulated_results_at_canopy_level <- function() {
                                            legend.box.just = 'left'))
     
     
-    pdf("output/simulated/simulated_vs_observed_A_flux.pdf", width=4, height=6)
-    plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
+    pdf("output/simulated/simulated_vs_observed_A_flux.pdf", width=8, height=4)
+    plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.2))
     dev.off()
     
     
