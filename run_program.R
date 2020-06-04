@@ -96,6 +96,10 @@ plot_Aj_Ac_comparison()
 ### plot Aj vs. Ac, based on mate simulation result
 plot_Aj_Ac_comparison_of_MATE_result()
 
+### plot Aj vs. Ac based on the data, mate model and two-leaf model
+plot_Aj_Ac_comparison_of_data_and_model()
+
+
 
 ############################# Roger 2017 results ######################
 ###

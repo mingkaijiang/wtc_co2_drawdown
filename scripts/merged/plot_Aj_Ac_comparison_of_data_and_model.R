@@ -1,6 +1,76 @@
-plot_Aj_Ac_comparison_of_MATE_result <- function() {
+plot_Aj_Ac_comparison_of_data_and_model <- function() {
+    
+    
+    
+    ####################################################################################
+    ######################### start WTC data Ac vs. Aj #################################
+    #### read in fitaci data at canopy and leaf scales and plot the Aj and Ac comparison
+    ### we have multiple dates in leaf-scale measurements
+    stDF.c <- read.csv("output/canopy/canopy_scale_parameters.csv", header=T)
+    stDF.l <- read.csv("output/leaf/leaf_scale_parameters.csv", header=T)
+    
+    ### subset chambers
+    subDF.l <- subset(stDF.l, Chamber%in%c("1", "3", "11", "4", "8"))
+    subDF.c <- subset(stDF.c, Chamber%in%c("1", "3", "11", "4", "8"))
+    
+    ### subset columns
+    subDF.l <- subDF.l[,c("Identity", "RMSE", "Vcmax", "Vcmax.se", "Jmax",
+                          "Jmax.se", "Rd", "Rd.se", "Ci_400", "ALEAF_400", "GS_400", "ELEAF_400", 
+                          "Ac_400","Aj_400", "Ap_400", 
+                          "Ci_600", "ALEAF_600", "GS_600", "ELEAF_600", 
+                          "Ac_600","Aj_600", "Ap_600", 
+                          "VPD", "Tleaf", "Ca", "Cc", "PPFD", 
+                          "Ci_transition_Ac_Aj", "GammaStar", "Km", "G1", "JVratio")]
+    
+    subDF.c <- subDF.c[,c("Identity", "RMSE", "Vcmax", "Vcmax.se", "Jmax",
+                          "Jmax.se", "Rd", "Rd.se", "Ci_400", "ALEAF_400", "GS_400", "ELEAF_400", 
+                          "Ac_400", "Aj_400", "Ap_400", 
+                          "Ci_600", "ALEAF_600", "GS_600", "ELEAF_600", 
+                          "Ac_600","Aj_600", "Ap_600", 
+                          "VPD", "Tleaf", "Ca", "Cc", "PPFD", 
+                          "Ci_transition_Ac_Aj", "GammaStar", "Km", "G1", "JVratio")]
+    
+    ### change col names
+    stDF <- rbind(subDF.l, subDF.c)
+    stDF <- merge(stDF, idDF, by="Identity", all=T)
+    
+    ### convert into factors
+    stDF$Type <- as.factor(stDF$Type)
+    stDF$CO2_treatment <- as.factor(stDF$CO2_treatment)
+    
+    #### only keep aCO2 treatment
+    stDF <- subset(stDF, CO2_treatment=="aCO2")
+
+    #### plot A600/A400 ratio
+    stDF$A600_over_A400 <- with(stDF, ALEAF_600/ALEAF_400)
+    stDF$Ac600_over_Ac400 <- with(stDF, Ac_600/Ac_400)
+    stDF$Aj600_over_Aj400 <- with(stDF, Aj_600/Aj_400)
+    
+    ### subset
+    subDF1 <- stDF[,c("A600_over_A400", "CO2_treatment", "Chamber", "Position", "Type")]
+    subDF2 <- stDF[,c("Ac600_over_Ac400", "CO2_treatment", "Chamber", "Position", "Type")]
+    subDF3 <- stDF[,c("Aj600_over_Aj400", "CO2_treatment", "Chamber", "Position", "Type")]
+    
+    subDF1$lab <- "A"
+    subDF2$lab <- "Ac"
+    subDF3$lab <- "Aj"
+    
+    colnames(subDF1) <- colnames(subDF2) <- colnames(subDF3) <- c("ratio", "CO2_treatment", 
+                                                                  "Chamber", "Position", "Type", "lab")
+    
+    plotDF1 <- rbind(subDF1, subDF2, subDF3)
+    
+    ### summary By
+    wtcDF <- summaryBy(ratio~Position+lab, 
+                       FUN=c(mean, se), data=plotDF1, keep.names=T)
+    
+    
+    ############################ end WTC data Ac vs. Aj ################################
+    ####################################################################################
 
     
+    ####################################################################################
+    ############################## start MATE Ac vs. Aj ################################
     ### read in MATE simulation results
     inDF1 <- read.csv("~/Documents/Research/Projects/WCT1_CO2_drawdown/MATE_test/output/MATE_output_ch01.csv")
     inDF2 <- read.csv("~/Documents/Research/Projects/WCT1_CO2_drawdown/MATE_test/output/MATE_output_ch03.csv")
@@ -16,7 +86,7 @@ plot_Aj_Ac_comparison_of_MATE_result <- function() {
     ### simplify
     myDF <- myDF[,c("DateTime", "chamber", "Canopy", "DOY", "hod", "year",
                     "Ca", "LAI", "CO2_treatment", "Aj", "Ac", "Asat")]
-
+    
     ### subset Ca = 350 to 650 range
     subDF1 <- subset(myDF, Ca>=350&Ca<=650)
     subDF2 <- subset(myDF, Ca>=200&Ca<=350)
@@ -101,13 +171,40 @@ plot_Aj_Ac_comparison_of_MATE_result <- function() {
     colnames(subDF1) <- colnames(subDF2) <- colnames(subDF3) <- c("CO2_treatment", "ratio1", "ratio2", "lab")
     
     plotDF1 <- rbind(subDF1, subDF2, subDF3)
+    mateDF <- subset(plotDF1, CO2_treatment == "aCO2")
+    mateDF$Position <- "4_MATE"
+    mateDF$ratio.se <- ""
+    
+    ################################ end MATE Ac vs. Aj ################################
+    ####################################################################################
     
     
-    #### plotting script
-    p1 <- ggplot(data=plotDF1, 
-                 aes(lab, ratio2, group=CO2_treatment)) +
-        geom_bar(stat = "identity", aes(fill=lab, alpha=CO2_treatment), 
+    #### prepare plotting DF
+    plotDF1 <- mateDF[,c("Position", "lab", "ratio2", "ratio.se")]
+    colnames(plotDF1) <- c("Position", "lab", "ratio.mean", "ratio.se")
+    
+    plotDF2 <- wtcDF[,c("Position", "lab", "ratio.mean", "ratio.se")]
+    plotDF2$Position <- gsub("12345", "3_Full", plotDF2$Position)
+    plotDF2$Position <- gsub("up", "1_up", plotDF2$Position)
+    plotDF2$Position <- gsub("low", "2_low", plotDF2$Position)
+    
+    plotDF2 <- plotDF2[plotDF2$Position%in%c("1_up", "2_low", "3_Full"),]
+    
+    
+    plotDF <- rbind(plotDF1, plotDF2)
+    plotDF$ratio.se <- as.numeric(plotDF$ratio.se)
+    
+    
+    ####################################################################################
+    ################################# Plotting script ##################################
+    ### WTC leaf up
+    p1 <- ggplot(data=plotDF, 
+                 aes(lab, ratio.mean, group=Position)) +
+        geom_bar(stat = "identity", aes(fill=Position), 
                  position="dodge") +
+        geom_errorbar(aes(x=lab, ymin=ratio.mean-ratio.se, 
+                          ymax=ratio.mean+ratio.se), 
+                      position=position_dodge(0.9), width=0.2) +
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
@@ -117,33 +214,33 @@ plot_Aj_Ac_comparison_of_MATE_result <- function() {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="none",
+              legend.position="right",
               legend.box = 'vertical',
               legend.box.just = 'left',
               plot.title = element_text(size=16, face="bold", 
                                         hjust = 0.5))+
         ylab(expression(paste(A[600] * " / " * A[400])))+
         scale_fill_manual(name="",
-                          breaks=c("A", "Ac", "Aj"),
-                          labels=c("A", expression(paste(A[c])),
-                                   expression(paste(A[j]))),
-                          values = colorblind_pal()(3 + 1)[-1])+
+                          breaks=c("1_up", "2_low", "3_Full", "4_MATE"),
+                          labels=c("Up", 
+                                   "Low",
+                                   "Full",
+                                   "MATE"),
+                          values = colorblind_pal()(4 + 1)[-1])+
         xlab("")+
         scale_x_discrete(breaks=c("A", "Ac", "Aj"),
                          labels=c("A", expression(paste(A[c])),
                                   expression(paste(A[j]))))+
-        scale_alpha_manual(breaks=c("aCO2", "eCO2"),
-                           values=c(0.5, 1.0),
-                           labels=c(expression(aC[a]),
-                                    expression(eC[a])))+
-        coord_cartesian(ylim = c(1, 1.5))
+        #ylim(0, 2)+
+        coord_cartesian(ylim = c(1, 1.5)) 
     
-    pdf("output/biochemical_parameters/relative_contribution_Ac_Aj_MATE.pdf", width=4, height=4)
+    plot(p1)
+    
+    
+    pdf("output/biochemical_parameters/relative_contribution_Ac_Aj_WTC_MATE.pdf", width=6, height=4)
     plot(p1)
     dev.off()  
     
     
-    
-    
-    
+
 }
