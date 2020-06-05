@@ -1,5 +1,8 @@
-plot_Aj_Ac_comparison_of_MATE_result <- function() {
+plot_Aj_Ac_comparison_of_MATE_result <- function(mgDF) {
 
+    ### generate identity list
+    idDF <- unique(mgDF[,c("Identity", "Chamber", "Position", 
+                           "Type", "CO2_treatment")])
     
     ### read in MATE simulation results
     inDF1 <- read.csv("~/Documents/Research/Projects/WCT1_CO2_drawdown/MATE_test/output/MATE_output_ch01.csv")

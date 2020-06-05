@@ -1,5 +1,8 @@
-plot_biochemical_parameters <- function() {
+plot_biochemical_parameters <- function(mgDF) {
     
+    ### generate identity list
+    idDF <- unique(mgDF[,c("Identity", "Chamber", "Position", 
+                           "Type", "CO2_treatment")])
     
     ################################# plot statistics #################################
     #### read biochemical parameter summary table

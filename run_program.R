@@ -84,23 +84,23 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_280_to_400(mgDF)
 
 ### same as above for the sensitivity, 
 ### but A400 and A600 predicted by the fitaci function, hence non-linear
-plot_A_Ca_sensitivity_based_on_fitaci_function_result()
+plot_A_Ca_sensitivity_based_on_fitaci_function_result(mgDF)
 
 
 ### plot biochemical parameters based on fitaci results
-plot_biochemical_parameters()
+plot_biochemical_parameters(mgDF)
 
 
 #### plot Aj on the x-axis and Ac on the y-axis
 ### include both canopy and leaf scales
 ### include both aCO2 and eCO2 treatment
-plot_Aj_Ac_comparison()
+plot_Aj_Ac_comparison(mgDF)
 
 ### plot Aj vs. Ac, based on mate simulation result
-plot_Aj_Ac_comparison_of_MATE_result()
+plot_Aj_Ac_comparison_of_MATE_result(mgDF)
 
 ### plot Aj vs. Ac based on the data, mate model and two-leaf model
-plot_Aj_Ac_comparison_of_data_and_model()
+plot_Aj_Ac_comparison_of_data_and_model(mgDF)
 
 
 

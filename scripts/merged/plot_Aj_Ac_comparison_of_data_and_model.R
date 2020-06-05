@@ -1,6 +1,4 @@
-plot_Aj_Ac_comparison_of_data_and_model <- function() {
-    
-    
+plot_Aj_Ac_comparison_of_data_and_model <- function(mgdF) {
     
     ####################################################################################
     ######################### start WTC data Ac vs. Aj #################################
@@ -12,6 +10,10 @@ plot_Aj_Ac_comparison_of_data_and_model <- function() {
     ### subset chambers
     subDF.l <- subset(stDF.l, Chamber%in%c("1", "3", "11", "4", "8"))
     subDF.c <- subset(stDF.c, Chamber%in%c("1", "3", "11", "4", "8"))
+    
+    ### generate identity list
+    idDF <- unique(mgDF[,c("Identity", "Chamber", "Position", 
+                           "Type", "CO2_treatment")])
     
     ### subset columns
     subDF.l <- subDF.l[,c("Identity", "RMSE", "Vcmax", "Vcmax.se", "Jmax",
@@ -77,6 +79,7 @@ plot_Aj_Ac_comparison_of_data_and_model <- function() {
     inDF3 <- read.csv("~/Documents/Research/Projects/WCT1_CO2_drawdown/MATE_test/output/MATE_output_ch11.csv")
     inDF4 <- read.csv("~/Documents/Research/Projects/WCT1_CO2_drawdown/MATE_test/output/MATE_output_ch04.csv")
     inDF5 <- read.csv("~/Documents/Research/Projects/WCT1_CO2_drawdown/MATE_test/output/MATE_output_ch08.csv")
+    inDF6 <- read.csv("~/Documents/Research/Projects/WCT1_CO2_drawdown/MATE_test/output/MATE_output_roadmap_vcmax45.csv")
     
     ### merge
     myDF <- rbind(inDF1, inDF2, inDF3, inDF4, inDF5)
@@ -91,8 +94,11 @@ plot_Aj_Ac_comparison_of_data_and_model <- function() {
     subDF1 <- subset(myDF, Ca>=350&Ca<=650)
     subDF2 <- subset(myDF, Ca>=200&Ca<=350)
     
+    subDF3 <- subset(inDF6, Ca>=300&Ca<=700)
+    subDF4 <- subset(inDF6, Ca>=200&Ca<=350)
+    
     ### prepare a storage DF
-    plotDF <- data.frame(c("aCO2", "eCO2"), NA, NA, NA, NA, NA,
+    plotDF <- data.frame(c("aCO2", "eCO2", "JV2"), NA, NA, NA, NA, NA,
                          NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
     colnames(plotDF) <- c("CO2_treatment", "A280", "A400", "A600", "A_sens1", "A_sens2",
                           "Ac280", "Ac400", "Ac600", "Ac_sens1", "Ac_sens2",
@@ -118,6 +124,15 @@ plot_Aj_Ac_comparison_of_data_and_model <- function() {
     lm12 <- lm(Aj~Ca, data=subDF2[subDF2$chamber%in%c(4,8),])
     
     
+    lm13 <- lm(Asat~Ca, data=subDF3)
+    lm14 <- lm(Ac~Ca, data=subDF3)
+    lm15 <- lm(Aj~Ca, data=subDF3)
+    
+    lm16 <- lm(Asat~Ca, data=subDF4)
+    lm17 <- lm(Ac~Ca, data=subDF4)
+    lm18 <- lm(Aj~Ca, data=subDF4)
+    
+    
     ### assign values
     plotDF$A280[plotDF$CO2_treatment=="aCO2"] <- 280 * coef(lm3)[2] + coef(lm3)[1]
     plotDF$A400[plotDF$CO2_treatment=="aCO2"] <- 400 * coef(lm1)[2] + coef(lm1)[1]
@@ -127,8 +142,10 @@ plot_Aj_Ac_comparison_of_data_and_model <- function() {
     plotDF$A400[plotDF$CO2_treatment=="eCO2"] <- 400 * coef(lm2)[2] + coef(lm2)[1]
     plotDF$A600[plotDF$CO2_treatment=="eCO2"] <- 600 * coef(lm2)[2] + coef(lm2)[1]
     
-    #plotDF$A_sens1 <- with(plotDF, (A400-A280)/A280)
-    #plotDF$A_sens2 <- with(plotDF, (A600-A400)/A400)
+    plotDF$A280[plotDF$CO2_treatment=="JV2"] <- 280 * coef(lm16)[2] + coef(lm16)[1]
+    plotDF$A400[plotDF$CO2_treatment=="JV2"] <- 400 * coef(lm13)[2] + coef(lm13)[1]
+    plotDF$A600[plotDF$CO2_treatment=="JV2"] <- 600 * coef(lm13)[2] + coef(lm13)[1]
+    
     plotDF$A_sens1 <- with(plotDF, A400/A280)
     plotDF$A_sens2 <- with(plotDF, A600/A400)
     
@@ -140,6 +157,10 @@ plot_Aj_Ac_comparison_of_data_and_model <- function() {
     plotDF$Ac280[plotDF$CO2_treatment=="eCO2"] <- 280 * coef(lm8)[2] + coef(lm8)[1]
     plotDF$Ac400[plotDF$CO2_treatment=="eCO2"] <- 400 * coef(lm6)[2] + coef(lm6)[1]
     plotDF$Ac600[plotDF$CO2_treatment=="eCO2"] <- 600 * coef(lm6)[2] + coef(lm6)[1]
+    
+    plotDF$Ac280[plotDF$CO2_treatment=="JV2"] <- 280 * coef(lm17)[2] + coef(lm17)[1]
+    plotDF$Ac400[plotDF$CO2_treatment=="JV2"] <- 400 * coef(lm14)[2] + coef(lm14)[1]
+    plotDF$Ac600[plotDF$CO2_treatment=="JV2"] <- 600 * coef(lm14)[2] + coef(lm14)[1]
     
     #plotDF$Ac_sens1 <- with(plotDF, (Ac400-Ac280)/Ac280)
     #plotDF$Ac_sens2 <- with(plotDF, (Ac600-Ac400)/Ac400)
@@ -153,6 +174,10 @@ plot_Aj_Ac_comparison_of_data_and_model <- function() {
     plotDF$Aj280[plotDF$CO2_treatment=="eCO2"] <- 280 * coef(lm12)[2] + coef(lm12)[1]
     plotDF$Aj400[plotDF$CO2_treatment=="eCO2"] <- 400 * coef(lm10)[2] + coef(lm10)[1]
     plotDF$Aj600[plotDF$CO2_treatment=="eCO2"] <- 600 * coef(lm10)[2] + coef(lm10)[1]
+    
+    plotDF$Aj280[plotDF$CO2_treatment=="JV2"] <- 280 * coef(lm18)[2] + coef(lm18)[1]
+    plotDF$Aj400[plotDF$CO2_treatment=="JV2"] <- 400 * coef(lm15)[2] + coef(lm15)[1]
+    plotDF$Aj600[plotDF$CO2_treatment=="JV2"] <- 600 * coef(lm15)[2] + coef(lm15)[1]
     
     #plotDF$Aj_sens1 <- with(plotDF, (Aj400-Aj280)/Aj280)
     #plotDF$Aj_sens2 <- with(plotDF, (Aj600-Aj400)/Aj400)
@@ -171,9 +196,15 @@ plot_Aj_Ac_comparison_of_data_and_model <- function() {
     colnames(subDF1) <- colnames(subDF2) <- colnames(subDF3) <- c("CO2_treatment", "ratio1", "ratio2", "lab")
     
     plotDF1 <- rbind(subDF1, subDF2, subDF3)
-    mateDF <- subset(plotDF1, CO2_treatment == "aCO2")
-    mateDF$Position <- "4_MATE"
-    mateDF$ratio.se <- ""
+    mateDF1 <- subset(plotDF1, CO2_treatment == "aCO2")
+    mateDF1$Position <- "4_MATE"
+    mateDF1$ratio.se <- ""
+    
+    mateDF2 <- subset(plotDF1, CO2_treatment == "JV2")
+    mateDF2$Position <- "5_MATE"
+    mateDF2$ratio.se <- ""
+    
+    mateDF <- rbind(mateDF1, mateDF2)
     
     ################################ end MATE Ac vs. Aj ################################
     ####################################################################################
@@ -207,6 +238,25 @@ plot_Aj_Ac_comparison_of_data_and_model <- function() {
                           "Asun400", "Asun600", "Asun_sens",
                           "Asha400", "Asha600", "Asha_sens")
     
+    ### assign values
+    plotDF$A400 <- 400 * coef(lm1)[2] + coef(lm1)[1]
+    plotDF$A600 <- 600 * coef(lm1)[2] + coef(lm1)[1]
+    
+    plotDF$Asun400 <- 400 * coef(lm1)[2] + coef(lm1)[1]
+    plotDF$Asun600 <- 600 * coef(lm1)[2] + coef(lm1)[1]
+    
+    plotDF$Asha400 <- 400 * coef(lm1)[2] + coef(lm1)[1]
+    plotDF$Asha600 <- 600 * coef(lm1)[2] + coef(lm1)[1]
+    
+    plotDF$A_sens <- with(plotDF, A600/A400)
+    plotDF$Asun_sens <- with(plotDF, Asun600/Asun400)
+    plotDF$Asha_sens <- with(plotDF, Asha600/Asha400)
+    
+    ### plotting script
+    twoDF <- data.frame("6_two_leaf", c("A", "Asun", "Asha"),
+                        c(plotDF$A_sens, plotDF$Asun_sens, plotDF$Asha_sens),
+                        NA)
+    colnames(twoDF) <- c("Position", "lab", "ratio.mean", "ratio.se")
     
     ################################ end two-leaf model ################################
     ####################################################################################
@@ -226,48 +276,11 @@ plot_Aj_Ac_comparison_of_data_and_model <- function() {
     plotDF2 <- plotDF2[plotDF2$Position%in%c("1_up", "2_low", "3_Full"),]
     
     
-    plotDF <- rbind(plotDF1, plotDF2)
+    plotDF <- rbind(plotDF1, plotDF2, twoDF)
     plotDF$ratio.se <- as.numeric(plotDF$ratio.se)
     
     
-    ### WTC leaf up
-    p1 <- ggplot(data=plotDF, 
-                 aes(lab, ratio.mean, group=Position)) +
-        geom_bar(stat = "identity", aes(fill=Position), 
-                 position="dodge") +
-        geom_errorbar(aes(x=lab, ymin=ratio.mean-ratio.se, 
-                          ymax=ratio.mean+ratio.se), 
-                      position=position_dodge(0.9), width=0.2) +
-        theme_linedraw() +
-        theme(panel.grid.minor=element_blank(),
-              axis.text.x=element_text(size=12),
-              axis.title.x=element_text(size=14),
-              axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=14),
-              legend.text=element_text(size=12),
-              legend.title=element_text(size=14),
-              panel.grid.major=element_blank(),
-              legend.position="right",
-              legend.box = 'vertical',
-              legend.box.just = 'left',
-              plot.title = element_text(size=16, face="bold", 
-                                        hjust = 0.5))+
-        ylab(expression(paste(A[600] * " / " * A[400])))+
-        scale_fill_manual(name="",
-                          breaks=c("1_up", "2_low", "3_Full", "4_MATE"),
-                          labels=c("Up", 
-                                   "Low",
-                                   "Full",
-                                   "MATE"),
-                          values = colorblind_pal()(4 + 1)[-1])+
-        xlab("")+
-        scale_x_discrete(breaks=c("A", "Ac", "Aj"),
-                         labels=c("A", expression(paste(A[c])),
-                                  expression(paste(A[j]))))+
-        #ylim(0, 2)+
-        coord_cartesian(ylim = c(1, 1.5)) 
-    
-    
+    ### plotting
     p2 <- ggplot(data=plotDF, 
                  aes(Position, ratio.mean, group=lab)) +
         geom_bar(stat = "identity", aes(fill=lab), 
@@ -290,19 +303,25 @@ plot_Aj_Ac_comparison_of_data_and_model <- function() {
               plot.title = element_text(size=16, face="bold", 
                                         hjust = 0.5))+
         ylab(expression(paste(A[600] * " / " * A[400])))+
-        scale_x_discrete(breaks=c("1_up", "2_low", "3_Full", "4_MATE"),
+        scale_x_discrete(breaks=c("1_up", "2_low", "3_Full", "4_MATE", "5_MATE", "6_two_leaf"),
                           labels=c("Up", 
                                    "Low",
                                    "Full",
-                                   "MATE"))+
+                                   "MATE",
+                                   "MATE2",
+                                   "Two-leaf"))+
         scale_fill_manual(name="",
-                          breaks=c("A", "Ac", "Aj"),
+                          breaks=c("A", "Ac", "Aj", "Asun", "Asha"),
                           labels=c("A", expression(paste(A[c])),
-                                   expression(paste(A[j]))),
-                          values = colorblind_pal()(3 + 1)[-1])+
+                                   expression(paste(A[j])),
+                                   expression(paste(A[sun])),
+                                   expression(paste(A[sha]))),
+                          values = colorblind_pal()(5 + 1)[-1])+
         xlab("")+
         coord_cartesian(ylim = c(1, 1.5)) 
     
+    
+    plot(p2)
     
     pdf("output/biochemical_parameters/relative_contribution_Ac_Aj_WTC_MATE.pdf", width=6, height=4)
     plot(p2)

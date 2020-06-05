@@ -1,9 +1,12 @@
-plot_A_Ca_sensitivity_based_on_fitaci_function_result <- function() {
+plot_A_Ca_sensitivity_based_on_fitaci_function_result <- function(mgDF) {
     #### This script plots A-CA curve for leaf and canopy data on to the same plot
     #### and compare the shapes
     #### which can be related to Rogers et al. 2017 conceptual figure
     #### Only based on a subset of data that is well-watered treatment
     
+  ### generate identity list
+  idDF <- unique(mgDF[,c("Identity", "Chamber", "Position", 
+                         "Type", "CO2_treatment")])
   
   ### we have multiple dates in leaf-scale measurements
   stDF.c <- read.csv("output/canopy/canopy_scale_parameters.csv", header=T)

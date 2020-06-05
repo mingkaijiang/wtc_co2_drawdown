@@ -1,5 +1,9 @@
-plot_Aj_Ac_comparison <- function() {
+plot_Aj_Ac_comparison <- function(mgDF) {
     #### read in fitaci data at canopy and leaf scales and plot the Aj and Ac comparison
+    
+    ### generate identity list
+    idDF <- unique(mgDF[,c("Identity", "Chamber", "Position", 
+                           "Type", "CO2_treatment")])
     
     ### we have multiple dates in leaf-scale measurements
     stDF.c <- read.csv("output/canopy/canopy_scale_parameters.csv", header=T)
