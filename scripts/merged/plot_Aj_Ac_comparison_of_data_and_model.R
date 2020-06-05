@@ -299,9 +299,10 @@ plot_Aj_Ac_comparison_of_data_and_model <- function(mgdF) {
               panel.grid.major=element_blank(),
               legend.position="right",
               legend.box = 'vertical',
-              legend.box.just = 'left',
+              legend.box.just = 'right',
               plot.title = element_text(size=16, face="bold", 
-                                        hjust = 0.5))+
+                                        hjust = 0.5),
+              legend.text.align = 0)+
         ylab(expression(paste(A[600] * " / " * A[400])))+
         scale_x_discrete(breaks=c("1_up", "2_low", "3_Full", "4_MATE", "5_MATE", "6_two_leaf"),
                           labels=c("Up", 
@@ -320,8 +321,6 @@ plot_Aj_Ac_comparison_of_data_and_model <- function(mgdF) {
         xlab("")+
         coord_cartesian(ylim = c(1, 1.5)) 
     
-    
-    plot(p2)
     
     pdf("output/biochemical_parameters/relative_contribution_Ac_Aj_WTC_MATE.pdf", width=6, height=4)
     plot(p2)
