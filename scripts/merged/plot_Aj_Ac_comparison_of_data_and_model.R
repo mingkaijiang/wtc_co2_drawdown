@@ -242,18 +242,18 @@ plot_Aj_Ac_comparison_of_data_and_model <- function(mgdF) {
     plotDF$A400 <- 400 * coef(lm1)[2] + coef(lm1)[1]
     plotDF$A600 <- 600 * coef(lm1)[2] + coef(lm1)[1]
     
-    plotDF$Asun400 <- 400 * coef(lm1)[2] + coef(lm1)[1]
-    plotDF$Asun600 <- 600 * coef(lm1)[2] + coef(lm1)[1]
+    plotDF$Asun400 <- 400 * coef(lm2)[2] + coef(lm2)[1]
+    plotDF$Asun600 <- 600 * coef(lm2)[2] + coef(lm2)[1]
     
-    plotDF$Asha400 <- 400 * coef(lm1)[2] + coef(lm1)[1]
-    plotDF$Asha600 <- 600 * coef(lm1)[2] + coef(lm1)[1]
+    plotDF$Asha400 <- 400 * coef(lm3)[2] + coef(lm3)[1]
+    plotDF$Asha600 <- 600 * coef(lm3)[2] + coef(lm3)[1]
     
     plotDF$A_sens <- with(plotDF, A600/A400)
     plotDF$Asun_sens <- with(plotDF, Asun600/Asun400)
     plotDF$Asha_sens <- with(plotDF, Asha600/Asha400)
     
     ### plotting script
-    twoDF <- data.frame("6_two_leaf", c("A", "Asun", "Asha"),
+    twoDF <- data.frame("6_two_leaf", c("A", "A1sun", "A2sha"),
                         c(plotDF$A_sens, plotDF$Asun_sens, plotDF$Asha_sens),
                         NA)
     colnames(twoDF) <- c("Position", "lab", "ratio.mean", "ratio.se")
@@ -311,7 +311,7 @@ plot_Aj_Ac_comparison_of_data_and_model <- function(mgdF) {
                                    "MATE2",
                                    "Two-leaf"))+
         scale_fill_manual(name="",
-                          breaks=c("A", "Ac", "Aj", "Asun", "Asha"),
+                          breaks=c("A", "Ac", "Aj", "A1sun", "A2sha"),
                           labels=c("A", expression(paste(A[c])),
                                    expression(paste(A[j])),
                                    expression(paste(A[sun])),
