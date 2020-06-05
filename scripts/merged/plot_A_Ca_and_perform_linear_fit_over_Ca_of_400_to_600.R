@@ -397,12 +397,14 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
     
     ### plot Ci-Ca under aCa
     p7 <- ggplot(data=subDF1, aes(Ca, Ci, group=Position)) +
-      geom_point(data=subDF1, aes(fill=as.factor(Position), 
-                                   pch = as.factor(Type)), alpha=0.6)+
-      #geom_smooth(method='lm',
-      #            aes(col=Position),
-      #            se=T)+
+      #geom_point(data=subDF1, aes(fill=as.factor(Position), 
+      #                             pch = as.factor(Type)), alpha=0.6)+
+      geom_smooth(method='lm',
+                  aes(col=Position),
+                  se=F)+
       geom_abline(slope=1, intercept=0, col="black", lty=2)+
+      #geom_abline(slope=0.8, intercept=0, col="black", lty=2)+
+      geom_abline(slope=0.7, intercept=0, col="black", lty=2)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -435,17 +437,20 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
                                                      fill = c("blue2","red3", "purple",
                                                               "orange", "darkgreen"),
                                                      alpha=1.0),
-                                 nrow=2, byrow = T))
-    
-    
+                                 nrow=2, byrow = T))+
+      annotate("text", x=500, y=600, label="1.0", size = 5)+
+      annotate("text", x=500, y=300, label="0.7", size = 5)
+
     ### plot Ci-Ca
     p8 <- ggplot(data=subDF2, aes(Ca, Ci, group=Position)) +
-      geom_point(data=subDF2, aes(fill=as.factor(Position), 
-                                   pch = as.factor(Type)), alpha=0.6)+
-      #geom_smooth(method='lm',
-      #            aes(col=Position),
-      #            se=T)+
+      #geom_point(data=subDF2, aes(fill=as.factor(Position), 
+      #                             pch = as.factor(Type)), alpha=0.6)+
+      geom_smooth(method='lm',
+                  aes(col=Position),
+                  se=F)+
       geom_abline(slope=1, intercept=0, col="black", lty=2)+
+      #geom_abline(slope=0.8, intercept=0, col="black", lty=2)+
+      geom_abline(slope=0.7, intercept=0, col="black", lty=2)+
       theme_linedraw() +
       theme(panel.grid.minor=element_blank(),
             axis.text.x=element_text(size=12),
@@ -478,7 +483,9 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
                                                      fill = c("blue2","red3", "purple",
                                                               "orange", "darkgreen"),
                                                      alpha=1.0),
-                                 nrow=2, byrow = T))
+                                 nrow=2, byrow = T))+
+      annotate("text", x=500, y=600, label="1.0", size = 5)+
+      annotate("text", x=500, y=300, label="0.7", size = 5)
     
 
     
