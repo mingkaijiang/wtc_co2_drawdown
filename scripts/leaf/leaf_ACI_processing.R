@@ -47,7 +47,7 @@ leaf_ACI_processing <- function(plot.option) {
                         NA, NA, NA, NA, NA, NA, 
                         NA, NA, NA, NA, NA, NA,
                         NA, NA, NA, NA, NA, NA, NA)
-    colnames(outDF) <- c("Identity", "Chamber", "CO2_treatment", "Position", "Date",
+    colnames(outDF) <- c("Identity", "Chamber", "CO2_treatment", "Position", "Date", 
                          "RMSE", "Vcmax", "Vcmax.se", "Jmax", "Jmax.se", "Rd", "Rd.se",
                          "Ci_400", "ALEAF_400", "GS_400", "ELEAF_400", 
                          "Ac_400", "Aj_400", "Ap_400", 

@@ -134,6 +134,13 @@ plot_eucface_A_Ci()
 compare_simulated_results_at_canopy_level()
 
 
+
+
+############################# Generate input to MATT ###################
+generate_input_to_MATT(canopyDF)
+
+
+
 ########## End ############
 
 ### to do:

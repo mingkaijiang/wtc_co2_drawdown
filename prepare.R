@@ -29,6 +29,10 @@ if(!dir.exists("output/biochemical_parameters")) {
     dir.create("output/biochemical_parameters", showWarnings = FALSE)
 }
 
+if(!dir.exists("output/MATT")) {
+    dir.create("output/MATT", showWarnings = FALSE)
+}
+
 #### Install packages
 if(!require(pacman))install.packages("pacman")
 pacman::p_load(dplyr, 
