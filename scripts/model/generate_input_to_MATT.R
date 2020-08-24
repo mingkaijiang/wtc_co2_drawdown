@@ -83,6 +83,9 @@ generate_input_to_MATT <- function(canopyDF) {
     cDF$CO2 <- "aCa"
     cDF$CO2[cDF$Chamber%in%c(4,8)] <- "eCa"
     
+    cDF$Leaf_area <- cDF$Leaf_area / ((3.25/2)^2 * pi)
+    
+    ### convert from leaf area to leaf area index
     cDF2 <- summaryBy(Leaf_area~CO2+Canopy, FUN=c(mean, se), data=cDF,
                       keep.names=T, na.rm=T)
     
