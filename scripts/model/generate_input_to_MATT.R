@@ -6,8 +6,8 @@ generate_input_to_MATT <- function(canopyDF) {
     ### Canopy-scale LAI for different canopy layers
     
     ### Variable list
-    var <- c("up-Vcmax", "up-Jmax", "up-JVratio", "up-theta", "up-g1",
-             "low-Vcmax", "low-Jmax", "low-JVratio", "low-theta", "low-g1",
+    var <- c("up-Vcmax", "up-Jmax", "up-JVratio", "up-theta", "up-g1", "up-alpha",
+             "low-Vcmax", "low-Jmax", "low-JVratio", "low-theta", "low-g1", "low-alpha",
              "canopy-LAI", "top-LAI", "TM-LAI",
              "PAR", "Tair", "Tleaf", "VPD")
     
@@ -70,12 +70,19 @@ generate_input_to_MATT <- function(canopyDF) {
     outDF$eCaSE[outDF$variable == "low-JVratio"] <- leafDF$JVratio.se[leafDF$CO2_treatment=="elevated"&leafDF$Position=="low"]
     outDF$eCaSE[outDF$variable == "low-g1"] <- leafDF$G1.se[leafDF$CO2_treatment=="elevated"&leafDF$Position=="low"]
     
-    ### fixed values
-    outDF$aCa[outDF$variable == "up-theta"] <- 0.85
-    outDF$eCa[outDF$variable == "up-theta"] <- 0.85
+    ### fixed values according to WTC3
+    outDF$aCa[outDF$variable == "up-theta"] <- 0.884
+    outDF$eCa[outDF$variable == "up-theta"] <- 0.884
     
-    outDF$aCa[outDF$variable == "low-theta"] <- 0.85
-    outDF$eCa[outDF$variable == "low-theta"] <- 0.85
+    outDF$aCa[outDF$variable == "low-theta"] <- 0.508
+    outDF$eCa[outDF$variable == "low-theta"] <- 0.508
+    
+    ### fixed values according to WTC3
+    outDF$aCa[outDF$variable == "up-alpha"] <- 0.3284
+    outDF$eCa[outDF$variable == "up-alpha"] <- 0.3284
+    
+    outDF$aCa[outDF$variable == "low-alpha"] <- 0.3232
+    outDF$eCa[outDF$variable == "low-alpha"] <- 0.3232
     
     ### read in canopy DF
     cDF <- canopyDF
