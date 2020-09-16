@@ -23,6 +23,11 @@ source("prepare.R")
 ###                                3. layer effect (i.e. top and bottom layers)
 ###                                4. save stats and figures
 ###                                5. output parameters for leaf and canopy comparison
+
+### first need to compute theta and alpha based on WTC3
+compute_theta_and_alpha_based_on_WTC3()
+
+### fit leaf ACi of WTC1
 leafACI <- leaf_ACI_processing(plot.option = T)
 
 #### Make some plots for leaf-scale data only

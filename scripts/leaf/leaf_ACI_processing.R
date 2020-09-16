@@ -46,9 +46,10 @@ leaf_ACI_processing <- function(plot.option) {
                         NA, NA, NA, NA, NA, NA,
                         NA, NA, NA, NA, NA, NA, 
                         NA, NA, NA, NA, NA, NA,
-                        NA, NA, NA, NA, NA, NA, NA)
+                        NA, NA, NA, NA, NA, NA, NA, NA, NA)
     colnames(outDF) <- c("Identity", "Chamber", "CO2_treatment", "Position", "Date", 
                          "RMSE", "Vcmax", "Vcmax.se", "Jmax", "Jmax.se", "Rd", "Rd.se",
+                         "alpha", "theta",
                          "Ci_400", "ALEAF_400", "GS_400", "ELEAF_400", 
                          "Ac_400", "Aj_400", "Ap_400", 
                          "Ci_600", "ALEAF_600", "GS_600", "ELEAF_600", 
@@ -65,11 +66,33 @@ leaf_ACI_processing <- function(plot.option) {
         ## subset each data
         test <- subset(myDF, Identity == id.list[i])
         
-        ## fit
-        fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU=F,
-                       EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
-                       EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345)
-        fit2 <- fitBB(test, gsmodel="BBOpti")
+        if (test$Height[1] == "up") {
+            
+            ### assign alpha and theta according to WTC3
+            outDF[outDF$Identity == id.list[i], "alpha"] <- 0.3232
+            outDF[outDF$Identity == id.list[i], "theta"] <- 0.884
+            
+            ## fit
+            fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU=F,
+                           EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
+                           EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345,
+                           alpha = 0.3232, theta = 0.884)
+            fit2 <- fitBB(test, gsmodel="BBOpti")
+            
+        } else if (test$Height[1] == "low") {
+            ### assign alpha and theta according to WTC3
+            outDF[outDF$Identity == id.list[i], "alpha"] <- 0.3284
+            outDF[outDF$Identity == id.list[i], "theta"] <- 0.508
+            
+            ## fit
+            fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU=F,
+                           EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
+                           EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345,
+                           alpha = 0.3284, theta = 0.508)
+            fit2 <- fitBB(test, gsmodel="BBOpti")
+        }
+        
+        
         
         ### list parameters for photosyn function input
         g1 <- coef(fit2)[2]
