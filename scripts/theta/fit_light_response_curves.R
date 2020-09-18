@@ -7,7 +7,7 @@ fit_light_response_curves <- function() {
   myDF<-read.csv("data/Light_curves/Light_response_data_all.csv")
   
   ### only include wet treatment
-  myDF <- subset(myDF, Water_Trt=="w")# & Obs <= 52)
+  myDF <- subset(myDF, Water_Trt=="w")
   
   
   # low canopy data (only ambient chambers)
