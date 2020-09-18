@@ -8,6 +8,9 @@ leaf_ACI_processing <- function(plot.option) {
     myDF1 <- read.csv("data/ACi_curves/HFE_Aci_2008-2009.csv",stringsAsFactors=FALSE)
     myDF2 <- read.csv("data/ACi_curves/HFE_Aci_lowcanopy_2008-2009.csv",stringsAsFactors=FALSE)
     
+    ### theta and alpha values
+    thetaDF <- read.csv("output/leaf/leaf_scale_alpha_and_theta.csv")
+    
     ### combine the datasets
     ### multiple factors: CO2 treatment
     ###                   chamber
@@ -66,32 +69,40 @@ leaf_ACI_processing <- function(plot.option) {
         ## subset each data
         test <- subset(myDF, Identity == id.list[i])
         
-        if (test$Height[1] == "up") {
+        
+        if (test$Height[1] == "up" & test$CO2_treatment[1]=="ambient") {
+            alpha <- thetaDF$alpha.j[thetaDF$Ca_Trt=="a" & thetaDF$Position=="up"]
+            theta <- thetaDF$theta[thetaDF$Ca_Trt=="a" & thetaDF$Position=="up"]
             
-            ### assign alpha and theta according to WTC3
-            outDF[outDF$Identity == id.list[i], "alpha"] <- 0.3232
-            outDF[outDF$Identity == id.list[i], "theta"] <- 0.884
+        } else if (test$Height[1] == "low" & test$CO2_treatment[1]=="ambient") {
+            alpha <- thetaDF$alpha.j[thetaDF$Ca_Trt=="a" & thetaDF$Position=="low"]
+            theta <- thetaDF$theta[thetaDF$Ca_Trt=="a" & thetaDF$Position=="low"]
             
-            ## fit
-            fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU=F,
-                           EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
-                           EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345,
-                           alpha = 0.3232, theta = 0.884)
-            fit2 <- fitBB(test, gsmodel="BBOpti")
+        } else if (test$Height[1] == "up" & test$CO2_treatment[1]=="elevated") {
+            alpha <- thetaDF$alpha.j[thetaDF$Ca_Trt=="e" & thetaDF$Position=="up"]
+            theta <- thetaDF$theta[thetaDF$Ca_Trt=="e" & thetaDF$Position=="up"]
             
-        } else if (test$Height[1] == "low") {
-            ### assign alpha and theta according to WTC3
-            outDF[outDF$Identity == id.list[i], "alpha"] <- 0.3284
-            outDF[outDF$Identity == id.list[i], "theta"] <- 0.508
+        } else if (test$Height[1] == "low" & test$CO2_treatment[1]=="elevated") {
+            alpha <- thetaDF$alpha.j[thetaDF$Ca_Trt=="e" & thetaDF$Position=="low"]
+            theta <- thetaDF$theta[thetaDF$Ca_Trt=="e" & thetaDF$Position=="low"]
             
-            ## fit
-            fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU=F,
-                           EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
-                           EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345,
-                           alpha = 0.3284, theta = 0.508)
-            fit2 <- fitBB(test, gsmodel="BBOpti")
+        } else {
+            #default
+            alpha = 0.24
+            theta = 0.85
         }
         
+        
+        ### assign alpha and theta 
+        outDF[outDF$Identity == id.list[i], "alpha"] <- alpha
+        outDF[outDF$Identity == id.list[i], "theta"] <- theta
+        
+        ## fit
+        fit1 <- fitaci(test, fitmethod="bilinear", Tcorrect=T, fitTPU=F,
+                       EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
+                       EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345,
+                       alpha = alpha, theta = theta)
+        fit2 <- fitBB(test, gsmodel="BBOpti")
         
         
         ### list parameters for photosyn function input
@@ -169,7 +180,8 @@ leaf_ACI_processing <- function(plot.option) {
         fits.all <- fitacis(myDF, group="Identity", 
                             fitmethod="bilinear",Tcorrect=T, fitTPU=F,
                             EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
-                            EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345)
+                            EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345,
+                            theta=0.47, alpha=0.25)
         
         
         ### create pdf

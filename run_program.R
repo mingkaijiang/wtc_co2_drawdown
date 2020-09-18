@@ -25,7 +25,7 @@ source("prepare.R")
 ###                                5. output parameters for leaf and canopy comparison
 
 ### first need to compute theta and alpha based on WTC3
-compute_theta_and_alpha_based_on_WTC3()
+fit_light_response_curves()
 
 ### fit leaf ACi of WTC1
 leafACI <- leaf_ACI_processing(plot.option = T)

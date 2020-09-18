@@ -78,6 +78,7 @@ processing_canopy_data <- function(leafACI,
                     "Tair", "Leaf_area", "Leak_coef", "Leak", 
                     "CO2_flux", "Norm_CO2_flux", "Corr_CO2_flux", 
                     "Norm_corr_CO2_flux")]
+    
     ########################  end set-up variables ###########################
     
     
@@ -199,6 +200,9 @@ processing_canopy_data <- function(leafACI,
     ### create DF for fit aci parameters
     id.list <- c(111:125)
     
+    ### theta and alpha values
+    thetaDF <- read.csv("output/leaf/leaf_scale_alpha_and_theta.csv")
+    
     ### prepare an output df
     outDF <- data.frame(id.list, 
                         NA, NA, NA, NA, NA, NA, 
@@ -226,6 +230,20 @@ processing_canopy_data <- function(leafACI,
         ## subset each data
         test <- subset(myDF, Identity == i)
         
+        if (test$Chamber[1]%in%c(1,3,8)) {
+            alpha <- thetaDF$alpha.j[thetaDF$Ca_Trt=="a" & thetaDF$Position=="all"]
+            theta <- thetaDF$theta[thetaDF$Ca_Trt=="a" & thetaDF$Position=="all"]
+            
+        } else if (test$Chamber[1]%in%c(4,11)) {
+            alpha <- thetaDF$alpha.j[thetaDF$Ca_Trt=="e" & thetaDF$Position=="all"]
+            theta <- thetaDF$theta[thetaDF$Ca_Trt=="e" & thetaDF$Position=="all"]
+            
+        } else {
+            #default
+            alpha = 0.24
+            theta = 0.85
+        }
+        
         ## fit
         fit1 <- fitaci(test, fitmethod="bilinear", varnames = list(ALEAF="Photo",
                                                                    Tleaf="Tleaf", 
@@ -233,7 +251,8 @@ processing_canopy_data <- function(leafACI,
                                                                    PPFD="PAR"),
                        Tcorrect=T, fitTPU=F,
                        EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
-                       EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345)
+                       EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345,
+                       alpha=alpha, theta=theta)
         
         fit2 <- fitBB(test, varnames = list(ALEAF = "Photo", GS = "Cond", VPD = "VPD",
                                             Ca = "Ca", RH = "RH"),
@@ -316,7 +335,8 @@ processing_canopy_data <- function(leafACI,
                                                                   PPFD="PAR"),
                             Tcorrect=T, fitTPU=F,
                             EaV = 73412.98, EdVC = 2e+05, delsC = 643.955,
-                            EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345)
+                            EaJ = 101017.38, EdVJ = 2e+05, delsJ = 655.345,
+                            theta=0.47, alpha=0.25)
         
         ### fit g1 value
         fits.bb <- fitBBs(myDF, varnames = list(ALEAF = "Photo", GS = "Cond", VPD = "VPD",

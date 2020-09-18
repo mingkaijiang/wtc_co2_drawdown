@@ -1,5 +1,7 @@
 generate_input_to_MATT <- function(canopyDF) {
     
+    ### theta and alpha values
+    thetaDF <- read.csv("output/leaf/leaf_scale_alpha_and_theta.csv")
     
     ### Input parameters required:
     ### Leaf-scale Vcmax, Jmax, JVratio, Theta, mean and sd (up leaf, low leaf, and CO2 treatment)
@@ -70,19 +72,19 @@ generate_input_to_MATT <- function(canopyDF) {
     outDF$eCaSE[outDF$variable == "low-JVratio"] <- leafDF$JVratio.se[leafDF$CO2_treatment=="elevated"&leafDF$Position=="low"]
     outDF$eCaSE[outDF$variable == "low-g1"] <- leafDF$G1.se[leafDF$CO2_treatment=="elevated"&leafDF$Position=="low"]
     
-    ### fixed values according to WTC3
-    outDF$aCa[outDF$variable == "up-theta"] <- 0.884
-    outDF$eCa[outDF$variable == "up-theta"] <- 0.884
+    ### fixed values 
+    outDF$aCa[outDF$variable == "up-theta"] <- thetaDF$theta[thetaDF$Ca_Trt=="a"&thetaDF$Position=="up"]
+    outDF$eCa[outDF$variable == "up-theta"] <- thetaDF$theta[thetaDF$Ca_Trt=="e"&thetaDF$Position=="up"]
     
-    outDF$aCa[outDF$variable == "low-theta"] <- 0.508
-    outDF$eCa[outDF$variable == "low-theta"] <- 0.508
+    outDF$aCa[outDF$variable == "low-theta"] <- thetaDF$theta[thetaDF$Ca_Trt=="a"&thetaDF$Position=="low"]
+    outDF$eCa[outDF$variable == "low-theta"] <- thetaDF$theta[thetaDF$Ca_Trt=="e"&thetaDF$Position=="low"]
     
-    ### fixed values according to WTC3
-    outDF$aCa[outDF$variable == "up-alpha"] <- 0.3284
-    outDF$eCa[outDF$variable == "up-alpha"] <- 0.3284
+    ### fixed values 
+    outDF$aCa[outDF$variable == "up-alpha"] <- thetaDF$alpha[thetaDF$Ca_Trt=="a"&thetaDF$Position=="up"]
+    outDF$eCa[outDF$variable == "up-alpha"] <- thetaDF$alpha[thetaDF$Ca_Trt=="e"&thetaDF$Position=="up"]
     
-    outDF$aCa[outDF$variable == "low-alpha"] <- 0.3232
-    outDF$eCa[outDF$variable == "low-alpha"] <- 0.3232
+    outDF$aCa[outDF$variable == "low-alpha"] <- thetaDF$alpha[thetaDF$Ca_Trt=="a"&thetaDF$Position=="low"]
+    outDF$eCa[outDF$variable == "low-alpha"] <- thetaDF$alpha[thetaDF$Ca_Trt=="e"&thetaDF$Position=="low"]
     
     ### read in canopy DF
     cDF <- canopyDF
