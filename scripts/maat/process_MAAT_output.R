@@ -1,9 +1,9 @@
-process_MATT_output <- function() {
+process_MAAT_output <- function() {
     
     ## this is code to process MATT output and generate figures
     
     ### read input
-    aDF <- read.csv("data/MATT/out_aco2.csv")
+    aDF <- read.csv("data/MAAT/out_aco2.csv")
     
     ### plot basic check
     p1 <- ggplot(aDF) +
@@ -36,7 +36,7 @@ process_MATT_output <- function() {
     
     
     ### check eCO2 treatment
-    eDF <- read.csv("data/MATT/out_eco2.csv")
+    eDF <- read.csv("data/MAAT/out_eco2.csv")
     
     p2 <- ggplot(eDF) +
         geom_point(aes(x=canopy.par, y=A, 
@@ -50,6 +50,6 @@ process_MATT_output <- function() {
     
     ### check r database
     
-    myDF1 <- readRDS("data/MATT/out_aco2_var.RDS")
+    myDF1 <- readRDS("data/MAAT/out_aco2_var.RDS")
     
 }
