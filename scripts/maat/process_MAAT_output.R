@@ -35,21 +35,28 @@ process_MAAT_output <- function() {
     plot(p1)
     
     
-    ### check eCO2 treatment
-    eDF <- read.csv("data/MAAT/out_eco2.csv")
+    ### read in A-Ca curve
+    myDF1 <- read.csv("data/MAAT/out_aco2co2.csv")
+
+    ### plot
+    p1 <- ggplot(myDF1) +
+        geom_point(aes(x=canopy.ca_conc, y=A/canopy.lai, 
+                       fill=as.character(canopy.lai)), pch = 21)+
+        scale_fill_manual(breaks = c("5.01", "6.59"), 
+                          values=c("red", "black"))
     
-    p2 <- ggplot(eDF) +
-        geom_point(aes(x=canopy.par, y=A, 
-                       fill=as.character(canopy.ca_conc), 
-                       pch=as.factor(canopy.lai)))+
-        scale_fill_manual(values=c("red", "black"))+
-        scale_shape_manual(values=c(1,19))
-    
-    plot(p2)
+    plot(p1)
     
     
-    ### check r database
+    ### investigate canopy fraction parameter
+    myDF1 <- read.csv("data/MAAT/out_laicut.csv")
     
-    myDF1 <- readRDS("data/MAAT/out_aco2_var.RDS")
+    ### plot
+    p1 <- ggplot(myDF1) +
+        geom_point(aes(x=canopy.ca_conc, y=A, 
+                       fill=as.character(canopy.can_lai_upper)), pch = 21)
+    
+    plot(p1)
+    
     
 }
