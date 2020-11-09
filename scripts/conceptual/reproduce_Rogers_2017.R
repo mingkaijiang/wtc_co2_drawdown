@@ -1,4 +1,4 @@
-make_conceptual_figure <- function() {
+reproduce_Rogers_2017 <- function() {
     
     ### read input
     myDF1 <- read.csv("data/concept/Rogers_Bethy.csv")
@@ -62,7 +62,7 @@ make_conceptual_figure <- function() {
                            values=c("blue2", "red3"),
                            labels=c("Observed", "Modeled"))
     
-    plot(p1)
+    #plot(p1)
     
     pdf("output/conceptual_figure_Rogers_Figure3_reproduction.pdf", width=8, height=6)
     plot(p1)

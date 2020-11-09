@@ -13,8 +13,8 @@ source("prepare.R")
 
 ############################# conceptual figure #####################################
 #### Make conceptual figure based on data from Rogers et al. 2017 NP
-#make_conceptual_figure()
-
+#reproduce_Rogers_2017()
+make_conceptual_overview()
 
 ############################# fit leaf A-CI curve  #################################
 #### Fit leaf level A-Ci curves to:

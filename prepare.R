@@ -33,6 +33,10 @@ if(!dir.exists("output/MAAT")) {
     dir.create("output/MAAT", showWarnings = FALSE)
 }
 
+if(!dir.exists("output/concept")) {
+    dir.create("output/concept", showWarnings = FALSE)
+}
+
 #### Install packages
 if(!require(pacman))install.packages("pacman")
 pacman::p_load(dplyr, 
@@ -51,7 +55,8 @@ pacman::p_load(dplyr,
                gridExtra,
                ggthemes,
                lmerTest,
-               multcomp)    
+               multcomp,
+               plotrix)    
 
 
 #### Sourcing all R files in the modules subdirectory
