@@ -74,11 +74,11 @@ plot_biochemical_parameters <- function(mgDF) {
         geom_errorbar(aes(x=Position, ymin=Vcmax.mean-Vcmax.se,
                           ymax=Vcmax.mean+Vcmax.se,
                           col=CO2_treatment), 
-                      position=position_dodge(width=0.2),
+                      position=position_dodge(width=0.4),
                       width=0.2)+
         geom_point(aes(Position, Vcmax.mean, 
                        fill=CO2_treatment), 
-                   position=position_dodge(width=0.2),
+                   position=position_dodge(width=0.4),
                    pch=21, size=4)+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
@@ -113,11 +113,11 @@ plot_biochemical_parameters <- function(mgDF) {
         geom_errorbar(aes(x=Position, ymin=Jmax.mean-Jmax.se,
                           ymax=Jmax.mean+Jmax.se,
                           col=CO2_treatment), 
-                      position=position_dodge(width=0.2),
+                      position=position_dodge(width=0.4),
                       width=0.2)+
         geom_point(aes(Position, Jmax.mean, 
                        fill=CO2_treatment), 
-                   position=position_dodge(width=0.2),
+                   position=position_dodge(width=0.4),
                    pch=21, size=4)+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
@@ -152,11 +152,11 @@ plot_biochemical_parameters <- function(mgDF) {
         geom_errorbar(aes(x=Position, ymin=JVratio.mean-JVratio.se,
                           ymax=JVratio.mean+JVratio.se,
                           col=CO2_treatment), 
-                      position=position_dodge(width=0.2),
+                      position=position_dodge(width=0.4),
                       width=0.2)+
         geom_point(aes(Position, JVratio.mean, 
                        fill=CO2_treatment), 
-                   position=position_dodge(width=0.2),
+                   position=position_dodge(width=0.4),
                    pch=21, size=4)+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
@@ -185,17 +185,17 @@ plot_biochemical_parameters <- function(mgDF) {
         scale_x_discrete(name="", 
                          breaks=c("5_Full", "4_TM", "3_Top", "2_low", "1_up"), 
                          labels=c("Full", "T+M", "Top", "Low", "Up"))+
-        ylim(0.5, 2)
+        ylim(0.5, 2.5)
     
     p4 <- ggplot(plotDF3, aes(Position, Ci_transition_Ac_Aj.mean, fill=CO2_treatment)) +
         geom_errorbar(aes(x=Position, ymin=Ci_transition_Ac_Aj.mean-Ci_transition_Ac_Aj.se,
                           ymax=Ci_transition_Ac_Aj.mean+Ci_transition_Ac_Aj.se,
                           col=CO2_treatment), 
-                      position=position_dodge(width=0.2),
+                      position=position_dodge(width=0.4),
                       width=0.2)+
         geom_point(aes(Position, Ci_transition_Ac_Aj.mean, 
                        fill=CO2_treatment), 
-                   position=position_dodge(width=0.2),
+                   position=position_dodge(width=0.4),
                    pch=21, size=4)+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
@@ -235,10 +235,10 @@ plot_biochemical_parameters <- function(mgDF) {
     combined_plots <- plot_grid(p1, p2, p3, p4, 
                                 labels=c("(a)", "(b)", "(c)", "(d)"),
                                 ncol=2, align="vh", axis = "l",
-                                label_x=0.88, label_y=0.95,
+                                label_x=0.8, label_y=0.95,
                                 label_size = 18)
     
-    pdf("output/biochemical_parameters/biochemical_parameter_plot_by_position.pdf", width=10, height=10)
+    pdf("output/biochemical_parameters/biochemical_parameter_plot_by_position.pdf", width=6, height=6)
     plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
     dev.off()  
     
