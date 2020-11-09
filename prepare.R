@@ -29,8 +29,8 @@ if(!dir.exists("output/biochemical_parameters")) {
     dir.create("output/biochemical_parameters", showWarnings = FALSE)
 }
 
-if(!dir.exists("output/MATT")) {
-    dir.create("output/MATT", showWarnings = FALSE)
+if(!dir.exists("output/MAAT")) {
+    dir.create("output/MAAT", showWarnings = FALSE)
 }
 
 #### Install packages
