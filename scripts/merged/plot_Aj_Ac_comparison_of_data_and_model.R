@@ -1,4 +1,4 @@
-plot_Aj_Ac_comparison_of_data_and_model <- function(mgdF) {
+plot_Aj_Ac_comparison_of_data_and_model <- function(mgDF) {
     
     ####################################################################################
     ######################### start WTC data Ac vs. Aj #################################
@@ -215,7 +215,7 @@ plot_Aj_Ac_comparison_of_data_and_model <- function(mgdF) {
     ####################################################################################
     ############################ start two-leaf model ##################################
     
-    ### rea in simulated files
+    ### read in simulated files
     ## aCO2
     ch01 <- read.csv("/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/outputs/wtc_two_leaf_1.csv")
     ch03 <- read.csv("/Users/mingkaijiang/Documents/Research/Projects/WCT1_CO2_drawdown/Two_leaf_model/outputs/wtc_two_leaf_3.csv")
@@ -283,11 +283,16 @@ plot_Aj_Ac_comparison_of_data_and_model <- function(mgdF) {
     ### plotting
     p2 <- ggplot(data=plotDF, 
                  aes(Position, ratio.mean, group=lab)) +
+        geom_rect(aes(xmin = 0, xmax = 2.5, 
+                      ymin = 0.8, ymax = 1.6),
+            alpha = 0.2, fill = "lightgray")+
         geom_bar(stat = "identity", aes(fill=lab), 
                  position="dodge") +
         geom_errorbar(aes(x=Position, ymin=ratio.mean-ratio.se, 
                           ymax=ratio.mean+ratio.se), 
                       position=position_dodge(0.9), width=0.2) +
+        geom_vline(xintercept=2.5, lty=2)+
+        geom_vline(xintercept=3.5, lty=2)+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
@@ -321,6 +326,8 @@ plot_Aj_Ac_comparison_of_data_and_model <- function(mgdF) {
         xlab("")+
         coord_cartesian(ylim = c(1, 1.5)) 
     
+    
+    plot(p2)
     
     pdf("output/biochemical_parameters/relative_contribution_Ac_Aj_WTC_MATE.pdf", width=6, height=4)
     plot(p2)
