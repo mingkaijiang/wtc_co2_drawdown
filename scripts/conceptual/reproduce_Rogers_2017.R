@@ -31,40 +31,48 @@ reproduce_Rogers_2017 <- function() {
     plotDF$canopy45 <- plotDF$canopy45/3
     plotDF$canopy60 <- plotDF$canopy60/3
     
+    
+    ### convert into long format
+    plotDF1 <- plotDF[,c("Ca", "leaf60", "model")]
+    plotDF2 <- plotDF[,c("Ca", "canopy60", "model")]
+    
+    colnames(plotDF1) <- colnames(plotDF2) <- c("Ca", "Anet", "Model")
+    
+    plotDF1$Scale <- "Leaf"
+    plotDF2$Scale <- "Canopy"
+    
+    plotDF3 <- rbind(plotDF1, plotDF2)
+    
     ### plot
-    p1 <- ggplot(plotDF) +
-        geom_point(aes(Ca, leaf60, pch=model),color="red3",
-                   size=1)+
-        #geom_smooth(aes(Ca, leaf60),color="red3",
-        #            formula = 'y ~ log(x)', method = 'glm')+
-        geom_point(aes(Ca, canopy60, pch=model), color="blue",
-                   size=1)+
-        #geom_smooth(aes(Ca, canopy60),color="blue2",
-        #            formula = 'y ~ log(x)', method = 'glm')+
+    p1 <- ggplot(plotDF3) +
+        geom_line(aes(Ca, Anet, col=Model, lty = Scale))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
               axis.title.x=element_text(size=14),
               axis.text.y=element_text(size=12),
               axis.title.y=element_text(size=14),
-              legend.text=element_text(size=12),
-              legend.title=element_text(size=14),
+              legend.text=element_text(size=8),
+              legend.title=element_text(size=10),
               panel.grid.major=element_blank(),
               legend.position="right",
               legend.text.align=0)+
-        xlab(expression(paste(C[a]* " (umol ", " ", mol^-1, ")")))+
-        ylab(expression(paste("A (umol "* CO[2], " ", m^-1, s^-1, ")")))+
-        scale_fill_discrete(name="Method")+
-        xlim(0,1200)+
-        ylim(0,30)+
-        theme(legend.direction = "vertical", legend.box = "horizontal")+
-        scale_color_manual(name="Method",
-                           values=c("blue2", "red3"),
-                           labels=c("Observed", "Modeled"))
+        xlab(expression(paste(C[a]* " (" * mu * "mol " * mol^-1 * ")")))+
+        ylab(expression(paste(A[n] * " (" * mu * "mol "* CO[2] * " ", m^-2 * " " * s^-1, ")")))+
+        xlim(200,1000)+
+        ylim(0,25)+
+        theme(legend.direction = "horizontal", legend.box = "horizontal",
+              legend.position = c(0.5, 0.14))+
+        scale_colour_colorblind(name="Model",
+                                guide = guide_legend(nrow=3))+
+        scale_linetype_manual(name="Scale",
+                              values=c(2,1),
+                              labels=c("Canopy", "Leaf"),
+                              guide = guide_legend(nrow=2))
     
     #plot(p1)
     
-    pdf("output/conceptual_figure_Rogers_Figure3_reproduction.pdf", width=8, height=6)
+    pdf("output/concept/Rogers_Figure3_reproduction.pdf", width=5, height=4)
     plot(p1)
     dev.off()
     

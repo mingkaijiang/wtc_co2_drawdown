@@ -46,9 +46,9 @@ plot_chamber_leaf_area <- function(canopyDF) {
               legend.text=element_text(size=12),
               legend.title=element_text(size=14),
               panel.grid.major=element_blank(),
-              legend.position="bottom",
               legend.box = 'vertical',
-              legend.box.just = 'left')+
+              legend.box.just = 'left',
+              legend.position = c(0.3, 0.8))+
         ylab(expression(paste("Leaf area (" * m^2 * ")")))+
         scale_fill_manual(name="Position",
                           limits=c("5_Full", "4_TM", "3_Top"),
@@ -68,7 +68,7 @@ plot_chamber_leaf_area <- function(canopyDF) {
         guides(fill=FALSE)
     
     
-    pdf("output/canopy/canopy_leaf_area.pdf", width=4, height=4)
+    pdf("output/canopy/canopy_leaf_area.pdf", width=5, height=4)
     plot(p1)
     dev.off()  
     

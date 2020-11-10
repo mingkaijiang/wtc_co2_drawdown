@@ -14,6 +14,8 @@ source("prepare.R")
 ############################# conceptual figure #####################################
 #### Make conceptual figure based on data from Rogers et al. 2017 NP
 #reproduce_Rogers_2017()
+
+# make conceptual figure based on data in Kumarathunge et al. 2019. PCE
 make_conceptual_overview()
 
 ############################# fit leaf A-CI curve  #################################
@@ -24,7 +26,7 @@ make_conceptual_overview()
 ###                                4. save stats and figures
 ###                                5. output parameters for leaf and canopy comparison
 
-### first need to compute theta and alpha based on WTC3
+### first need to compute theta and alpha J based on light response curves
 fit_light_response_curves()
 
 ### fit leaf ACi of WTC1
