@@ -44,9 +44,9 @@ plot_Aj_Ac_comparison_of_data_and_model <- function(mgDF) {
     stDF <- subset(stDF, CO2_treatment=="aCO2")
 
     #### plot A600/A400 ratio
-    stDF$A600_over_A400 <- with(stDF, ALEAF_600/ALEAF_400)
-    stDF$Ac600_over_Ac400 <- with(stDF, Ac_600/Ac_400)
-    stDF$Aj600_over_Aj400 <- with(stDF, Aj_600/Aj_400)
+    stDF$A600_over_A400 <- with(stDF, (ALEAF_600-ALEAF_400)/ALEAF_400)
+    stDF$Ac600_over_Ac400 <- with(stDF, (Ac_600-Ac_400)/Ac_400)
+    stDF$Aj600_over_Aj400 <- with(stDF, (Aj_600-Aj_400)/Aj_400)
     
     ### subset
     subDF1 <- stDF[,c("A600_over_A400", "CO2_treatment", "Chamber", "Position", "Type")]
@@ -65,6 +65,13 @@ plot_Aj_Ac_comparison_of_data_and_model <- function(mgDF) {
     ### summary By
     wtcDF <- summaryBy(ratio~Position+lab, 
                        FUN=c(mean, se), data=plotDF1, keep.names=T)
+    
+    
+    ### add WTC result and compare
+    #wtcDF <- read.csv("output/A-Ca/linear_predicted_A_at_400_600_ppm.csv")
+    #
+    #sumDF2 <- summaryBy(A_sens_norm~Type+Position, FUN=c(mean,se),
+    #                    data=wtcDF, keep.names=T, na.rm=T)
     
     
     ############################ end WTC data Ac vs. Aj ################################
@@ -146,8 +153,8 @@ plot_Aj_Ac_comparison_of_data_and_model <- function(mgDF) {
     plotDF$A400[plotDF$CO2_treatment=="JV2"] <- 400 * coef(lm13)[2] + coef(lm13)[1]
     plotDF$A600[plotDF$CO2_treatment=="JV2"] <- 600 * coef(lm13)[2] + coef(lm13)[1]
     
-    plotDF$A_sens1 <- with(plotDF, A400/A280)
-    plotDF$A_sens2 <- with(plotDF, A600/A400)
+    plotDF$A_sens1 <- with(plotDF, (A400-A280)/A280)
+    plotDF$A_sens2 <- with(plotDF, (A600-A400)/A400)
     
     
     plotDF$Ac280[plotDF$CO2_treatment=="aCO2"] <- 280 * coef(lm7)[2] + coef(lm7)[1]
@@ -162,10 +169,10 @@ plot_Aj_Ac_comparison_of_data_and_model <- function(mgDF) {
     plotDF$Ac400[plotDF$CO2_treatment=="JV2"] <- 400 * coef(lm14)[2] + coef(lm14)[1]
     plotDF$Ac600[plotDF$CO2_treatment=="JV2"] <- 600 * coef(lm14)[2] + coef(lm14)[1]
     
-    #plotDF$Ac_sens1 <- with(plotDF, (Ac400-Ac280)/Ac280)
-    #plotDF$Ac_sens2 <- with(plotDF, (Ac600-Ac400)/Ac400)
-    plotDF$Ac_sens1 <- with(plotDF, Ac400/Ac280)
-    plotDF$Ac_sens2 <- with(plotDF, Ac600/Ac400)
+    plotDF$Ac_sens1 <- with(plotDF, (Ac400-Ac280)/Ac280)
+    plotDF$Ac_sens2 <- with(plotDF, (Ac600-Ac400)/Ac400)
+    #plotDF$Ac_sens1 <- with(plotDF, Ac400/Ac280)
+    #plotDF$Ac_sens2 <- with(plotDF, Ac600/Ac400)
     
     plotDF$Aj280[plotDF$CO2_treatment=="aCO2"] <- 280 * coef(lm11)[2] + coef(lm11)[1]
     plotDF$Aj400[plotDF$CO2_treatment=="aCO2"] <- 400 * coef(lm9)[2] + coef(lm9)[1]
@@ -179,10 +186,10 @@ plot_Aj_Ac_comparison_of_data_and_model <- function(mgDF) {
     plotDF$Aj400[plotDF$CO2_treatment=="JV2"] <- 400 * coef(lm15)[2] + coef(lm15)[1]
     plotDF$Aj600[plotDF$CO2_treatment=="JV2"] <- 600 * coef(lm15)[2] + coef(lm15)[1]
     
-    #plotDF$Aj_sens1 <- with(plotDF, (Aj400-Aj280)/Aj280)
-    #plotDF$Aj_sens2 <- with(plotDF, (Aj600-Aj400)/Aj400)
-    plotDF$Aj_sens1 <- with(plotDF, Aj400/Aj280)
-    plotDF$Aj_sens2 <- with(plotDF, Aj600/Aj400)
+    plotDF$Aj_sens1 <- with(plotDF, (Aj400-Aj280)/Aj280)
+    plotDF$Aj_sens2 <- with(plotDF, (Aj600-Aj400)/Aj400)
+    #plotDF$Aj_sens1 <- with(plotDF, Aj400/Aj280)
+    #plotDF$Aj_sens2 <- with(plotDF, Aj600/Aj400)
     
     ### plotting script
     subDF1 <- plotDF[,c("CO2_treatment", "A_sens1", "A_sens2")]
@@ -248,9 +255,9 @@ plot_Aj_Ac_comparison_of_data_and_model <- function(mgDF) {
     plotDF$Asha400 <- 400 * coef(lm3)[2] + coef(lm3)[1]
     plotDF$Asha600 <- 600 * coef(lm3)[2] + coef(lm3)[1]
     
-    plotDF$A_sens <- with(plotDF, A600/A400)
-    plotDF$Asun_sens <- with(plotDF, Asun600/Asun400)
-    plotDF$Asha_sens <- with(plotDF, Asha600/Asha400)
+    plotDF$A_sens <- with(plotDF, (A600-A400)/A400)
+    plotDF$Asun_sens <- with(plotDF, (Asun600-Asun400)/Asun400)
+    plotDF$Asha_sens <- with(plotDF, (Asha600-Asha400)/Asha400)
     
     ### plotting script
     twoDF <- data.frame("6_two_leaf", c("A", "A1sun", "A2sha"),
@@ -296,7 +303,7 @@ plot_Aj_Ac_comparison_of_data_and_model <- function(mgDF) {
     plotDF$A400[plotDF$lai_upper==5] <- 400 * coef(lm5)[2] + coef(lm5)[1]
     plotDF$A600[plotDF$lai_upper==5] <- 600 * coef(lm5)[2] + coef(lm5)[1]
     
-    plotDF$A_sens <- with(plotDF, A600/A400)
+    plotDF$A_sens <- with(plotDF, (A600-A400)/A400)
     
     mean.v <- mean(plotDF$A_sens)
     se.v <- se(plotDF$A_sens)
@@ -365,7 +372,7 @@ plot_Aj_Ac_comparison_of_data_and_model <- function(mgDF) {
               plot.title = element_text(size=16, face="bold", 
                                         hjust = 0.5),
               legend.text.align = 0)+
-        ylab(expression(paste(A[600] * " / " * A[400])))+
+        ylab(expression(paste(delta * A * " / " * A[400])))+
         scale_x_discrete(breaks=c("1_up", "2_low", "3_Full", "4_MATE", "5_MATE", 
                                   "6_two_leaf", "7_multi"),
                           labels=c("Up", 
@@ -383,7 +390,7 @@ plot_Aj_Ac_comparison_of_data_and_model <- function(mgDF) {
                                    expression(paste(A[sha]))),
                           values = colorblind_pal()(5 + 1)[-1])+
         xlab("")+
-        coord_cartesian(ylim = c(1, 1.5)) 
+        coord_cartesian(ylim = c(0, 0.5)) 
     
     
     #plot(p2)
