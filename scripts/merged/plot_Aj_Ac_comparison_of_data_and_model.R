@@ -265,7 +265,51 @@ plot_Aj_Ac_comparison_of_data_and_model <- function(mgDF) {
     ####################################################################################
     ################################ start multi-layer model ###########################
     ### Read in MAAT simulation results
+    aDF <- read.csv("data/MAAT/out_laicut.csv")
+
+    ### subset
+    subDF <- subset(aDF, canopy.ca_conc<=700&canopy.ca_conc>=300)
     
+    lm1 <- lm(A~canopy.ca_conc, data=subDF[subDF$canopy.can_lai_upper==1,])
+    lm2 <- lm(A~canopy.ca_conc, data=subDF[subDF$canopy.can_lai_upper==2,])
+    lm3 <- lm(A~canopy.ca_conc, data=subDF[subDF$canopy.can_lai_upper==3,])
+    lm4 <- lm(A~canopy.ca_conc, data=subDF[subDF$canopy.can_lai_upper==4,])
+    lm5 <- lm(A~canopy.ca_conc, data=subDF[subDF$canopy.can_lai_upper==5,])
+    
+    ### prepare a storage DF
+    plotDF <- data.frame(NA, NA, NA, c(1:5))
+    colnames(plotDF) <- c("A400", "A600", "A_sens", "lai_upper")
+
+    ### assign values
+    plotDF$A400[plotDF$lai_upper==1] <- 400 * coef(lm1)[2] + coef(lm1)[1]
+    plotDF$A600[plotDF$lai_upper==1] <- 600 * coef(lm1)[2] + coef(lm1)[1]
+    
+    plotDF$A400[plotDF$lai_upper==2] <- 400 * coef(lm2)[2] + coef(lm2)[1]
+    plotDF$A600[plotDF$lai_upper==2] <- 600 * coef(lm2)[2] + coef(lm2)[1]
+    
+    plotDF$A400[plotDF$lai_upper==3] <- 400 * coef(lm3)[2] + coef(lm3)[1]
+    plotDF$A600[plotDF$lai_upper==3] <- 600 * coef(lm3)[2] + coef(lm3)[1]
+    
+    plotDF$A400[plotDF$lai_upper==4] <- 400 * coef(lm4)[2] + coef(lm4)[1]
+    plotDF$A600[plotDF$lai_upper==4] <- 600 * coef(lm4)[2] + coef(lm4)[1]
+    
+    plotDF$A400[plotDF$lai_upper==5] <- 400 * coef(lm5)[2] + coef(lm5)[1]
+    plotDF$A600[plotDF$lai_upper==5] <- 600 * coef(lm5)[2] + coef(lm5)[1]
+    
+    plotDF$A_sens <- with(plotDF, A600/A400)
+    
+    mean.v <- mean(plotDF$A_sens)
+    se.v <- se(plotDF$A_sens)
+    
+    ### plotting script
+    multiDF <- data.frame("7_multi", c("A", "Ac", "Aj"),
+                        mean.v, se.v)
+    colnames(multiDF) <- c("Position", "lab", "ratio.mean", "ratio.se")
+    
+    multiDF$ratio.mean[multiDF$lab=="Ac"] <- NA
+    multiDF$ratio.mean[multiDF$lab=="Aj"] <- NA
+    multiDF$ratio.se[multiDF$lab=="Ac"] <- NA
+    multiDF$ratio.se[multiDF$lab=="Aj"] <- NA
     
     
     ################################ end multi-layer model ###########################
@@ -286,8 +330,11 @@ plot_Aj_Ac_comparison_of_data_and_model <- function(mgDF) {
     plotDF2 <- plotDF2[plotDF2$Position%in%c("1_up", "2_low", "3_Full"),]
     
     
-    plotDF <- rbind(plotDF1, plotDF2, twoDF)
+    plotDF <- rbind(plotDF1, plotDF2, twoDF, multiDF)
     plotDF$ratio.se <- as.numeric(plotDF$ratio.se)
+    
+    ### remove MATE2
+    plotDF <- plotDF[plotDF$Position != "5_MATE",] 
     
     
     ### plotting
@@ -305,7 +352,7 @@ plot_Aj_Ac_comparison_of_data_and_model <- function(mgDF) {
         geom_vline(xintercept=3.5, lty=2)+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
-              axis.text.x=element_text(size=12),
+              axis.text.x=element_text(size=10),
               axis.title.x=element_text(size=14),
               axis.text.y=element_text(size=12),
               axis.title.y=element_text(size=14),
@@ -319,13 +366,15 @@ plot_Aj_Ac_comparison_of_data_and_model <- function(mgDF) {
                                         hjust = 0.5),
               legend.text.align = 0)+
         ylab(expression(paste(A[600] * " / " * A[400])))+
-        scale_x_discrete(breaks=c("1_up", "2_low", "3_Full", "4_MATE", "5_MATE", "6_two_leaf"),
+        scale_x_discrete(breaks=c("1_up", "2_low", "3_Full", "4_MATE", "5_MATE", 
+                                  "6_two_leaf", "7_multi"),
                           labels=c("Up", 
                                    "Low",
                                    "Full",
                                    "MATE",
                                    "MATE2",
-                                   "Two-leaf"))+
+                                   "Two-leaf",
+                                   "Multi-layer"))+
         scale_fill_manual(name="",
                           breaks=c("A", "Ac", "Aj", "A1sun", "A2sha"),
                           labels=c("A", expression(paste(A[c])),
@@ -337,9 +386,10 @@ plot_Aj_Ac_comparison_of_data_and_model <- function(mgDF) {
         coord_cartesian(ylim = c(1, 1.5)) 
     
     
-    plot(p2)
+    #plot(p2)
     
-    pdf("output/biochemical_parameters/relative_contribution_Ac_Aj_WTC_MATE.pdf", width=6, height=4)
+    pdf("output/biochemical_parameters/relative_contribution_Ac_Aj_WTC_MATE.pdf", 
+        width=6, height=4)
     plot(p2)
     dev.off()  
     
