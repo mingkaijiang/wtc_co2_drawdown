@@ -61,6 +61,9 @@ check_goodness_of_fit_for_H2O_flux(canopyDF)
 #### plot leaf area and biomass based on final harvest data
 plot_chamber_leaf_area(canopyDF)
 
+### plot chamber leaf N and SLA
+plot_chamber_leaf_N_and_SLA()
+
 ############################# fit canopy A-CI curve  #################################
 #### Fit canopy level A-Ci curves to:
 ###                                1. generate parameters to compare against leaf scale A-Ci
