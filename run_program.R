@@ -4,6 +4,13 @@
 ###         m.jiang@westernsydney.edu.au
 ###
 
+### Structure:
+### 1. Clean leaf and canopy-scale A-Ca data, generate cleaned data
+### 2. Prepare input (met, parameters) to MAAT and two-leaf modelling
+### 3. Generate figures and summary tables, including output from MAAT and two-leaf model
+
+
+
 ################################### set up ##########################################
 #### clear wk space
 rm(list=ls(all=TRUE))
