@@ -1,4 +1,7 @@
-merge_leaf_and_canopy_raw_data <- function(cDF) {
+merge_leaf_and_canopy_raw_data <- function() {
+    
+    
+    
     ################################# plot A-Ca #################################
     #### read in leaf-scale data
     lDF1 <- read.csv("data/ACi_curves/HFE_Aci_2008-2009.csv",stringsAsFactors=FALSE)
@@ -14,6 +17,10 @@ merge_leaf_and_canopy_raw_data <- function(cDF) {
     
     ### add type information
     lDF$Type <- "leaf"
+    
+    ### canopy data read in
+    cDF <- read.csv("output/canopy_scale_processed_ACa_curves.csv")
+    
     cDF$Type <- "canopy"
     
     ### select columns

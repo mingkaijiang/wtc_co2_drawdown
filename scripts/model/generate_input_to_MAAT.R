@@ -1,4 +1,4 @@
-generate_input_to_MATT <- function(canopyDF) {
+generate_input_to_MAAT <- function() {
     
     ### theta and alpha values
     thetaDF <- read.csv("output/leaf/leaf_scale_alpha_and_theta.csv")
@@ -87,7 +87,7 @@ generate_input_to_MATT <- function(canopyDF) {
     outDF$eCa[outDF$variable == "low-alpha"] <- thetaDF$alpha[thetaDF$Ca_Trt=="e"&thetaDF$Position=="low"]
     
     ### read in canopy DF
-    cDF <- canopyDF
+    cDF <- read.csv("output/canopy_scale_processed_ACa_curves.csv")
     
     cDF$CO2 <- "aCa"
     cDF$CO2[cDF$Chamber%in%c(4,8)] <- "eCa"
@@ -149,6 +149,8 @@ generate_input_to_MATT <- function(canopyDF) {
     outDF$eCaSE[outDF$variable=="Tleaf"] <- cDF3$Tleaf.se[cDF3$CO2=="eCa"]
     outDF$eCaSE[outDF$variable=="VPD"] <- cDF3$VPD.se[cDF3$CO2=="eCa"]
     
-    write.csv(outDF, "output/MATT/WTC_input_to_MATT.csv", row.names=F)
+    
+    ## write
+    write.csv(outDF, "output/MAAT/WTC_input_to_MATT.csv", row.names=F)
     
 }

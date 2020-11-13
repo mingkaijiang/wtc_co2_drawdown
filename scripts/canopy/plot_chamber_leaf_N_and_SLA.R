@@ -225,6 +225,8 @@ plot_chamber_leaf_N_and_SLA <- function() {
                                 label_x=0.25, label_y=0.95, #rel_widths = c(1.2, 1),
                                 label_size = 14)
     
+    
+    ### save pdf
     pdf("output/canopy/canopy_leafN_SLA.pdf", width=6, height=8)
     plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
     dev.off()  

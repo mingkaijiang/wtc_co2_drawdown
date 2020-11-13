@@ -13,7 +13,9 @@
 ###
 ### 4. Prepare input (met, parameters) to MAAT and two-leaf modelling
 ###
-### 5. Generate figures and summary tables, including output from MAAT and two-leaf model
+### 5. Make leaf- and canopy-scale data comparison
+###
+### 6. Compare data with models
 ###
 
 ################################### 0. set up ##########################################
@@ -103,14 +105,28 @@ fit_canopy_ACa(plot.option = T)
 
 
 #### plot leaf area and biomass based on final harvest data
-### biomass not plotted yet, as possibly not useful for the main text
+### biomass not included yet, as possibly not useful for the main text
 plot_chamber_leaf_area()
 
 ### plot chamber leaf N and SLA
 ### need to enter the function to plot
 plot_chamber_leaf_N_and_SLA()
 
-############################# fit canopy A-CI curve  #################################
+
+############################# 4. generate input to models #################################
+
+### Generate input to MAAT,
+### include parameters, LAI, and met forcing
+### need to read in leaf-scale and canopy-scale parameters and met data
+generate_input_to_MAAT()
+
+### can also add code to generate input to two-leaf model
+###
+### 
+
+
+
+### ???????
 #### Fit canopy level A-Ci curves to:
 ###                                1. generate parameters to compare against leaf scale A-Ci
 ###                                2. compare treatment effect (reduced sample size)
@@ -120,10 +136,12 @@ plot_chamber_leaf_N_and_SLA()
 #canopyACI <- canopy_ACI_processing(cDF=canopyDF)
 
 
-############################# leaf & canopy result comparison ######################
+
+
+############################# 5. Make data-based leaf and canopy comparison ######################
 #### merge leaf and canopy raw data
 #### well-watered treatment only
-mgDF <- merge_leaf_and_canopy_raw_data(cDF=canopyDF)
+mgDF <- merge_leaf_and_canopy_raw_data()
 
 
 ####### Plot A-CA at each chamber, compare the shape of the curves
@@ -190,10 +208,6 @@ plot_eucface_A_Ci()
 compare_simulated_results_at_canopy_level()
 
 
-
-
-############################# Generate input to MATT ###################
-generate_input_to_MATT(canopyDF)
 
 
 
