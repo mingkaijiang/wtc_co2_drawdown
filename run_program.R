@@ -111,17 +111,6 @@ check_goodness_of_fit_for_H2O_flux()
 ### output figure (optional)
 fit_canopy_ACa(plot.option = F)
 
-### ???????
-#### Fit canopy level A-Ci curves to:
-###                                1. generate parameters to compare against leaf scale A-Ci
-###                                2. compare treatment effect (reduced sample size)
-###                                3. position effect (whole, top, middle and bottom)
-###                                4. save stats and figures
-###                                5. output parameters for leaf and canopy comparison
-#canopyACI <- canopy_ACI_processing(cDF=canopyDF)
-
-
-
 
 
 #### plot leaf area and biomass based on final harvest data
@@ -134,32 +123,23 @@ plot_chamber_leaf_N_and_SLA()
 
 
 
-
-
-
-
 ############################# 4. generate input to models #################################
 
 ### Generate input to MAAT,
 ### include parameters, LAI, and met forcing
 ### need to read in leaf-scale and canopy-scale parameters and met data
+### currently MAAT has single big-leaf model and multi-layer model
 generate_input_to_MAAT()
 
-### can also add code to generate input to two-leaf model
-###
-### 
-#############################  two-leaf modeling met data generation ###################
+### Generate input to two-leaf model
 ### this script generate met data based on 2009 met data collected at WTC
 ### need to combine with canopy drawdown data from inside the chambers
 ### this resulted in half hourly met data, which is probably too coarse
 #generate_met_data_2009()
 
-### second method: to linearly interpolate hourly met data onto per minute basis, then run the simulation
-#generate_met_data_2009_method_2()
-
-#### this script generate met data for period 2008.04.14 to 2009.03.06
-#### which is before the co2 drawdown experiment
-#### but with hourly gap-filled data for each chamber
+### this script generate met data for period 2008.04.14 to 2009.03.06
+### which is before the co2 drawdown experiment
+### but with hourly gap-filled data for each chamber
 #generate_met_data_2008_2009()
 
 

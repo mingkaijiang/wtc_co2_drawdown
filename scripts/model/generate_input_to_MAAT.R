@@ -20,7 +20,7 @@ generate_input_to_MAAT <- function() {
     
     
     ### read in leaf-scale parameters
-    leafDF <- read.csv("output/leaf/leaf_scale_parameter_summary_table_for_two_leaf_model.csv")
+    leafDF <- read.csv("output/leaf/leaf_scale_parameter_summary_table.csv")
     
     ### assign values
     ## up, ambient, mean
@@ -87,7 +87,7 @@ generate_input_to_MAAT <- function() {
     outDF$eCa[outDF$variable == "low-alpha"] <- thetaDF$alpha[thetaDF$Ca_Trt=="e"&thetaDF$Position=="low"]
     
     ### read in canopy DF
-    cDF <- read.csv("output/canopy_scale_processed_ACa_curves.csv")
+    cDF <- read.csv("output/canopy/canopy_scale_processed_ACa_curves.csv")
     
     cDF$CO2 <- "aCa"
     cDF$CO2[cDF$Chamber%in%c(4,8)] <- "eCa"

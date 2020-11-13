@@ -1,7 +1,7 @@
 fit_canopy_ACa <- function(plot.option) {
     
     ### read csv
-    rtDF <- read.csv("output/canopy_scale_processed_ACa_curves.csv")
+    rtDF <- read.csv("output/canopy/canopy_scale_processed_ACa_curves.csv")
     
     
     ###################################  Fit ACi ##########################################

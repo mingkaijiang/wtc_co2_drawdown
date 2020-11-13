@@ -2,7 +2,7 @@ plot_chamber_leaf_area <- function() {
     
     
     ### read input
-    canopyDF <- read.csv("output/canopy_scale_processed_ACa_curves.csv")
+    canopyDF <- read.csv("output/canopy/canopy_scale_processed_ACa_curves.csv")
     
     ### summarize chamber leaf area by chamber and canopy position
     plotDF1 <- summaryBy(Leaf_area~Chamber+Canopy, FUN=mean,
