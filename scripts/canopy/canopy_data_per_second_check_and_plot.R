@@ -399,15 +399,15 @@ canopy_data_per_second_check_and_plot <- function(inDF){
     
     
     ### output
-    pdf("output/canopy/canopy_data_chamber_H2O_drawdown_fluxes_over_Ca.pdf", width=12, height=6)
-    
-    plot(p3)
-    #plot(p4)
-    plot(p5)
-    plot(p6)
-    #plot(p7)
-    plot(p8)
-    plot(p9)
-    #plot(p10)
-    dev.off()
+    #pdf("output/canopy/canopy_data_chamber_H2O_drawdown_fluxes_over_Ca.pdf", width=12, height=6)
+    #
+    #plot(p3)
+    ##plot(p4)
+    #plot(p5)
+    #plot(p6)
+    ##plot(p7)
+    #plot(p8)
+    #plot(p9)
+    ##plot(p10)
+    #dev.off()
 }

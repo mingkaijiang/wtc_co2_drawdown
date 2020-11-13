@@ -182,7 +182,7 @@ processing_canopy_data <- function(plot.option) {
                      "gs1", "G1", "gs", "Norm_H2O_flux2", "Ci", "Tleaf")]
     
     ### write csv
-    write.csv(rtDF, "output/canopy_scale_processed_ACa_curves.csv")
+    write.csv(rtDF, "output/canopy/canopy_scale_processed_ACa_curves.csv")
     
     ################################  end filtering data ###################################
     

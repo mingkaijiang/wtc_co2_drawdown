@@ -57,7 +57,7 @@ fit_light_response_curves()
 ### save raw A-CI curves (optional)
 ### save fitted parameter and predicted A as csv
 ### results are provided on a per chamber basis
-leaf_ACI_processing(plot.option = T)
+leaf_ACI_processing(plot.option = F)
 
 ### create leaf-scale biochemical parameter summary table
 ### results are summarized per CO2 treatment 
@@ -72,6 +72,8 @@ summarize_leaf_scale_biochemical_parameters()
 
 ### EucFACE A-Ci curves
 ### need to enter the function to plot
+### serves as contexualization purpose, to understand the WTC data
+### does not go into the manuscript
 #plot_eucface_A_Ci()
 
 
@@ -107,7 +109,7 @@ check_goodness_of_fit_for_H2O_flux()
 ### Fit canopy A-Ca
 ### saving canopy-scale biochemical parameters as csv
 ### output figure (optional)
-fit_canopy_ACa(plot.option = T)
+fit_canopy_ACa(plot.option = F)
 
 ### ???????
 #### Fit canopy level A-Ci curves to:
