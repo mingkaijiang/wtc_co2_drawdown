@@ -196,29 +196,29 @@ plot_CO2_acclimation_effect_on_biochemical_parameters(mgDF)
 ### leave it out for now
 #plot_Aj_Ac_comparison_of_MATE_result(mgDF)
 
-### plot Aj vs. Ac based on the data, mate model and two-leaf model
+### plot relative contribution of Aj vs. Ac 
+### based on the WTC data, mate model, two-leaf model, and MAAT multi-layer model
+### need to replace:
+### 1. linear fit with real fitaci fit result
+### 2. two-leaf simulation result with updated simulation protocols
+### 3. MAAT once new results are in
+### 4. MATE with MAAT result, but for now, using MATE with updated protocol (yet to implement)
+### this is the to-do list after returning to work next week!!!!!!!!
 plot_Aj_Ac_comparison_of_data_and_model(mgDF)
 
 
 
 ### Plot comparison against Rogers 2017
+### Ca of 400 and 600
 plot_roger_2017_model_result_comparison()
+
+
+### A sensitivity to Ca over Ca range of 280 and 400
 plot_roger_2017_model_result_comparison_280_400()
 
 
-############## compare modeled (leaf scaled-up) with canopy (CO2 drawdown) fluxes ##############
-compare_simulated_results_at_canopy_level()
+
+############################# End #############################
 
 
-
-
-
-
-
-
-########## End ############
-
-### to do:
-### 1. generate met data at per minute interval and re-run the models
-### 2. compare predicted canopy response at this time interval
 
