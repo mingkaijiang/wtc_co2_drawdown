@@ -91,7 +91,9 @@ processing_canopy_data()
 
 ### check two methods of inferring transpiration flux
 ###  by goodness-of-fit of the inferred gs and normalized H2O flux
-check_goodness_of_fit_for_H2O_flux(canopyDF)
+### result print to screen
+### which can be entered to the manuscript
+check_goodness_of_fit_for_H2O_flux()
 
 
 ### Fit canopy A-Ca
@@ -99,10 +101,13 @@ check_goodness_of_fit_for_H2O_flux(canopyDF)
 ### output figure (optional)
 fit_canopy_ACa(plot.option = T)
 
+
 #### plot leaf area and biomass based on final harvest data
-plot_chamber_leaf_area(canopyDF)
+### biomass not plotted yet, as possibly not useful for the main text
+plot_chamber_leaf_area()
 
 ### plot chamber leaf N and SLA
+### need to enter the function to plot
 plot_chamber_leaf_N_and_SLA()
 
 ############################# fit canopy A-CI curve  #################################
