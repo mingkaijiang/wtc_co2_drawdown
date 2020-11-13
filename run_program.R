@@ -5,52 +5,70 @@
 ###
 
 ### Structure:
-### 1. Clean leaf and canopy-scale A-Ca data, generate cleaned data
-### 2. Prepare input (met, parameters) to MAAT and two-leaf modelling
-### 3. Generate figures and summary tables, including output from MAAT and two-leaf model
+### 1. Generate conceptual figures, based on Rogers and Kumarathunge dataset
+###
+### 2. Fit leaf-scale A-Ci curves, generate clean dataset
+###
+### 3. Clean and fit canopy-scale A-Ci data, generate clean dataset
+###
+### 4. Prepare input (met, parameters) to MAAT and two-leaf modelling
+###
+### 5. Generate figures and summary tables, including output from MAAT and two-leaf model
+###
 
-
-
-################################### set up ##########################################
+################################### 0. set up ##########################################
 #### clear wk space
 rm(list=ls(all=TRUE))
 
 #### read in necessary stuffs
 source("prepare.R")
 
-############################# conceptual figure #####################################
-#### Make conceptual figure based on data from Rogers et al. 2017 NP
-#reproduce_Rogers_2017()
+############################# 1. Conceptual figure #####################################
+### 1. To generate conceptual figures
+###    these are raw figures and still need to be processed in PPT
 
-# make conceptual figure based on data in Kumarathunge et al. 2019. PCE
+### Make conceptual figure based on data from Rogers et al. 2017 NP
+reproduce_Rogers_2017()
+
+### make conceptual figure based on data in Kumarathunge et al. 2019. PCE
 make_conceptual_overview()
 
-############################# fit leaf A-CI curve  #################################
-#### Fit leaf level A-Ci curves to:
-###                                1. generate parameters for two-leaf modeling
+
+############################# 2. Leaf-scale data processing #################################
+#### 2. Leaf-scale data processing:
+###     Fit light response curve;
+###     
+###     
+###                                1. generate biochemical parameters for modeling and plotting
 ###                                2. compare treatment effect (i.e. group by treatment, chamber as random variable)
 ###                                3. layer effect (i.e. top and bottom layers)
 ###                                4. save stats and figures
 ###                                5. output parameters for leaf and canopy comparison
 
-### first need to compute theta and alpha J based on light response curves
+### Fit light response curve, 
+### and obtain theta and alpha J, which are input to
+### fit ACi function and modeling
+### output saved as csv
 fit_light_response_curves()
 
-### fit leaf ACi of WTC1
-leafACI <- leaf_ACI_processing(plot.option = T)
+### fit leaf ACi of WTC1 data
+### save raw A-CI curves (optional)
+### save fitted parameter and predicted A as csv
+### results are provided on a per chamber basis
+leaf_ACI_processing(plot.option = T)
 
-#### Make some plots for leaf-scale data only
-#### not used in the main text
-#### can delete after the manuscript is fully written. 
-#### go into function to plot!
-#plot_leaf_ACI_curves(plotDF=leafACI)
-
-
-#### create leaf-scale biochemical parameter summary table
+### create leaf-scale biochemical parameter summary table
+### results are summarized per CO2 treatment 
 summarize_leaf_scale_biochemical_parameters()
 
+### Make some plots for leaf-scale data only
+### not used in the main text
+### can delete after the manuscript is fully written. 
+### go into function to plot!
+#plot_leaf_ACI_curves()
 
-############################# processing canopy data #################################
+
+############################# 3. processing canopy data #################################
 #### Data note:
 #### 1. Column canopy: 12345 - full canopy present
 ####                    345 - middle + top canopy present
@@ -60,10 +78,26 @@ summarize_leaf_scale_biochemical_parameters()
 ####    there were time-series breaks in the measurements (more details in the code)
 #### 3. Need to correct for tree size, according to Drake's method
 ####    i.e. normalized to per leaf area (more details in the code)
-canopyDF <- processing_canopy_data(leafACI=leafACI, plot.option = T)
 
-#### check goodness-of-fit for inferred gs with normalized H2O flux
+
+### Processing canopy data, including:
+### Cleanning,
+### Adding variables,
+### Quality controlling,
+### assuming leaf-scale g1 value
+### fitting canopy-scale A-Ca
+### saving canopy-scale cleaned ACa data as csv
+processing_canopy_data()
+
+### check two methods of inferring transpiration flux
+###  by goodness-of-fit of the inferred gs and normalized H2O flux
 check_goodness_of_fit_for_H2O_flux(canopyDF)
+
+
+### Fit canopy A-Ca
+### saving canopy-scale biochemical parameters as csv
+### output figure (optional)
+fit_canopy_ACa(plot.option = T)
 
 #### plot leaf area and biomass based on final harvest data
 plot_chamber_leaf_area(canopyDF)

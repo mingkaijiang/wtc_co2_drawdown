@@ -1,5 +1,10 @@
-check_goodness_of_fit_for_H2O_flux <- function (canopyDF) {
+check_goodness_of_fit_for_H2O_flux <- function () {
     
+    
+    ###
+    canopyDF <- read.csv("output/canopy_scale_processed_ACa_curves.csv")
+    
+    ### data preparation
     id.list <- unique(canopyDF$Identity)
     
     outDF <- data.frame(id.list, NA, NA, NA, NA)

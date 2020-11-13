@@ -1,4 +1,7 @@
-plot_leaf_ACI_curves <- function(plotDF) {
+plot_leaf_ACI_curves <- function() {
+    
+    ### read input
+    plotDF <- read.csv("output/leaf/leaf_scale_parameters.csv")
     
     ##### make box plot for long-term CO2 and position factors
     sumDF.co2 <- summaryBy(Vcmax + Jmax + Rd + ALEAF + GS + ELEAF + Ac + Aj +Ci_transition_Ac_Aj + GammaStar + Km ~ CO2_treatment,
@@ -8,7 +11,7 @@ plot_leaf_ACI_curves <- function(plotDF) {
                           data=plotDF, FUN = c(mean, se), keep.names=T)
     
     
-    
+    ### box plot
     p1 <- ggplot(sumDF.co2) +
         geom_errorbar(aes(x=CO2_treatment, ymin=(Vcmax.mean - Vcmax.se), 
                           ymax = (Vcmax.mean+Vcmax.se)), position = "dodge", width=0.2)+

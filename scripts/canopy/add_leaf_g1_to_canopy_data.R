@@ -1,4 +1,7 @@
-add_leaf_g1_to_canopy_data <- function (leafACI, canopyDF) {
+add_leaf_g1_to_canopy_data <- function (canopyDF) {
+    
+    ### read in leaf-scale data
+    leafACI <- read.csv("output/leaf/leaf_scale_parameters.csv")
     
     ### summary leaf g1 per chamber
     g1DF <- summaryBy(G1~Chamber, FUN=mean, data=leafACI, keep.names=T)

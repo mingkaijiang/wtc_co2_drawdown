@@ -197,12 +197,7 @@ leaf_ACI_processing <- function(plot.option) {
         }
         
         dev.off()
-    }
-    ################################### end plotting script #################################
-    
-    
-    ### return 
-    return(outDF)
-    
- }
+    } # end plotting script
+
+}
 

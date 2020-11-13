@@ -10,7 +10,7 @@ summarize_leaf_scale_biochemical_parameters <- function() {
                        FUN=c(mean, se), data=inDF,
                        na.rm=T, keep.names=T)
     
-    write.csv(outDF, "output/leaf/leaf_scale_parameter_summary_table_for_two_leaf_model.csv",
+    write.csv(outDF, "output/leaf/leaf_scale_parameter_summary_table.csv",
               row.names=F)
     
 }
