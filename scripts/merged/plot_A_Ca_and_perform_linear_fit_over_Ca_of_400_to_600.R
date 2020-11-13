@@ -573,8 +573,11 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
     ### normalized sensitivity to A400
     myDF3$A_sens_norm <- with(myDF3, (A600-A400)/A400)
     
+    ### save
     write.csv(myDF3, "output/A-Ca/linear_predicted_A_at_400_600_ppm.csv", row.names=F)
     
+    
+    ### plotdf
     plotDF2 <- summaryBy(A_sens+A_sens_norm~Position+Type+CO2_treatment,
                          FUN=c(mean,se), keep.names=T, data=myDF3)
     
@@ -653,7 +656,7 @@ plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600 <- function(mgDF) {
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
-      ylab(expression(paste(delta,  "A / ", A[400])))+
+      ylab(expression(paste(Delta,  "A / ", A[400])))+
       scale_fill_manual(name="",
                         limits=c("aCO2", "eCO2"),
                         values=c("blue2", "red3"),

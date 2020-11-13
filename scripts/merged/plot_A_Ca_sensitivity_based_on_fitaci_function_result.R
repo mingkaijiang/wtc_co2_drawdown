@@ -48,6 +48,7 @@ plot_A_Ca_sensitivity_based_on_fitaci_function_result <- function(mgDF) {
   ### normalized sensitivity to A400
   stDF$A_sens_norm <- with(stDF, (ALEAF_600-ALEAF_400)/ALEAF_400)
   
+  ### save the predicted output
   write.csv(stDF, "output/A-Ca/fitaci_predicted_A_at_400_600_ppm.csv", row.names=F)
   
   
@@ -57,11 +58,11 @@ plot_A_Ca_sensitivity_based_on_fitaci_function_result <- function(mgDF) {
                        FUN=c(mean,se), keep.names=T, data=stDF)
   
   
-  write.csv(plotDF, "output/leaf/leaf_and_canopy_scale_parameter_summary_table.csv",
+  write.csv(plotDF, "output/A-Ca/leaf_and_canopy_scale_parameter_summary_table.csv",
             row.names=F)
   
   
-  
+  ### arrange plotting labels
   plotDF$Position <- gsub("12345", "5_Full", plotDF$Position)
   plotDF$Position <- gsub("345", "4_TM", plotDF$Position)
   plotDF$Position <- gsub("45", "3_Top", plotDF$Position)
@@ -164,7 +165,7 @@ plot_A_Ca_sensitivity_based_on_fitaci_function_result <- function(mgDF) {
             legend.box = 'vertical',
             legend.box.just = 'left')+
       xlab("")+
-      ylab(expression(paste(delta,  "A / ", A[400])))+
+      ylab(expression(paste(Delta,  "A / ", A[400])))+
       scale_fill_manual(name="",
                         limits=c("aCO2", "eCO2"),
                         values=c("blue2", "red3"),

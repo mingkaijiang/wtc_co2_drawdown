@@ -156,39 +156,51 @@ mgDF <- merge_leaf_and_canopy_raw_data()
 ### not important figure, ignore for manuscript
 #plot_individual_A_Ca_curves(mgDF)
 
-### include both A-Ca curves over 0 - 1200 and 350 to 650 range
-### for Ca range of 350 - 650, fitted a linear curve
-### results include A sensitivity over the Ca range of 400 to 600
-### i.e. delta A / A400
 
-### need to revise and clean these figure scripts!!!!!!!!
+### linearly fitting A-Ca and predict A400 and A600
+### also plot raw A-Ca curve
+### go into function to plot
 plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600(mgDF)
 
+### linearly fitting A-Ca and predict A280 and A400
+### go into function to plot
 plot_A_Ca_and_perform_linear_fit_over_Ca_of_280_to_400(mgDF)
 
 ### same as above for the sensitivity, 
 ### but A400 and A600 predicted by the fitaci function, hence non-linear
+### go into function to plot
 plot_A_Ca_sensitivity_based_on_fitaci_function_result(mgDF)
 
 
 ### plot biochemical parameters based on fitaci results
 plot_biochemical_parameters(mgDF)
 
+### plot CO2 acclimation effect on biochemical parameters
+plot_CO2_acclimation_effect_on_biochemical_parameters(mgDF)
 
-#### plot Aj on the x-axis and Ac on the y-axis
+
+#### plot Aj vs Ac 
+### and the relative contribution of Ac and Aj to Anet
+### result based on fitaci
 ### include both canopy and leaf scales
 ### include both aCO2 and eCO2 treatment
-plot_Aj_Ac_comparison(mgDF)
+### no modeling result included
+### hence not main text figure
+#plot_Aj_Ac_comparison(mgDF)
 
+
+############################# 6. Data-model intercomparisons ######################
 ### plot Aj vs. Ac, based on mate simulation result
-plot_Aj_Ac_comparison_of_MATE_result(mgDF)
+### not a main text figure, but likely useful to compare against
+### the MAAT single-leaf model result
+### leave it out for now
+#plot_Aj_Ac_comparison_of_MATE_result(mgDF)
 
 ### plot Aj vs. Ac based on the data, mate model and two-leaf model
 plot_Aj_Ac_comparison_of_data_and_model(mgDF)
 
 
 
-############################# 6. Data-model intercomparisons ######################
 ### Plot comparison against Rogers 2017
 plot_roger_2017_model_result_comparison()
 plot_roger_2017_model_result_comparison_280_400()

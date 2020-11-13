@@ -19,7 +19,7 @@ merge_leaf_and_canopy_raw_data <- function() {
     lDF$Type <- "leaf"
     
     ### canopy data read in
-    cDF <- read.csv("output/canopy_scale_processed_ACa_curves.csv")
+    cDF <- read.csv("output/canopy/canopy_scale_processed_ACa_curves.csv")
     
     cDF$Type <- "canopy"
     

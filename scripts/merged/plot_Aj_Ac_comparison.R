@@ -542,9 +542,9 @@ plot_Aj_Ac_comparison <- function(mgDF) {
         coord_cartesian(ylim = c(1, 1.5)) 
     
 
-    pdf("output/biochemical_parameters/relative_contribution_Ac_Aj_all_merged.pdf", width=4, height=4)
-    plot(p1)
-    dev.off()  
+    #pdf("output/biochemical_parameters/relative_contribution_Ac_Aj_all_merged.pdf", width=4, height=4)
+    #plot(p1)
+    #dev.off()  
     
     
     ###############################################################################

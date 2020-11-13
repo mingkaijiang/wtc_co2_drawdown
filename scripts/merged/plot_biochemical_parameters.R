@@ -636,25 +636,25 @@ plot_biochemical_parameters <- function(mgDF) {
     mod1 <- lmer(Vcmax~ Position * CO2_treatment + (1|Chamber), data=stDF1)
     out1 <- anova(mod1)
     summary(glht(mod1, linfct = mcp(Position = "Tukey")))
-    write.csv(out1, "output/biochemical_parameters/mixed_effect_leaf_Vcmax_position_by_CO2.csv")
+    #write.csv(out1, "output/biochemical_parameters/mixed_effect_leaf_Vcmax_position_by_CO2.csv")
     
     ## leaf, Jmax
     mod2 <- lmer(Jmax~ Position * CO2_treatment + (1|Chamber), data=stDF1)
     out2 <- anova(mod2)
     summary(glht(mod2, linfct = mcp(Position = "Tukey")))
-    write.csv(out2, "output/biochemical_parameters/mixed_effect_leaf_Jmax_position_by_CO2.csv")
+    #write.csv(out2, "output/biochemical_parameters/mixed_effect_leaf_Jmax_position_by_CO2.csv")
     
     ## leaf, JV ratio
     mod3 <- lmer(JVratio~ Position * CO2_treatment + (1|Chamber), data=stDF1)
     out3 <- anova(mod3)
     summary(glht(mod3, linfct = mcp(Position = "Tukey")))
-    write.csv(out3, "output/biochemical_parameters/mixed_effect_leaf_JVratio_position_by_CO2.csv")
+    #write.csv(out3, "output/biochemical_parameters/mixed_effect_leaf_JVratio_position_by_CO2.csv")
     
     ## leaf, Ci
     mod4 <- lmer(Ci_transition_Ac_Aj~ Position * CO2_treatment + (1|Chamber), data=stDF1)
     out4 <- anova(mod4)
     summary(glht(mod4, linfct = mcp(Position = "Tukey")))
-    write.csv(out4, "output/biochemical_parameters/mixed_effect_leaf_Ci_position_by_CO2.csv")
+    #write.csv(out4, "output/biochemical_parameters/mixed_effect_leaf_Ci_position_by_CO2.csv")
     
     
     
@@ -662,25 +662,25 @@ plot_biochemical_parameters <- function(mgDF) {
     mod1 <- lmer(Vcmax~ Position * CO2_treatment + (1|Chamber), data=stDF2)
     out1 <- anova(mod1)
     summary(glht(mod1, linfct = mcp(Position = "Tukey")))
-    write.csv(out1, "output/biochemical_parameters/mixed_effect_canopy_Vcmax_position_by_CO2.csv")
+    #write.csv(out1, "output/biochemical_parameters/mixed_effect_canopy_Vcmax_position_by_CO2.csv")
     
     ## canopy, Jmax
     mod2 <- lmer(Jmax~ Position * CO2_treatment + (1|Chamber), data=stDF2)
     out2 <- anova(mod2)
     summary(glht(mod2, linfct = mcp(Position = "Tukey")))
-    write.csv(out2, "output/biochemical_parameters/mixed_effect_canopy_Jmax_position_by_CO2.csv")
+   # write.csv(out2, "output/biochemical_parameters/mixed_effect_canopy_Jmax_position_by_CO2.csv")
     
     ## canopy, JV ratio
     mod3 <- lmer(JVratio~ Position * CO2_treatment + (1|Chamber), data=stDF2)
     out3 <- anova(mod3)
     summary(glht(mod3, linfct = mcp(Position = "Tukey")))
-    write.csv(out3, "output/biochemical_parameters/mixed_effect_canopy_JVratio_position_by_CO2.csv")
+    #write.csv(out3, "output/biochemical_parameters/mixed_effect_canopy_JVratio_position_by_CO2.csv")
     
     ## canopy, Ci
     mod4 <- lmer(Ci_transition_Ac_Aj~ Position * CO2_treatment + (1|Chamber), data=stDF2)
     out4 <- anova(mod4)
     summary(glht(mod4, linfct = mcp(Position = "Tukey")))
-    write.csv(out4, "output/biochemical_parameters/mixed_effect_canopy_Ci_position_by_CO2.csv")
+    #write.csv(out4, "output/biochemical_parameters/mixed_effect_canopy_Ci_position_by_CO2.csv")
     
     
     ### set seed for reproducibility
@@ -957,134 +957,15 @@ plot_biochemical_parameters <- function(mgDF) {
     combined_plots <- plot_grid(p1, p2, p3, p4, p5, p6, p7, p8,
                                 labels=c("(a)", "(b)", "(c)", "(d)",
                                          "(e)", "(f)", "(g)", "(h)"),
-                                ncol=2, align="vh", axis = "l",
-                                label_x=0.16, label_y=0.88,
-                                label_size = 18)
+                                ncol=2, align="h", axis = "l",
+                                label_x=c(0.38, 0.14), label_y=0.8,
+                                label_size = 14, rel_widths=c(0.8, 1))
     
-    pdf("output/biochemical_parameters/biochemical_parameters_leaf_canopy_split.pdf", width=12, height=16)
+    pdf("output/biochemical_parameters/biochemical_parameters_leaf_canopy_split.pdf", width=4, height=10)
     plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1,0.1))
     dev.off()  
     
     
     
-    
-    ###################################################################################
-    #### look at the CO2 difference in Jmax and Vcmax for each canopy position
-    subDF1 <- subset(plotDF3, CO2_treatment=="aCO2")
-    subDF2 <- subset(plotDF3, CO2_treatment=="eCO2")
-    
-    ### add sample size information
-    subDF1$n[subDF1$Position%in%c("5_Full", "4_TM", "3_Top",
-                                  "2_low")] <- 3.0
-    
-    subDF1$n[subDF1$Position=="1_up"] <- 20.0
-    
-    subDF2$n[subDF2$Position%in%c("5_Full", "4_TM", "3_Top", "2_low")] <- 2.0
-    subDF2$n[subDF2$Position%in%c("1_up")] <- 15.0
-    
-    ### calculate SD
-    subDF1$Vcmax.sd <- subDF1$Vcmax.se * subDF1$n
-    subDF1$Jmax.sd <- subDF1$Jmax.se * subDF1$n
-    subDF1$JVratio.sd <- subDF1$JVratio.se * subDF1$n
-    subDF1$Ci_transition_Ac_Aj.sd <- subDF1$Ci_transition_Ac_Aj.se * subDF1$n
-    
-    subDF2$Vcmax.sd <- subDF2$Vcmax.se * subDF2$n
-    subDF2$Jmax.sd <- subDF2$Jmax.se * subDF2$n
-    subDF2$JVratio.sd <- subDF2$JVratio.se * subDF2$n
-    subDF2$Ci_transition_Ac_Aj.sd <- subDF2$Ci_transition_Ac_Aj.se * subDF2$n
-    
-    plotDF4 <- subDF1
-    plotDF4$CO2_treatment <- "diff"
-    
-    
-    ### calculate pooled sd and mean for the difference
-    for (i in unique(subDF1$Position)) {
-        ### means
-        plotDF4$Vcmax.diff.mean[plotDF4$Position==i] <- subDF2$Vcmax.mean[subDF2$Position==i]-
-            subDF1$Vcmax.mean[subDF1$Position==i]
-        
-        plotDF4$Jmax.diff.mean[plotDF4$Position==i] <- subDF2$Jmax.mean[subDF2$Position==i]-
-            subDF1$Jmax.mean[subDF1$Position==i]
-        
-        plotDF4$JVratio.diff.mean[plotDF4$Position==i] <- subDF2$JVratio.mean[subDF2$Position==i]-
-            subDF1$JVratio.mean[subDF1$Position==i]
-        
-        plotDF4$Ci_transition_Ac_Aj.diff.mean[plotDF4$Position==i] <- subDF2$Ci_transition_Ac_Aj.mean[subDF2$Position==i]-
-            subDF1$Ci_transition_Ac_Aj.mean[subDF1$Position==i]
-        
-        
-        ### sd
-        plotDF4$Vcmax.diff.sd[plotDF4$Position==i] <- sqrt((((subDF1$n[subDF1$Position==i]-1)*subDF1$Vcmax.sd[subDF1$Position==i]^2) +
-            ((subDF2$n[subDF2$Position==i]-1)*subDF2$Vcmax.sd[subDF2$Position==i]^2)) / (subDF1$n[subDF1$Position==i] + subDF2$n[subDF2$Position==i] - 2))
-        
-        plotDF4$Jmax.diff.sd[plotDF4$Position==i] <- sqrt((((subDF1$n[subDF1$Position==i]-1)*subDF1$Jmax.sd[subDF1$Position==i]^2) +
-                                                             ((subDF2$n[subDF2$Position==i]-1)*subDF2$Jmax.sd[subDF2$Position==i]^2)) / (subDF1$n[subDF1$Position==i] + subDF2$n[subDF2$Position==i] - 2) )
-        
-        plotDF4$JVratio.diff.sd[plotDF4$Position==i] <- sqrt((((subDF1$n[subDF1$Position==i]-1)*subDF1$JVratio.sd[subDF1$Position==i]^2) +
-                                                             ((subDF2$n[subDF2$Position==i]-1)*subDF2$JVratio.sd[subDF2$Position==i]^2)) / (subDF1$n[subDF1$Position==i] + subDF2$n[subDF2$Position==i] - 2) )
-        
-        plotDF4$Ci_transition_Ac_Aj.diff.sd[plotDF4$Position==i] <- sqrt((((subDF1$n[subDF1$Position==i]-1)*subDF1$Ci_transition_Ac_Aj.sd[subDF1$Position==i]^2) +
-                                                             ((subDF2$n[subDF2$Position==i]-1)*subDF2$Ci_transition_Ac_Aj.sd[subDF2$Position==i]^2)) / (subDF1$n[subDF1$Position==i] + subDF2$n[subDF2$Position==i] - 2) )
-        
-    }
-    
-    
-    ### convert into ratio
-    for (i in unique(plotDF4$Position)) {
-        ### means
-        plotDF4$Vcmax.ratio.mean[plotDF4$Position==i] <- plotDF4$Vcmax.diff.mean[plotDF4$Position==i] / 
-            plotDF4$Vcmax.mean[plotDF4$Position==i]
-        
-        plotDF4$Jmax.ratio.mean[plotDF4$Position==i] <- plotDF4$Jmax.diff.mean[plotDF4$Position==i] / 
-            plotDF4$Jmax.mean[plotDF4$Position==i]
-        
-        plotDF4$JVratio.ratio.mean[plotDF4$Position==i] <- plotDF4$JVratio.diff.mean[plotDF4$Position==i] / 
-            plotDF4$JVratio.mean[plotDF4$Position==i]
-        
-        plotDF4$Ci_transition_Ac_Aj.ratio.mean[plotDF4$Position==i] <- plotDF4$Ci_transition_Ac_Aj.diff.mean[plotDF4$Position==i] / 
-            plotDF4$Ci_transition_Ac_Aj.mean[plotDF4$Position==i]
-        
-    }
-    
-    
-    ### prepare plotting DF
-    subDF3 <- plotDF4[,c("Position", "Type", "Vcmax.ratio.mean")]
-    subDF4 <- plotDF4[,c("Position", "Type", "Jmax.ratio.mean")]
-    subDF3$lab <- "Vcmax"
-    subDF4$lab <- "Jmax"
-    colnames(subDF3) <- colnames(subDF4) <- c("Position", "Type", "ratio", "lab")
-    
-    plotDF5 <- rbind(subDF3, subDF4)
-    
-    ### plotting
-    p1 <- ggplot(plotDF5, aes(Position, ratio*100, group=lab)) +
-        geom_bar(stat = "identity", position="dodge", aes(fill=lab))+
-        theme_linedraw() +
-        theme(panel.grid.minor=element_blank(),
-              axis.text.x=element_text(size=12),
-              axis.title.x=element_text(size=14),
-              axis.text.y=element_text(size=12),
-              axis.title.y=element_text(size=14),
-              legend.text=element_text(size=12),
-              legend.title=element_text(size=14),
-              panel.grid.major=element_blank(),
-              legend.position="bottom",
-              legend.box = 'vertical',
-              legend.box.just = 'left')+
-        xlab("")+
-        ylab(expression(paste(CO[2], " effect (%)")))+
-        scale_fill_manual(name="",
-                          limits=c("Jmax", "Vcmax"),
-                          values=c("grey", "black"),
-                          labels=c(expression(J[max]),
-                                   expression(V[cmax])))+
-        scale_x_discrete(name="", 
-                         breaks=c("5_Full", "4_TM", "3_Top", "2_low", "1_up"), 
-                         labels=c("Full", "T+M", "Top", "Low", "Up"))
-    
-    
-    pdf("output/biochemical_parameters/CO2_effect_on_Jmax_Vcmax.pdf", width=4, height=4)
-    plot(p1)
-    dev.off()  
     
 }
