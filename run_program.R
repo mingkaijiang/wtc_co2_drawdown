@@ -63,11 +63,17 @@ leaf_ACI_processing(plot.option = T)
 ### results are summarized per CO2 treatment 
 summarize_leaf_scale_biochemical_parameters()
 
+
 ### Make some plots for leaf-scale data only
 ### not used in the main text
 ### can delete after the manuscript is fully written. 
 ### go into function to plot!
 #plot_leaf_ACI_curves()
+
+### EucFACE A-Ci curves
+### need to enter the function to plot
+#plot_eucface_A_Ci()
+
 
 
 ############################# 3. processing canopy data #################################
@@ -210,11 +216,6 @@ plot_roger_2017_model_result_comparison_280_400()
 compare_simulated_results_at_canopy_level()
 
 
-
-
-############################# EucFACE results ##########################
-### EucFACE A-Ci curves
-plot_eucface_A_Ci()
 
 
 
