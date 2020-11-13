@@ -196,6 +196,11 @@ plot_CO2_acclimation_effect_on_biochemical_parameters(mgDF)
 ### leave it out for now
 #plot_Aj_Ac_comparison_of_MATE_result(mgDF)
 
+
+### process two-leaf model results and make some basic plots
+process_two_leaf_model_results() 
+
+
 ### plot relative contribution of Aj vs. Ac 
 ### based on the WTC data, mate model, two-leaf model, and MAAT multi-layer model
 ### need to replace:
@@ -205,7 +210,6 @@ plot_CO2_acclimation_effect_on_biochemical_parameters(mgDF)
 ### 4. MATE with MAAT result, but for now, using MATE with updated protocol (yet to implement)
 ### this is the to-do list after returning to work next week!!!!!!!!
 plot_Aj_Ac_comparison_of_data_and_model(mgDF)
-
 
 
 ### Plot comparison against Rogers 2017
