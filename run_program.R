@@ -103,29 +103,6 @@ check_goodness_of_fit_for_H2O_flux()
 ### output figure (optional)
 fit_canopy_ACa(plot.option = T)
 
-
-#### plot leaf area and biomass based on final harvest data
-### biomass not included yet, as possibly not useful for the main text
-plot_chamber_leaf_area()
-
-### plot chamber leaf N and SLA
-### need to enter the function to plot
-plot_chamber_leaf_N_and_SLA()
-
-
-############################# 4. generate input to models #################################
-
-### Generate input to MAAT,
-### include parameters, LAI, and met forcing
-### need to read in leaf-scale and canopy-scale parameters and met data
-generate_input_to_MAAT()
-
-### can also add code to generate input to two-leaf model
-###
-### 
-
-
-
 ### ???????
 #### Fit canopy level A-Ci curves to:
 ###                                1. generate parameters to compare against leaf scale A-Ci
@@ -138,6 +115,48 @@ generate_input_to_MAAT()
 
 
 
+
+#### plot leaf area and biomass based on final harvest data
+### biomass not included yet, as possibly not useful for the main text
+plot_chamber_leaf_area()
+
+### plot chamber leaf N and SLA
+### need to enter the function to plot
+plot_chamber_leaf_N_and_SLA()
+
+
+
+
+
+
+
+############################# 4. generate input to models #################################
+
+### Generate input to MAAT,
+### include parameters, LAI, and met forcing
+### need to read in leaf-scale and canopy-scale parameters and met data
+generate_input_to_MAAT()
+
+### can also add code to generate input to two-leaf model
+###
+### 
+#############################  two-leaf modeling met data generation ###################
+### this script generate met data based on 2009 met data collected at WTC
+### need to combine with canopy drawdown data from inside the chambers
+### this resulted in half hourly met data, which is probably too coarse
+#generate_met_data_2009()
+
+### second method: to linearly interpolate hourly met data onto per minute basis, then run the simulation
+#generate_met_data_2009_method_2()
+
+#### this script generate met data for period 2008.04.14 to 2009.03.06
+#### which is before the co2 drawdown experiment
+#### but with hourly gap-filled data for each chamber
+#generate_met_data_2008_2009()
+
+
+
+
 ############################# 5. Make data-based leaf and canopy comparison ######################
 #### merge leaf and canopy raw data
 #### well-watered treatment only
@@ -146,12 +165,15 @@ mgDF <- merge_leaf_and_canopy_raw_data()
 
 ####### Plot A-CA at each chamber, compare the shape of the curves
 ### need to go into function to plot
+### not important figure, ignore for manuscript
 #plot_individual_A_Ca_curves(mgDF)
 
 ### include both A-Ca curves over 0 - 1200 and 350 to 650 range
 ### for Ca range of 350 - 650, fitted a linear curve
 ### results include A sensitivity over the Ca range of 400 to 600
 ### i.e. delta A / A400
+
+### need to revise and clean these figure scripts!!!!!!!!
 plot_A_Ca_and_perform_linear_fit_over_Ca_of_400_to_600(mgDF)
 
 plot_A_Ca_and_perform_linear_fit_over_Ca_of_280_to_400(mgDF)
@@ -178,34 +200,22 @@ plot_Aj_Ac_comparison_of_data_and_model(mgDF)
 
 
 
-############################# Roger 2017 results ######################
-###
+############################# 6. Data-model intercomparisons ######################
+### Plot comparison against Rogers 2017
 plot_roger_2017_model_result_comparison()
 plot_roger_2017_model_result_comparison_280_400()
+
+
+############## compare modeled (leaf scaled-up) with canopy (CO2 drawdown) fluxes ##############
+compare_simulated_results_at_canopy_level()
+
+
+
 
 ############################# EucFACE results ##########################
 ### EucFACE A-Ci curves
 plot_eucface_A_Ci()
 
-
-
-#############################  two-leaf modeling met data generation ###################
-### this script generate met data based on 2009 met data collected at WTC
-### need to combine with canopy drawdown data from inside the chambers
-### this resulted in half hourly met data, which is probably too coarse
-#generate_met_data_2009()
-
-### second method: to linearly interpolate hourly met data onto per minute basis, then run the simulation
-#generate_met_data_2009_method_2()
-
-#### this script generate met data for period 2008.04.14 to 2009.03.06
-#### which is before the co2 drawdown experiment
-#### but with hourly gap-filled data for each chamber
-#generate_met_data_2008_2009()
-
-
-############## compare modeled (leaf scaled-up) with canopy (CO2 drawdown) fluxes ##############
-compare_simulated_results_at_canopy_level()
 
 
 
