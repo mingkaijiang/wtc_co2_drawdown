@@ -191,7 +191,7 @@ process_two_leaf_model_results <- function() {
               plot.title = element_text(size=16, face="bold", 
                                         hjust = 0.5),
               legend.text.align = 0)+
-        ylab(expression(paste(delta * A * " / " * A[400])))+
+        ylab(expression(paste(Delta * A * " / " * A[400])))+
         #scale_x_discrete(breaks=c("1_up", "2_low", "3_Full", "4_MATE", "5_MATE", 
         #                          "6_two_leaf", "7_multi"),
         #                 labels=c("Up", 
@@ -209,11 +209,102 @@ process_two_leaf_model_results <- function() {
         #                           expression(paste(A[sha]))),
         #                  values = colorblind_pal()(5 + 1)[-1])+
         xlab("")+
-        coord_cartesian(ylim = c(0, 0.5)) 
+        coord_cartesian(ylim = c(0.18, 0.22)) 
     
     
     plot(p1)
   
+    ### plot APAR and LAI by sun and shaded leaf layers
+    plotDF2 <- data.frame(rep(c("12345", "345", "45"), each=2),
+                          rep(c("sun", "shade"), 3),
+                          NA, NA)
+    colnames(plotDF2) <- c("canopy", "layer", "APAR", "LAI")
+    
+    plotDF2$APAR[plotDF2$canopy=="12345"&plotDF2$layer=="sun"]<-outDF$APAR_sun[outDF$canopy=="12345"][1]
+    plotDF2$APAR[plotDF2$canopy=="345"&plotDF2$layer=="sun"]<-outDF$APAR_sun[outDF$canopy=="345"][1]
+    plotDF2$APAR[plotDF2$canopy=="45"&plotDF2$layer=="sun"]<-outDF$APAR_sun[outDF$canopy=="45"][1]
+    
+    plotDF2$APAR[plotDF2$canopy=="12345"&plotDF2$layer=="shade"]<-outDF$APAR_sha[outDF$canopy=="12345"][1]
+    plotDF2$APAR[plotDF2$canopy=="345"&plotDF2$layer=="shade"]<-outDF$APAR_sha[outDF$canopy=="345"][1]
+    plotDF2$APAR[plotDF2$canopy=="45"&plotDF2$layer=="shade"]<-outDF$APAR_sha[outDF$canopy=="45"][1]
+    
+    plotDF2$LAI[plotDF2$canopy=="12345"&plotDF2$layer=="sun"]<-outDF$LAI_sun[outDF$canopy=="12345"][1]
+    plotDF2$LAI[plotDF2$canopy=="345"&plotDF2$layer=="sun"]<-outDF$LAI_sun[outDF$canopy=="345"][1]
+    plotDF2$LAI[plotDF2$canopy=="45"&plotDF2$layer=="sun"]<-outDF$LAI_sun[outDF$canopy=="45"][1]
+    
+    plotDF2$LAI[plotDF2$canopy=="12345"&plotDF2$layer=="shade"]<-outDF$LAI_sha[outDF$canopy=="12345"][1]
+    plotDF2$LAI[plotDF2$canopy=="345"&plotDF2$layer=="shade"]<-outDF$LAI_sha[outDF$canopy=="345"][1]
+    plotDF2$LAI[plotDF2$canopy=="45"&plotDF2$layer=="shade"]<-outDF$LAI_sha[outDF$canopy=="45"][1]
+    
+    ## label
+    plotDF2$lab <- plotDF2$canopy
+    plotDF2$lab <- gsub("12345", "1_Full", plotDF2$lab)
+    plotDF2$lab <- gsub("345", "2_TM", plotDF2$lab)
+    plotDF2$lab <- gsub("45", "3_T", plotDF2$lab)
+    
+    ## plot
+    p2 <- ggplot(data=plotDF2, 
+                 aes(lab, APAR, group=layer)) +
+        geom_bar(stat = "identity", aes(fill=layer), 
+                 position="stack") +
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.text.x=element_text(size=10),
+              axis.title.x=element_text(size=14),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right",
+              legend.box = 'vertical',
+              legend.box.just = 'right',
+              plot.title = element_text(size=16, face="bold", 
+                                        hjust = 0.5),
+              legend.text.align = 0)+
+        ylab(expression(paste("APAR (" * mu * "mol " * m^-2 * " " * s^-1 * ")")))+
+        scale_x_discrete(breaks=c("1_Full", "2_TM", "3_T"),
+                         labels=c("Full",
+                                  "T+M",
+                                  "T"))+
+        scale_fill_manual(name="",
+                          breaks=c("sun", "shade"),
+                          labels=c("sun", "shade"),
+                          values = colorblind_pal()(2 + 1)[-1])+
+    xlab("")
+        
+    
+    p3 <- ggplot(data=plotDF2, 
+                 aes(lab, LAI, group=layer)) +
+        geom_bar(stat = "identity", aes(fill=layer), 
+                 position="stack") +
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.text.x=element_text(size=10),
+              axis.title.x=element_text(size=14),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="right",
+              legend.box = 'vertical',
+              legend.box.just = 'right',
+              plot.title = element_text(size=16, face="bold", 
+                                        hjust = 0.5),
+              legend.text.align = 0)+
+        ylab("LAI")+
+        scale_x_discrete(breaks=c("1_Full", "2_TM", "3_T"),
+                         labels=c("Full",
+                                  "T+M",
+                                  "T"))+
+        scale_fill_manual(name="",
+                          breaks=c("sun", "shade"),
+                          labels=c("sun", "shade"),
+                          values = colorblind_pal()(2 + 1)[-1])+
+        xlab("")
+    
+    plot(p3)
     
 }
 
