@@ -201,6 +201,10 @@ plot_CO2_acclimation_effect_on_biochemical_parameters(mgDF)
 process_two_leaf_model_results() 
 
 
+### process MAAT single leaf and multi-layer leaf model
+process_MAAT_output()
+
+
 ### plot relative contribution of Aj vs. Ac 
 ### based on the WTC data, mate model, two-leaf model, and MAAT multi-layer model
 ### need to replace:

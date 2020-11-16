@@ -1,9 +1,29 @@
 process_MAAT_output <- function() {
     
-    ## this is code to process MATT output and generate figures
+    ### this is code to process MAAT output and generate figures
+    ### currently MAAT outputs single bigleaf and multi-layer model results
     
     ### read input
-    aDF <- read.csv("data/MAAT/out_aco2.csv")
+    aDF <- read.csv("data/MAAT/out_aco2co2.csv")
+    eDF <- read.csv("data/MAAT/out_eco2co2.csv")
+    
+    aDF$CO2_treatment <- "aCO2"
+    eDF$CO2_treatment <- "eCO2"
+    
+    myDF <- rbind(aDF, eDF)
+    
+    ### split according to big model and multi-layer model
+    bigDF <- myDF[myDF$canopy.sys=="f_sys_bigleaf_s1992",]
+    mulDF <- myDF[myDF$canopy.sys=="f_sys_multilayer",]
+    
+    ### data structure:
+    ### Each model simulation set contains A-Ca responses under 
+    ### real LAI (6.2 and 5) and 
+    ### a list of LAI (1 - 10),
+    ### and long-term CO2 treatment (aCO2 and eCO2)
+    
+    
+    
     
     ### plot basic check
     p1 <- ggplot(aDF) +
