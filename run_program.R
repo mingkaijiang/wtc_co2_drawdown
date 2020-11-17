@@ -209,13 +209,10 @@ process_MAAT_output()
 
 
 ### plot relative contribution of Aj vs. Ac 
-### based on the WTC data, mate model, two-leaf model, and MAAT multi-layer model
+### based on the WTC data, MAAT output, and two-leaf model output
 ### need to replace:
 ### 1. linear fit with real fitaci fit result
 ### 2. two-leaf simulation result with updated simulation protocols
-### 3. MAAT once new results are in
-### 4. MATE with MAAT result, but for now, using MATE with updated protocol (yet to implement)
-### this is the to-do list after returning to work next week!!!!!!!!
 plot_Aj_Ac_comparison_of_data_and_model(mgDF)
 
 
