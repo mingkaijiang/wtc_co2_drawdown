@@ -155,7 +155,7 @@ plot_roger_2017_model_result_comparison_280_400 <- function() {
     
     
     ### add WTC result and compare
-    wtcDF <- read.csv("output/A-Ca/linear_predicted_A_at_280_400_ppm.csv")
+    wtcDF <- read.csv("output/A-Ca/fitaci_predicted_A_at_280_400_ppm.csv")
     
     sumDF2 <- summaryBy(A_sens_norm~Type+Position, FUN=c(mean,se),
                         data=wtcDF, keep.names=T, na.rm=T)
