@@ -17,6 +17,9 @@
 ###
 ### 6. Compare data with models
 ###
+### 7. Get core model code, to understand model behaviors
+###
+### End.
 
 ################################### 0. set up ##########################################
 #### clear wk space
@@ -224,6 +227,11 @@ plot_roger_2017_model_result_comparison()
 ### A sensitivity to Ca over Ca range of 280 and 400
 ### 280 not produced
 plot_roger_2017_model_result_comparison_280_400()
+
+
+############################# 7. Model diagnosis ######################
+### Aim to develop simple functions to understand 
+### fundamental equations governing the model behaviors
 
 
 
