@@ -233,6 +233,9 @@ plot_roger_2017_model_result_comparison_280_400()
 ### Aim to develop simple functions to understand 
 ### fundamental equations governing the model behaviors
 
+bigleaf_Seller_analysis()
+
+
 
 
 ############################# End #############################
