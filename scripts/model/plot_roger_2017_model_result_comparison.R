@@ -274,7 +274,7 @@ plot_roger_2017_model_result_comparison <- function() {
               legend.position="bottom",
               legend.box = 'vertical',
               legend.box.just = 'left')+
-        ylab(expression(paste(delta * A * " / " * A[400])))+
+        ylab(expression(paste(Delta * A * " / " * A[400])))+
         scale_fill_colorblind(name="Level")+
         scale_color_colorblind(name="Position",
                                breaks=c("12345", "345", "45", "low", "up"),
@@ -358,7 +358,7 @@ plot_roger_2017_model_result_comparison <- function() {
               legend.position="bottom",
               legend.box = 'vertical',
               legend.box.just = 'left')+
-        ylab(expression(paste(delta * A * " / " * A[400])))+
+        ylab(expression(paste(Delta * A * " / " * A[400])))+
         scale_color_colorblind(name="Model",
                                guide=guide_legend(nrow=3))+
         scale_fill_colorblind(name="Model",
@@ -409,7 +409,7 @@ plot_roger_2017_model_result_comparison <- function() {
               legend.position="bottom",
               legend.box = 'vertical',
               legend.box.just = 'left')+
-        ylab(expression(paste(delta * A * " / " * A[400])))+
+        ylab(expression(paste(Delta * A * " / " * A[400])))+
         scale_fill_manual(name="Position",
                           limits=c("5_Full", "4_TM", "3_Top", "2_low", "1_up"),
                           values=c("blue2", "red3", "purple", "green", "orange"),
