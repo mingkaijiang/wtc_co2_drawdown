@@ -10,7 +10,7 @@ make_conceptual_overview <- function() {
     
     
     # get a ACi curve
-    curve_1<-subset(aci_data,aci_data$Dataset=="Eucalyptus parramattensis, AU-NSW" & aci_data$Curve==1260) #38
+    curve_1<-subset(aci_data,aci_data$Dataset=="Eucalyptus saligna, AU-NSW" & aci_data$Curve==1380) #38
     
     
     #fit ACi curve
@@ -27,7 +27,7 @@ make_conceptual_overview <- function() {
     
     plot(fit_15,linecols = c("black",COL[2],COL[7]),lwd=2,legendbty="n",
          addzeroline = F,axes=F,
-         ylim=c(0,40),xlim=c(0,1800),
+         ylim=c(0,30),xlim=c(0,1800),
          ann=FALSE,pch=21,cex=1.2,
          bg=alpha("lightgray",0.8),addlegend=F,whichA = c("Ac", "Aj", "Amin"))
     
@@ -39,26 +39,13 @@ make_conceptual_overview <- function() {
     
     #----------------------------------------------------------
     #add supply line assuming Ci:Ca of 0.7
-    # ambient CO2
     
-    Ca <- 400 # ambient CO2
-    gctogw <- 1.57 # conversion
-    
-    # Provide  Ci as input, gives intersection pointat Ci=Ca*0.7
-    
-    g <- Photosyn(Ca=Ca,Ci=Ca*.7)
-    gc <- g[[3]] / gctogw # stomatal conductance to CO2
-    
-    # supply curve
-    abline(gc * Ca, -gc, lty=2)
     
     # elevated CO2
     
-    Ca <- 600
-    g <- Photosyn(Ca=Ca,Ci=Ca*.7)
-    gc <- g[[3]] / gctogw # stomatal conductance to CO2
+    Ca <- 600 * 0.7
     
-    abline(gc * Ca, -gc, lty=3)
+    abline(v=Ca,lty=3)
     
     
     points(fit_15$Ci_transition[[1]],fit_15$Photosyn(Ci=fit_15$Ci_transition[[1]])$ALEAF,pch=21,
@@ -73,14 +60,13 @@ make_conceptual_overview <- function() {
                     expression(italic(A[c])~limitation),
                     expression(italic(A[j])~limitation),
                     expression(Overall~italic(AC[i])~curve),
-                    expression(italic(CO[2])~supply~(italic(C[a])==400~mu*mol~mol^-1)),
-                    expression(italic(CO[2])~supply~(italic(C[a])==600~mu*mol~mol^-1)),
+                    expression(italic(C[a])==600~mu*mol~mol^-1),
                     expression(Transitional~C[i])),
-           lty=c(NA,1,1,1,2,3,NA),lwd=2,pt.cex=1.5,cex=0.7,
-           pch=c(21,NA,NA,NA,NA,NA,21),
+           lty=c(NA,1,1,1,3,NA),lwd=2,pt.cex=1.5,cex=0.7,
+           pch=c(21,NA,NA,NA,NA,21),
            bty="n",col=c("black",COL[7],COL[2],
-                         "black","black","black","black"),
-           pt.bg=c("lightgray", NA, NA, NA, NA, NA, COL[4]))
+                         "black","black","black"),
+           pt.bg=c("lightgray", NA, NA, NA, NA, COL[4]))
     
     dev.off()
     
