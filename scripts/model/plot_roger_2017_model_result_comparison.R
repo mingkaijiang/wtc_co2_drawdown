@@ -28,7 +28,8 @@ plot_roger_2017_model_result_comparison <- function() {
     ### merge all DF
     plotDF <- rbind(inDF1, inDF2, inDF3, inDF4, inDF5, inDF6, inDF7)
     
-    subDF <- subset(plotDF, Ca>=350&Ca<=650)
+    subDF1 <- subset(plotDF, Ca>=350&Ca<=650)
+    subDF2 <- subset(plotDF, Ca>=200&Ca<=400)
     
     ### plot model outputs
     p1 <- ggplot(data=plotDF, aes(Ca, Vc60_leaf, group=Model)) +
@@ -50,8 +51,8 @@ plot_roger_2017_model_result_comparison <- function() {
         scale_colour_colorblind()
     
     ### subDF
-    p2 <- ggplot(data=subDF, aes(Ca, Vc60_leaf, group=Model)) +
-        geom_line(data=subDF, aes(col=Model))+
+    p2 <- ggplot(data=subDF1, aes(Ca, Vc60_leaf, group=Model)) +
+        geom_line(data=subDF1, aes(col=Model))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
@@ -88,8 +89,8 @@ plot_roger_2017_model_result_comparison <- function() {
         scale_colour_colorblind()
     
     
-    p4 <- ggplot(data=subDF, aes(Ca, Vc60_can, group=Model)) +
-        geom_line(data=subDF, aes(col=Model))+
+    p4 <- ggplot(data=subDF1, aes(Ca, Vc60_can, group=Model)) +
+        geom_line(data=subDF1, aes(col=Model))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=12),
@@ -129,62 +130,110 @@ plot_roger_2017_model_result_comparison <- function() {
     outDF <- data.frame(c("BETHY", "CLM", "ED2", "GDAY",
                           "JSBACH", "JULES", "OCN"), NA, NA, NA, NA, NA,
                         NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
-                        NA, NA, NA, NA, NA)
-    colnames(outDF) <- c("Model", "slope_leaf_vc45", "intercept_leaf_vc45", 
-                         "r_sq_leaf_vc45", "A400_leaf_vc45", "A600_leaf_vc45",
-                         "slope_leaf_vc60", "intercept_leaf_vc60", 
-                         "r_sq_leaf_vc60", "A400_leaf_vc60", "A600_leaf_vc60",
-                         "slope_can_vc45", "intercept_can_vc45", 
-                         "r_sq_can_vc45", "A400_can_vc45", "A600_can_vc45",
-                         "slope_can_vc60", "intercept_can_vc60",
-                         "r_sq_can_vc60", "A400_can_vc60", "A600_can_vc60")
+                        NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 
+                        NA, NA, NA, NA, NA, NA, NA, NA)
+    colnames(outDF) <- c("Model", "fut_slope_leaf_vc45", "fut_intercept_leaf_vc45", 
+                         "fut_r_sq_leaf_vc45", 
+                         "hist_slope_leaf_vc45", "hist_intercept_leaf_vc45", 
+                         "hist_r_sq_leaf_vc45", 
+                         "A280_leaf_vc45", "A400_leaf_vc45", "A600_leaf_vc45",
+                         "fut_slope_leaf_vc60", "fut_intercept_leaf_vc60", 
+                         "fut_r_sq_leaf_vc60", 
+                         "hist_slope_leaf_vc60", "hist_intercept_leaf_vc60", 
+                         "hist_r_sq_leaf_vc60", 
+                         "A280_leaf_vc60", "A400_leaf_vc60", "A600_leaf_vc60",
+                         "fut_slope_can_vc45", "fut_intercept_can_vc45", 
+                         "fut_r_sq_can_vc45", 
+                         "hist_slope_can_vc45", "hist_intercept_can_vc45", 
+                         "hist_r_sq_can_vc45", 
+                         "A280_can_vc45", "A400_can_vc45", "A600_can_vc45",
+                         "fut_slope_can_vc60", "fut_intercept_can_vc60",
+                         "fut_r_sq_can_vc60", 
+                         "hist_slope_can_vc60", "hist_intercept_can_vc60",
+                         "hist_r_sq_can_vc60", 
+                         "A280_can_vc60", "A400_can_vc60", "A600_can_vc60")
     
     
     ### loop
     for (i in unique(outDF$Model)) {
-        sDF <- subset(subDF, Model==i)
+        sDF1 <- subset(subDF1, Model==i)
+        sDF2 <- subset(subDF2, Model==i)
         
         ### fit linear function
-        lm1 <- lm(Vc45_leaf~Ca, data=sDF)
-        lm2 <- lm(Vc60_leaf~Ca, data=sDF)
-        lm3 <- lm(Vc45_can~Ca, data=sDF)
-        lm4 <- lm(Vc60_can~Ca, data=sDF)
+        lm1 <- lm(Vc45_leaf~Ca, data=sDF1)
+        lm2 <- lm(Vc60_leaf~Ca, data=sDF1)
+        lm3 <- lm(Vc45_can~Ca, data=sDF1)
+        lm4 <- lm(Vc60_can~Ca, data=sDF1)
+        
+        lm5 <- lm(Vc45_leaf~Ca, data=sDF2)
+        lm6 <- lm(Vc60_leaf~Ca, data=sDF2)
+        lm7 <- lm(Vc45_can~Ca, data=sDF2)
+        lm8 <- lm(Vc60_can~Ca, data=sDF2)
         
         ### save output
-        outDF[outDF$Model==i,"slope_leaf_vc45"] <- coef(lm1)[2]
-        outDF[outDF$Model==i,"slope_leaf_vc60"] <- coef(lm2)[2]
-        outDF[outDF$Model==i,"slope_can_vc45"] <- coef(lm3)[2]
-        outDF[outDF$Model==i,"slope_can_vc60"] <- coef(lm4)[2]
+        outDF[outDF$Model==i,"fut_slope_leaf_vc45"] <- coef(lm1)[2]
+        outDF[outDF$Model==i,"fut_slope_leaf_vc60"] <- coef(lm2)[2]
+        outDF[outDF$Model==i,"fut_slope_can_vc45"] <- coef(lm3)[2]
+        outDF[outDF$Model==i,"fut_slope_can_vc60"] <- coef(lm4)[2]
         
-        outDF[outDF$Model==i,"intercept_leaf_vc45"] <- coef(lm1)[1]
-        outDF[outDF$Model==i,"intercept_leaf_vc60"] <- coef(lm2)[1]
-        outDF[outDF$Model==i,"intercept_can_vc45"] <- coef(lm3)[1]
-        outDF[outDF$Model==i,"intercept_can_vc60"] <- coef(lm4)[1]
+        outDF[outDF$Model==i,"fut_intercept_leaf_vc45"] <- coef(lm1)[1]
+        outDF[outDF$Model==i,"fut_intercept_leaf_vc60"] <- coef(lm2)[1]
+        outDF[outDF$Model==i,"fut_intercept_can_vc45"] <- coef(lm3)[1]
+        outDF[outDF$Model==i,"fut_intercept_can_vc60"] <- coef(lm4)[1]
         
-        outDF[outDF$Model==i,"r_sq_leaf_vc45"] <- summary(lm1)$r.squared
-        outDF[outDF$Model==i,"r_sq_leaf_vc60"] <- summary(lm2)$r.squared
-        outDF[outDF$Model==i,"r_sq_can_vc45"] <- summary(lm3)$r.squared
-        outDF[outDF$Model==i,"r_sq_can_vc60"] <- summary(lm4)$r.squared
+        outDF[outDF$Model==i,"fut_r_sq_leaf_vc45"] <- summary(lm1)$r.squared
+        outDF[outDF$Model==i,"fut_r_sq_leaf_vc60"] <- summary(lm2)$r.squared
+        outDF[outDF$Model==i,"fut_r_sq_can_vc45"] <- summary(lm3)$r.squared
+        outDF[outDF$Model==i,"fut_r_sq_can_vc60"] <- summary(lm4)$r.squared
+        
+        
+        ### save output
+        outDF[outDF$Model==i,"hist_slope_leaf_vc45"] <- coef(lm5)[2]
+        outDF[outDF$Model==i,"hist_slope_leaf_vc60"] <- coef(lm6)[2]
+        outDF[outDF$Model==i,"hist_slope_can_vc45"] <- coef(lm7)[2]
+        outDF[outDF$Model==i,"hist_slope_can_vc60"] <- coef(lm8)[2]
+        
+        outDF[outDF$Model==i,"hist_intercept_leaf_vc45"] <- coef(lm5)[1]
+        outDF[outDF$Model==i,"hist_intercept_leaf_vc60"] <- coef(lm6)[1]
+        outDF[outDF$Model==i,"hist_intercept_can_vc45"] <- coef(lm7)[1]
+        outDF[outDF$Model==i,"hist_intercept_can_vc60"] <- coef(lm8)[1]
+        
+        outDF[outDF$Model==i,"hist_r_sq_leaf_vc45"] <- summary(lm5)$r.squared
+        outDF[outDF$Model==i,"hist_r_sq_leaf_vc60"] <- summary(lm6)$r.squared
+        outDF[outDF$Model==i,"hist_r_sq_can_vc45"] <- summary(lm7)$r.squared
+        outDF[outDF$Model==i,"hist_r_sq_can_vc60"] <- summary(lm8)$r.squared
         
     }
     
     
-    ### predict 400 and 600
-    outDF$A400_leaf_vc45 <- outDF$slope_leaf_vc45 * 400 + outDF$intercept_leaf_vc45
-    outDF$A400_leaf_vc60 <- outDF$slope_leaf_vc60 * 400 + outDF$intercept_leaf_vc60
-    outDF$A400_can_vc45 <- outDF$slope_can_vc45 * 400 + outDF$intercept_can_vc45
-    outDF$A400_can_vc60 <- outDF$slope_can_vc60 * 400 + outDF$intercept_can_vc60
+    ### predict 280, 400 and 600
+    outDF$A400_leaf_vc45 <- outDF$fut_slope_leaf_vc45 * 400 + outDF$fut_intercept_leaf_vc45
+    outDF$A400_leaf_vc60 <- outDF$fut_slope_leaf_vc60 * 400 + outDF$fut_intercept_leaf_vc60
+    outDF$A400_can_vc45 <- outDF$fut_slope_can_vc45 * 400 + outDF$fut_intercept_can_vc45
+    outDF$A400_can_vc60 <- outDF$fut_slope_can_vc60 * 400 + outDF$fut_intercept_can_vc60
     
-    outDF$A600_leaf_vc45 <- outDF$slope_leaf_vc45 * 600 + outDF$intercept_leaf_vc45
-    outDF$A600_leaf_vc60 <- outDF$slope_leaf_vc60 * 600 + outDF$intercept_leaf_vc60
-    outDF$A600_can_vc45 <- outDF$slope_can_vc45 * 600 + outDF$intercept_can_vc45
-    outDF$A600_can_vc60 <- outDF$slope_can_vc60 * 600 + outDF$intercept_can_vc60
+    outDF$A600_leaf_vc45 <- outDF$fut_slope_leaf_vc45 * 600 + outDF$fut_intercept_leaf_vc45
+    outDF$A600_leaf_vc60 <- outDF$fut_slope_leaf_vc60 * 600 + outDF$fut_intercept_leaf_vc60
+    outDF$A600_can_vc45 <- outDF$fut_slope_can_vc45 * 600 + outDF$fut_intercept_can_vc45
+    outDF$A600_can_vc60 <- outDF$fut_slope_can_vc60 * 600 + outDF$fut_intercept_can_vc60
+    
+    outDF$A280_leaf_vc45 <- outDF$hist_slope_leaf_vc45 * 280 + outDF$hist_intercept_leaf_vc45
+    outDF$A280_leaf_vc60 <- outDF$hist_slope_leaf_vc60 * 280 + outDF$hist_intercept_leaf_vc60
+    outDF$A280_can_vc45 <- outDF$hist_slope_can_vc45 * 280 + outDF$hist_intercept_can_vc45
+    outDF$A280_can_vc60 <- outDF$hist_slope_can_vc60 * 280 + outDF$hist_intercept_can_vc60
     
     ### (A600-A400)/A400 to look at sensitivity
-    outDF$sens_leaf_vc45 <- (outDF$A600_leaf_vc45 - outDF$A400_leaf_vc45)/outDF$A400_leaf_vc45
-    outDF$sens_leaf_vc60 <- (outDF$A600_leaf_vc60 - outDF$A400_leaf_vc60)/outDF$A400_leaf_vc60
-    outDF$sens_can_vc45 <- (outDF$A600_can_vc45 - outDF$A400_can_vc45)/outDF$A400_can_vc45
-    outDF$sens_can_vc60 <- (outDF$A600_can_vc60 - outDF$A400_can_vc60)/outDF$A400_can_vc60
+    outDF$fut_sens_leaf_vc45 <- (outDF$A600_leaf_vc45 - outDF$A400_leaf_vc45)/outDF$A400_leaf_vc45
+    outDF$fut_sens_leaf_vc60 <- (outDF$A600_leaf_vc60 - outDF$A400_leaf_vc60)/outDF$A400_leaf_vc60
+    outDF$fut_sens_can_vc45 <- (outDF$A600_can_vc45 - outDF$A400_can_vc45)/outDF$A400_can_vc45
+    outDF$fut_sens_can_vc60 <- (outDF$A600_can_vc60 - outDF$A400_can_vc60)/outDF$A400_can_vc60
+    
+    
+    outDF$hist_sens_leaf_vc45 <- (outDF$A400_leaf_vc45 - outDF$A280_leaf_vc45)/outDF$A280_leaf_vc45
+    outDF$hist_sens_leaf_vc60 <- (outDF$A400_leaf_vc60 - outDF$A280_leaf_vc60)/outDF$A280_leaf_vc60
+    outDF$hist_sens_can_vc45 <- (outDF$A400_can_vc45 - outDF$A280_can_vc45)/outDF$A280_can_vc45
+    outDF$hist_sens_can_vc60 <- (outDF$A400_can_vc60 - outDF$A280_can_vc60)/outDF$A280_can_vc60
+    
     
     ### convert into long format
     plotDF2 <- data.frame(rep(c("BETHY", "CLM", "ED2", "GDAY",
@@ -193,25 +242,44 @@ plot_roger_2017_model_result_comparison <- function() {
                           rep(c("Leaf", "Canopy"), each=14), NA)
     colnames(plotDF2)<- c("Model", "Vcmax", "Position", "Sensitivity")
     
+    plotDF3 <- plotDF2
+    
     for (i in unique(plotDF2$Model)) {
         plotDF2$Sensitivity[plotDF2$Model==i&plotDF2$Vcmax=="Vcmax45"&plotDF2$Position=="Leaf"] <- 
-            outDF$sens_leaf_vc45[outDF$Model==i]
+            outDF$fut_sens_leaf_vc45[outDF$Model==i]
         
         plotDF2$Sensitivity[plotDF2$Model==i&plotDF2$Vcmax=="Vcmax60"&plotDF2$Position=="Leaf"] <- 
-            outDF$sens_leaf_vc60[outDF$Model==i]
+            outDF$fut_sens_leaf_vc60[outDF$Model==i]
         
         plotDF2$Sensitivity[plotDF2$Model==i&plotDF2$Vcmax=="Vcmax45"&plotDF2$Position=="Canopy"] <- 
-            outDF$sens_can_vc45[outDF$Model==i]
+            outDF$fut_sens_can_vc45[outDF$Model==i]
         
         plotDF2$Sensitivity[plotDF2$Model==i&plotDF2$Vcmax=="Vcmax60"&plotDF2$Position=="Canopy"] <- 
-            outDF$sens_can_vc60[outDF$Model==i]
+            outDF$fut_sens_can_vc60[outDF$Model==i]
+    }
+    
+    
+    for (i in unique(plotDF3$Model)) {
+        plotDF3$Sensitivity[plotDF3$Model==i&plotDF3$Vcmax=="Vcmax45"&plotDF3$Position=="Leaf"] <- 
+            outDF$hist_sens_leaf_vc45[outDF$Model==i]
+        
+        plotDF3$Sensitivity[plotDF3$Model==i&plotDF3$Vcmax=="Vcmax60"&plotDF3$Position=="Leaf"] <- 
+            outDF$hist_sens_leaf_vc60[outDF$Model==i]
+        
+        plotDF3$Sensitivity[plotDF3$Model==i&plotDF3$Vcmax=="Vcmax45"&plotDF3$Position=="Canopy"] <- 
+            outDF$hist_sens_can_vc45[outDF$Model==i]
+        
+        plotDF3$Sensitivity[plotDF3$Model==i&plotDF3$Vcmax=="Vcmax60"&plotDF3$Position=="Canopy"] <- 
+            outDF$hist_sens_can_vc60[outDF$Model==i]
     }
     
     
     ### summary stats
-    sumDF <- summaryBy(Sensitivity~Vcmax+Position, FUN=c(mean, se), 
+    sumDF1 <- summaryBy(Sensitivity~Vcmax+Position, FUN=c(mean, se), 
                        data=plotDF2, keep.names=T, na.rm=T)
     
+    sumDF2 <- summaryBy(Sensitivity~Vcmax+Position, FUN=c(mean, se), 
+                        data=plotDF3, keep.names=T, na.rm=T)
     
     ### plotting
     #p5 <- ggplot(data=sumDF, 
@@ -251,10 +319,10 @@ plot_roger_2017_model_result_comparison <- function() {
     ### add WTC result and compare
     wtcDF <- read.csv("output/A-Ca/fitaci_predicted_A_at_400_600_ppm.csv")
     
-    sumDF2 <- summaryBy(A_sens_norm~Type+Position, FUN=c(mean,se),
+    sumDF3 <- summaryBy(A_sens_norm~Type+Position, FUN=c(mean,se),
                         data=wtcDF, keep.names=T, na.rm=T)
     
-    p6 <- ggplot(data=sumDF2, 
+    p6 <- ggplot(data=sumDF3, 
                  aes(Position, A_sens_norm.mean)) +
         geom_bar(stat = "identity", aes(fill=Type, col=Position), 
                  position="dodge", alpha=0.5) +
@@ -303,6 +371,16 @@ plot_roger_2017_model_result_comparison <- function() {
     plotDF2$xlab1 <- gsub("Vcmax45-Canopy", "4_Vcmax45-Canopy", plotDF2$xlab1)
     plotDF2$xlab1 <- gsub("Vcmax60-Leaf", "1_Vcmax60-Leaf", plotDF2$xlab1)
     plotDF2$xlab1 <- gsub("Vcmax60-Canopy", "2_Vcmax60-Canopy", plotDF2$xlab1)
+    
+    
+    plotDF3$xlab1 <- paste0(plotDF3$Vcmax, "-", plotDF3$Position)    
+    plotDF3$xlab2 <- paste0(plotDF3$Vcmax, "-", plotDF3$Model)    
+    plotDF3$xlab3 <- paste0(plotDF3$Position, "-", plotDF3$Model)
+    
+    plotDF3$xlab1 <- gsub("Vcmax45-Leaf", "3_Vcmax45-Leaf", plotDF3$xlab1)
+    plotDF3$xlab1 <- gsub("Vcmax45-Canopy", "4_Vcmax45-Canopy", plotDF3$xlab1)
+    plotDF3$xlab1 <- gsub("Vcmax60-Leaf", "1_Vcmax60-Leaf", plotDF3$xlab1)
+    plotDF3$xlab1 <- gsub("Vcmax60-Canopy", "2_Vcmax60-Canopy", plotDF3$xlab1)
 
     ### plotting
     #p7 <- ggplot(data=plotDF2, 
@@ -435,6 +513,169 @@ plot_roger_2017_model_result_comparison <- function() {
               label_size = 18)
     dev.off()
     
+    
+    
+    ### new figure on model simulated sensitivity of historic and future CO2 concentration
+    p1 <- ggplot(data=plotDF, aes(Ca, Vc45_leaf, group=Model)) +
+        geom_line(data=plotDF, aes(col=Model))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.text.x=element_text(size=12),
+              axis.title.x=element_text(size=14),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              legend.box = 'vertical',
+              legend.box.just = 'left')+
+        xlab(expression(paste(C[a], " (", mu, "mol ", m^-2, " ", s^-1, ")")))+
+        ylab(expression(paste(A, " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+        scale_colour_colorblind()
+    
+    p2 <- ggplot(data=plotDF, aes(Ca, Vc60_leaf, group=Model)) +
+        geom_line(data=plotDF, aes(col=Model))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.text.x=element_text(size=12),
+              axis.title.x=element_text(size=14),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              legend.box = 'vertical',
+              legend.box.just = 'left')+
+        xlab(expression(paste(C[a], " (", mu, "mol ", m^-2, " ", s^-1, ")")))+
+        ylab(expression(paste(A, " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+        scale_colour_colorblind()
+    
+    
+    p3 <- ggplot(data=plotDF, aes(Ca, Vc45_can, group=Model)) +
+        geom_line(data=plotDF, aes(col=Model))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.text.x=element_text(size=12),
+              axis.title.x=element_text(size=14),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              legend.box = 'vertical',
+              legend.box.just = 'left')+
+        xlab(expression(paste(C[a], " (", mu, "mol ", m^-2, " ", s^-1, ")")))+
+        ylab(expression(paste(A, " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+        scale_colour_colorblind()
+    
+    p4 <- ggplot(data=plotDF, aes(Ca, Vc60_can, group=Model)) +
+        geom_line(data=plotDF, aes(col=Model))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.text.x=element_text(size=12),
+              axis.title.x=element_text(size=14),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              legend.box = 'vertical',
+              legend.box.just = 'left')+
+        xlab(expression(paste(C[a], " (", mu, "mol ", m^-2, " ", s^-1, ")")))+
+        ylab(expression(paste(A, " (", mu, "mol "* CO[2], " ", m^-2, " ", s^-1, ")")))+
+        scale_colour_colorblind()
+    
+    
+    p9 <- ggplot(data=plotDF2, 
+                    aes(x=xlab1, y=Sensitivity, group=xlab2)) +
+        geom_point(aes(shape=Position, fill=Model), 
+                   size=4, col="black")+
+        geom_line(aes(col=Model))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.text.x=element_text(size=12),
+              axis.title.x=element_text(size=14),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              legend.box = 'vertical',
+              legend.box.just = 'left')+
+        ylab(expression(paste(delta * A[fut] * " / " * A[400])))+
+        scale_color_colorblind(name="Model",
+                               guide=guide_legend(nrow=3))+
+        scale_fill_colorblind(name="Model",
+                              guide=guide_legend(nrow=3,
+                                                 override.aes = list(shape = 21)))+
+        xlab("")+
+        scale_x_discrete(breaks=c("3_Vcmax45-Leaf", "4_Vcmax45-Canopy", 
+                                  "1_Vcmax60-Leaf", "2_Vcmax60-Canopy"),
+                         labels=c(expression(paste("Leaf ", V[cmax45])),
+                                  expression(paste("Canopy ", V[cmax45])),
+                                  expression(paste("Leaf ", V[cmax60])),
+                                  expression(paste("Canopy ", V[cmax60]))))+
+        scale_shape_manual(name="Type",
+                           values=c(21, 24),
+                           labels=c("Canopy", "Leaf"))+
+        ylim(0.0, 0.6)
+    
+    p10 <- ggplot(data=plotDF3, 
+                 aes(x=xlab1, y=Sensitivity, group=xlab2)) +
+        geom_point(aes(shape=Position, fill=Model), 
+                   size=4, col="black")+
+        geom_line(aes(col=Model))+
+        theme_linedraw() +
+        theme(panel.grid.minor=element_blank(),
+              axis.text.x=element_text(size=12),
+              axis.title.x=element_text(size=14),
+              axis.text.y=element_text(size=12),
+              axis.title.y=element_text(size=14),
+              legend.text=element_text(size=12),
+              legend.title=element_text(size=14),
+              panel.grid.major=element_blank(),
+              legend.position="none",
+              legend.box = 'vertical',
+              legend.box.just = 'left')+
+        ylab(expression(paste(delta * A[hist] * " / " * A[280])))+
+        scale_color_colorblind(name="Model",
+                               guide=guide_legend(nrow=3))+
+        scale_fill_colorblind(name="Model",
+                              guide=guide_legend(nrow=3,
+                                                 override.aes = list(shape = 21)))+
+        xlab("")+
+        scale_x_discrete(breaks=c("3_Vcmax45-Leaf", "4_Vcmax45-Canopy", 
+                                  "1_Vcmax60-Leaf", "2_Vcmax60-Canopy"),
+                         labels=c(expression(paste("Leaf ", V[cmax45])),
+                                  expression(paste("Canopy ", V[cmax45])),
+                                  expression(paste("Leaf ", V[cmax60])),
+                                  expression(paste("Canopy ", V[cmax60]))))+
+        scale_shape_manual(name="Type",
+                           values=c(21, 24),
+                           labels=c("Canopy", "Leaf"))+
+        ylim(0.0, 0.6)
+    
+    
+    legend_shared <- get_legend(p9 + theme(legend.position="bottom",
+                                           legend.box = 'vertical',
+                                           legend.box.just = 'left'))
+    
+    combined_plots <- plot_grid(p1, p2, p3, p4, p9, p10, 
+                                ncol=2, align="v", axis = "l",
+                                labels=c("(a)", "(b)",
+                                         "(c)", "(d)",
+                                         "(e)", "(f)"),
+                                label_x=0.16, label_y=0.98,
+                                label_size = 18)
+    
+    pdf("output/simulated/Roger_model_sensitivity_hist_and_fut.pdf", width=12, height=16)
+    plot_grid(combined_plots, legend_shared, ncol=1, rel_heights=c(1, 0.1))
+    dev.off()
     
 }
 
