@@ -14,6 +14,7 @@ process_MAAT_output <- function() {
     
     ### split according to big model and multi-layer model
     bigDF <- myDF[myDF$canopy.sys=="f_sys_bigleaf_s1992",]
+    twoDF <- myDF[myDF$canopy.sys=="f_sys_2bigleaf",]
     mulDF <- myDF[myDF$canopy.sys=="f_sys_multilayer",]
     
     ### data structure:
@@ -31,10 +32,11 @@ process_MAAT_output <- function() {
                           "Ac400", "Ac600",
                           "Aj400", "Aj600",
                           "Model")
-    outDF2 <- outDF1     
+    outDF3 <- outDF2 <- outDF1     
         
-    outDF1$Model <- "Bigleaf"
-    outDF2$Model <- "Multilayer"
+    outDF1$Model <- "1_Bigleaf"
+    outDF2$Model <- "2_Twoleaf"
+    outDF3$Model <- "3_Multilayer"
     
     ### assign values
     for(i in c(6.59, 5.01, c(1:10))){
@@ -53,20 +55,34 @@ process_MAAT_output <- function() {
     
     for(i in c(6.59, 5.01, c(1:10))){
         for (j in c("aCO2", "eCO2")) {
-            outDF2$A400[outDF2$CO2_treatment==j&outDF2$LAI==i] <- mulDF$A[mulDF$canopy.lai==i&mulDF$CO2_treatment==j&mulDF$canopy.ca_conc==400]
-            outDF2$A600[outDF2$CO2_treatment==j&outDF2$LAI==i] <- mulDF$A[mulDF$canopy.lai==i&mulDF$CO2_treatment==j&mulDF$canopy.ca_conc==600]
+            outDF2$A400[outDF2$CO2_treatment==j&outDF2$LAI==i] <- twoDF$A[twoDF$canopy.lai==i&twoDF$CO2_treatment==j&twoDF$canopy.ca_conc==400]
+            outDF2$A600[outDF2$CO2_treatment==j&outDF2$LAI==i] <- twoDF$A[twoDF$canopy.lai==i&twoDF$CO2_treatment==j&twoDF$canopy.ca_conc==600]
             
-            outDF2$Ac400[outDF2$CO2_treatment==j&outDF2$LAI==i] <- mulDF$Acg_lim[mulDF$canopy.lai==i&mulDF$CO2_treatment==j&mulDF$canopy.ca_conc==400]
-            outDF2$Ac600[outDF2$CO2_treatment==j&outDF2$LAI==i] <- mulDF$Acg_lim[mulDF$canopy.lai==i&mulDF$CO2_treatment==j&mulDF$canopy.ca_conc==600]
+            outDF2$Ac400[outDF2$CO2_treatment==j&outDF2$LAI==i] <- twoDF$Acg_lim[twoDF$canopy.lai==i&twoDF$CO2_treatment==j&twoDF$canopy.ca_conc==400]
+            outDF2$Ac600[outDF2$CO2_treatment==j&outDF2$LAI==i] <- twoDF$Acg_lim[twoDF$canopy.lai==i&twoDF$CO2_treatment==j&twoDF$canopy.ca_conc==600]
             
-            outDF2$Aj400[outDF2$CO2_treatment==j&outDF2$LAI==i] <- mulDF$Ajg_lim[mulDF$canopy.lai==i&mulDF$CO2_treatment==j&mulDF$canopy.ca_conc==400]
-            outDF2$Aj600[outDF2$CO2_treatment==j&outDF2$LAI==i] <- mulDF$Ajg_lim[mulDF$canopy.lai==i&mulDF$CO2_treatment==j&mulDF$canopy.ca_conc==600]
+            outDF2$Aj400[outDF2$CO2_treatment==j&outDF2$LAI==i] <- twoDF$Ajg_lim[twoDF$canopy.lai==i&twoDF$CO2_treatment==j&twoDF$canopy.ca_conc==400]
+            outDF2$Aj600[outDF2$CO2_treatment==j&outDF2$LAI==i] <- twoDF$Ajg_lim[twoDF$canopy.lai==i&twoDF$CO2_treatment==j&twoDF$canopy.ca_conc==600]
+            
+        }
+    }
+    
+    for(i in c(6.59, 5.01, c(1:10))){
+        for (j in c("aCO2", "eCO2")) {
+            outDF3$A400[outDF3$CO2_treatment==j&outDF3$LAI==i] <- mulDF$A[mulDF$canopy.lai==i&mulDF$CO2_treatment==j&mulDF$canopy.ca_conc==400]
+            outDF3$A600[outDF3$CO2_treatment==j&outDF3$LAI==i] <- mulDF$A[mulDF$canopy.lai==i&mulDF$CO2_treatment==j&mulDF$canopy.ca_conc==600]
+    
+            outDF3$Ac400[outDF3$CO2_treatment==j&outDF3$LAI==i] <- mulDF$Acg_lim[mulDF$canopy.lai==i&mulDF$CO2_treatment==j&mulDF$canopy.ca_conc==400]
+            outDF3$Ac600[outDF3$CO2_treatment==j&outDF3$LAI==i] <- mulDF$Acg_lim[mulDF$canopy.lai==i&mulDF$CO2_treatment==j&mulDF$canopy.ca_conc==600]
+            
+            outDF3$Aj400[outDF3$CO2_treatment==j&outDF3$LAI==i] <- mulDF$Ajg_lim[mulDF$canopy.lai==i&mulDF$CO2_treatment==j&mulDF$canopy.ca_conc==400]
+            outDF3$Aj600[outDF3$CO2_treatment==j&outDF3$LAI==i] <- mulDF$Ajg_lim[mulDF$canopy.lai==i&mulDF$CO2_treatment==j&mulDF$canopy.ca_conc==600]
             
         }
     }
     
     # combine
-    outDF <- rbind(outDF1, outDF2)
+    outDF <- rbind(outDF1, rbind(outDF2, outDF3))
     
     ## calculate Asens
     outDF$Asens <- with(outDF, (A600-A400)/A400)
@@ -105,16 +121,16 @@ process_MAAT_output <- function() {
                                         hjust = 0.5),
               legend.text.align = 0)+
         ylab(expression(paste(Delta * A * " / " * A[400])))+
-        scale_x_discrete(breaks=c("Bigleaf", "Multilayer"),
-                         labels=c("Big leaf", "Multi-layer"))+
+        scale_x_discrete(breaks=c("1_Bigleaf", "2_Twoleaf", "3_Multilayer"),
+                         labels=c("Big leaf", "Two leaf", "Multi-layer"))+
         scale_fill_manual(name="Limiting rate",
                           breaks=c("Asens", "Ac_sens", "Aj_sens"),
                           labels=c(expression(A[net]), 
                                    expression(A[c]), 
                                    expression(A[j])),
                           values = c("grey", colorblind_pal()(2 + 1)[-1]))+
-        coord_cartesian(ylim = c(0.0, 0.15))+
-        xlab(expression(aCO[2]))
+        coord_cartesian(ylim = c(0.0, 0.45))+
+        xlab(expression(aCO[2])); p1
     
     
     p2 <- ggplot(plotDF1[plotDF1$CO2_treatment == "eCO2",]) +
@@ -137,16 +153,16 @@ process_MAAT_output <- function() {
                                         hjust = 0.5),
               legend.text.align = 0)+
         ylab(expression(paste(Delta * A * " / " * A[400])))+
-        scale_x_discrete(breaks=c("Bigleaf", "Multilayer"),
-                         labels=c("Big leaf", "Multi-layer"))+
+        scale_x_discrete(breaks=c("1_Bigleaf", "2_Twoleaf", "3_Multilayer"),
+                         labels=c("Big leaf", "Two leaf", "Multi-layer"))+
         scale_fill_manual(name="Limiting rate",
                           breaks=c("Asens", "Ac_sens", "Aj_sens"),
                           labels=c(expression(A[net]), 
                                    expression(A[c]), 
                                    expression(A[j])),
                           values = c("grey", colorblind_pal()(2 + 1)[-1]))+
-        coord_cartesian(ylim = c(0.0, 0.15)) +
-        xlab(expression(eCO[2]))
+        coord_cartesian(ylim = c(0.0, 0.45)) +
+        xlab(expression(eCO[2])); p2
     
     ## pdf
     legend_shared <- get_legend(p1 + theme(legend.position="bottom",
@@ -156,7 +172,7 @@ process_MAAT_output <- function() {
     combined_plots <- plot_grid(p1, p2, 
                                 labels=c("(a)", "(b)"),
                                 ncol=2, align="vh", axis = "l",
-                                label_x=0.8, label_y=0.95,
+                                label_x=0.2, label_y=0.95,
                                 label_size = 18)
     
     
@@ -174,9 +190,10 @@ process_MAAT_output <- function() {
     
     
     ### plot
-    p1 <- ggplot(plotDF2[plotDF2$Limiting == "Asens",]) +
+    p1 <- ggplot(plotDF2[plotDF2$Limiting == "Asens",],
+                 aes(x=LAI, y=value, group=Model)) +
         geom_point(aes(x=LAI, y=value, pch=Model, col=CO2_treatment))+
-        geom_line(aes(x=LAI, y=value, lty=Model, col=CO2_treatment))+
+        geom_line(aes(x=LAI, y=value, col=CO2_treatment))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=10),
@@ -193,8 +210,9 @@ process_MAAT_output <- function() {
                                         hjust = 0.5),
               legend.text.align = 0)+
         ylab(expression(paste(Delta * A * " / " * A[400])))+
-        #scale_pch_manual(breaks=c("Bigleaf", "Multilayer"),
-        #                 labels=c("Big leaf", "Multi-layer"))+
+        scale_shape_manual(breaks=c("1_Bigleaf", "2_Twoleaf", "3_Multilayer"),
+                         labels=c("Big leaf", "Two leaf", "Multi-layer"),
+                         values=c(1,2,3))+
         scale_color_manual(name=expression(paste(CO[2] * " treatment")),
                           breaks=c("aCO2", "eCO2"),
                           labels=c(expression(aCO[2]), 
