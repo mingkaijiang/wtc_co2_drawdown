@@ -44,11 +44,11 @@ make_conceptual_overview()
 ###     Fit light response curve;
 ###     
 ###     
-###                                1. generate biochemical parameters for modeling and plotting
-###                                2. compare treatment effect (i.e. group by treatment, chamber as random variable)
-###                                3. layer effect (i.e. top and bottom layers)
-###                                4. save stats and figures
-###                                5. output parameters for leaf and canopy comparison
+###    1. generate biochemical parameters for modeling and plotting
+###    2. compare treatment effect (i.e. group by treatment, chamber as random variable)
+###    3. layer effect (i.e. top and bottom layers)
+###    4. save stats and figures
+###    5. output parameters for leaf and canopy comparison
 
 ### Fit light response curve, 
 ### and obtain theta and alpha J, which are input to

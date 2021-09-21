@@ -129,7 +129,7 @@ process_MAAT_output <- function() {
                                    expression(A[c]), 
                                    expression(A[j])),
                           values = c("grey", colorblind_pal()(2 + 1)[-1]))+
-        coord_cartesian(ylim = c(0.0, 0.45))+
+        coord_cartesian(ylim = c(0.0, 0.15))+
         xlab(expression(aCO[2])); p1
     
     
@@ -161,7 +161,7 @@ process_MAAT_output <- function() {
                                    expression(A[c]), 
                                    expression(A[j])),
                           values = c("grey", colorblind_pal()(2 + 1)[-1]))+
-        coord_cartesian(ylim = c(0.0, 0.45)) +
+        coord_cartesian(ylim = c(0.0, 0.15)) +
         xlab(expression(eCO[2])); p2
     
     ## pdf
@@ -193,7 +193,7 @@ process_MAAT_output <- function() {
     p1 <- ggplot(plotDF2[plotDF2$Limiting == "Asens",],
                  aes(x=LAI, y=value, group=Model)) +
         geom_point(aes(x=LAI, y=value, pch=Model, col=CO2_treatment))+
-        geom_line(aes(x=LAI, y=value, col=CO2_treatment))+
+        #geom_line(aes(x=LAI, y=value, lty=CO2_treatment, col=CO2_treatment))+
         theme_linedraw() +
         theme(panel.grid.minor=element_blank(),
               axis.text.x=element_text(size=10),
@@ -201,12 +201,12 @@ process_MAAT_output <- function() {
               axis.text.y=element_text(size=12),
               axis.title.y=element_text(size=14),
               legend.text=element_text(size=12),
-              legend.title=element_text(size=14),
+              legend.title=element_text(size=12),
               panel.grid.major=element_blank(),
               legend.position="bottom",
               legend.box = 'vertical',
               legend.box.just = 'right',
-              plot.title = element_text(size=16, face="bold", 
+              plot.title = element_text(size=12, face="bold", 
                                         hjust = 0.5),
               legend.text.align = 0)+
         ylab(expression(paste(Delta * A * " / " * A[400])))+
